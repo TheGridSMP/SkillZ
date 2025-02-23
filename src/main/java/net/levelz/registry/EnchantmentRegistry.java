@@ -1,12 +1,14 @@
 package net.levelz.registry;
 
+import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
 import net.levelz.LevelzMain;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.registry.BuiltinRegistries;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.*;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,10 +54,26 @@ public class EnchantmentRegistry {
         return -1;
     }
 
+    public static RegistryWrapper.WrapperLookup createWrapperLookup() {
+        RegistryBuilder builder = new RegistryBuilder();
+        return builder.createWrapperLookup(DynamicRegistryManager.of(Registries.REGISTRIES));
+    }
+
     public static void updateEnchantments() {
         ENCHANTMENTS.clear();
         INDEX_ENCHANTMENTS.clear();
-        Optional<RegistryWrapper.Impl<Enchantment>> wrapper = BuiltinRegistries.createWrapperLookup().getOptionalWrapper(RegistryKeys.ENCHANTMENT);
+        /*RegistryWrapper.WrapperLookup wrap = BuiltinRegistries.createWrapperLookup();
+        MinecraftClient.getInstance().world.getRegistryManager().getOptionalWrapper(RegistryKeys.ENCHANTMENT);*/
+        //Optional<RegistryWrapper.Impl<Enchantment>> wrapper = BuiltinRegistries.createWrapperLookup().getOptionalWrapper(RegistryKeys.ENCHANTMENT);
+        /*RegistryOps<JsonElement> ops = RegistryOps.of(JsonOps.INSTANCE, new RegistryOps.RegistryInfoGetter() {
+            @Override
+            public <T> Optional<RegistryOps.RegistryInfo<T>> getRegistryInfo(RegistryKey<? extends Registry<? extends T>> registryRef) {
+                return Registries.REGISTRIES.getEntry((RegistryKey)registryRef);
+            }
+        });
+        Optional<RegistryWrapper.Impl<Enchantment>> wrapper = ops.getEntryLookup(RegistryKeys.ENCHANTMENT);*/
+        Optional<RegistryWrapper.Impl<Enchantment>> wrapper = createWrapperLookup().getOptionalWrapper(RegistryKeys.ENCHANTMENT);
+        //Optional<RegistryWrapper.Impl<Enchantment>> wrapper = MinecraftClient.getInstance().world.getRegistryManager().getOptionalWrapper(RegistryKeys.ENCHANTMENT);
         for (RegistryWrapper.Impl<Enchantment> enchantmentImpl : wrapper.stream().toList()) {
             for (RegistryEntry.Reference<Enchantment> enchantment : enchantmentImpl.streamEntries().toList()) {
                 for (int i = 1; i <= enchantment.value().getMaxLevel(); i++) {
