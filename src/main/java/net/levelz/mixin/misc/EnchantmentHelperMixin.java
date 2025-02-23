@@ -21,6 +21,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Debug(export=true)
@@ -38,7 +39,7 @@ public abstract class EnchantmentHelperMixin implements EnchantmentAccess {
         }
     }
 
-    @ModifyReturnValue(method = "getLevel", at = @At(value = "RETURN", ordinal = 1))
+    /*@ModifyReturnValue(method = "getLevel", at = @At(value = "RETURN", ordinal = 1))
     private static int inject2(int original, Enchantment enchantment, ItemStack stack, @Local NbtCompound nbtCompound) {
         if (((ItemStackAccess)(Object)(stack)).getHoldingPlayer() != null) {
             LevelManager levelManager = ((LevelManagerAccess) ((ItemStackAccess)(Object)(stack)).getHoldingPlayer()).getLevelManager();
@@ -48,6 +49,17 @@ public abstract class EnchantmentHelperMixin implements EnchantmentAccess {
             }
         }
         return original;
+    }*/
+
+    @Inject(method = "getLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getIdFromNbt(Lnet/minecraft/nbt/NbtCompound;)Lnet/minecraft/util/Identifier;"), cancellable = true)
+    private static void inject3(Enchantment enchantment, ItemStack stack, CallbackInfoReturnable<Integer> cir, @Local NbtCompound nbtCompound) {
+        if (((ItemStackAccess)(Object)(stack)).getHoldingPlayer() != null) {
+            LevelManager levelManager = ((LevelManagerAccess) ((ItemStackAccess)(Object)(stack)).getHoldingPlayer()).getLevelManager();
+            Enchantment ench = Registries.ENCHANTMENT.get(EnchantmentHelper.getEnchantmentId(enchantment));
+            if (!levelManager.hasRequiredEnchantmentLevel(Registries.ENCHANTMENT.getEntry(ench), EnchantmentHelper.getLevelFromNbt(nbtCompound))) {
+                cir.setReturnValue(0);
+            }
+        }
     }
 
     @Inject(method = "onTargetDamaged", at = @At("HEAD"), cancellable = true)
