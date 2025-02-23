@@ -92,11 +92,9 @@
         "type": "generic.follow_range",
         "operation": "ADDITION",
         "value": 1
-      }
-    ],
-    "old": [
+      },
       {
-        "type": "player.block_interaction_range",
+        "type": "attribute-backport:player.block_interaction_range",
         "operation": "ADDITION",
         "value": 0.1
       }
