@@ -128,19 +128,6 @@
     ],
     "mining": []
   },
-  "melee_12": {
-    "replace": false,
-    "skills": {
-      "melee": 12
-    },
-    "blocks": [],
-    "crafting": [],
-    "entities": [],
-    "items": [
-      "minecraft:mace"
-    ],
-    "mining": []
-  },
   "melee_15": {
     "replace": false,
     "skills": {
@@ -409,7 +396,7 @@
       "magic": 5
     },
     "enchantments": {
-      "minecraft:sweeping_edge": 1
+      "minecraft:sweeping": 1
     }
   },
   "magic_6": {
@@ -462,9 +449,7 @@
       "minecraft:frost_walker": 1,
       "minecraft:feather_falling": 1,
       "minecraft:thorns": 1,
-      "minecraft:quick_charge": 1,
-      "minecraft:density": 1,
-      "minecraft:breach": 1
+      "minecraft:quick_charge": 1
     }
   },
   "magic_10": {
@@ -475,7 +460,7 @@
     "enchantments": {
       "minecraft:aqua_affinity": 1,
       "minecraft:unbreaking": 1,
-      "minecraft:sweeping_edge": 2,
+      "minecraft:sweeping": 2,
       "minecraft:depth_strider": 1,
       "minecraft:loyalty": 1
     }
@@ -509,8 +494,7 @@
       "minecraft:lure": 2,
       "minecraft:impaling": 3,
       "minecraft:piercing": 2,
-      "minecraft:punch": 1,
-      "minecraft:density": 2
+      "minecraft:punch": 1
     }
   },
   "magic_13": {
@@ -526,8 +510,7 @@
       "minecraft:swift_sneak": 2,
       "minecraft:depth_strider": 2,
       "minecraft:protection": 2,
-      "minecraft:luck_of_the_sea": 2,
-      "minecraft:breach": 2
+      "minecraft:luck_of_the_sea": 2
     }
   },
   "magic_14": {
@@ -538,8 +521,7 @@
     "enchantments": {
       "minecraft:unbreaking": 2,
       "minecraft:thorns": 2,
-      "minecraft:power": 3,
-      "minecraft:wind_burst": 1
+      "minecraft:power": 3
     }
   },
   "magic_15": {
@@ -551,14 +533,13 @@
       "minecraft:frost_walker": 2,
       "minecraft:sharpness": 3,
       "minecraft:efficiency": 3,
-      "minecraft:sweeping_edge": 3,
+      "minecraft:sweeping": 3,
       "minecraft:fire_protection": 3,
       "minecraft:projectile_protection": 3,
       "minecraft:blast_protection": 3,
       "minecraft:loyalty": 2,
       "minecraft:riptide": 1,
-      "minecraft:quick_charge": 2,
-      "minecraft:density": 3
+      "minecraft:quick_charge": 2
     }
   },
   "magic_16": {
@@ -573,8 +554,7 @@
       "minecraft:smite": 4,
       "minecraft:depth_strider": 3,
       "minecraft:impaling": 4,
-      "minecraft:piercing": 3,
-      "minecraft:breach": 3
+      "minecraft:piercing": 3
     }
   },
   "magic_17": {
@@ -590,8 +570,7 @@
       "minecraft:soul_speed": 3,
       "minecraft:protection": 3,
       "minecraft:lure": 3,
-      "minecraft:power": 4,
-      "minecraft:wind_burst": 2
+      "minecraft:power": 4
     }
   },
   "magic_18": {
@@ -609,8 +588,7 @@
       "minecraft:luck_of_the_sea": 3,
       "minecraft:riptide": 2,
       "minecraft:flame": 1,
-      "minecraft:punch": 2,
-      "minecraft:density": 4
+      "minecraft:punch": 2
     }
   },
   "magic_19": {
@@ -625,8 +603,7 @@
       "minecraft:smite": 5,
       "minecraft:thorns": 3,
       "minecraft:impaling": 5,
-      "minecraft:piercing": 4,
-      "minecraft:breach": 4
+      "minecraft:piercing": 4
     }
   },
   "magic_20": {
@@ -645,9 +622,7 @@
       "minecraft:riptide": 3,
       "minecraft:quick_charge": 3,
       "minecraft:infinity": 1,
-      "minecraft:power": 5,
-      "minecraft:wind_burst": 3,
-      "minecraft:density": 5
+      "minecraft:power": 5
     }
   },
   "mining_1": {
@@ -825,77 +800,37 @@
       "minecraft:raw_copper_block",
       "minecraft:copper_ore",
       "minecraft:copper_block",
-      "minecraft:chiseled_copper",
-      "minecraft:copper_grate",
       "minecraft:cut_copper",
       "minecraft:cut_copper_stairs",
       "minecraft:cut_copper_slab",
-      "minecraft:copper_door",
-      "minecraft:copper_trapdoor",
-      "minecraft:copper_bulb",
       "minecraft:exposed_copper",
-      "minecraft:exposed_chiseled_copper",
-      "minecraft:exposed_copper_grate",
       "minecraft:exposed_cut_copper",
       "minecraft:exposed_cut_copper_stairs",
       "minecraft:exposed_cut_copper_slab",
-      "minecraft:exposed_copper_door",
-      "minecraft:exposed_copper_trapdoor",
-      "minecraft:exposed_copper_bulb",
       "minecraft:weathered_copper",
-      "minecraft:weathered_chiseled_copper",
-      "minecraft:weathered_copper_grate",
       "minecraft:weathered_cut_copper",
       "minecraft:weathered_cut_copper_stairs",
       "minecraft:weathered_cut_copper_slab",
-      "minecraft:weathered_copper_door",
-      "minecraft:weathered_copper_trapdoor",
-      "minecraft:weathered_copper_bulb",
       "minecraft:oxidized_copper",
-      "minecraft:oxidized_chiseled_copper",
-      "minecraft:oxidized_copper_grate",
       "minecraft:oxidized_cut_copper",
       "minecraft:oxidized_cut_copper_stairs",
       "minecraft:oxidized_cut_copper_slab",
-      "minecraft:oxidized_copper_door",
-      "minecraft:oxidized_copper_trapdoor",
-      "minecraft:oxidized_copper_bulb",
       "minecraft:waxed_copper_block",
-      "minecraft:waxed_chiseled_copper",
-      "minecraft:waxed_copper_grate",
       "minecraft:waxed_cut_copper",
       "minecraft:waxed_cut_copper_stairs",
       "minecraft:waxed_cut_copper_slab",
-      "minecraft:waxed_copper_door",
-      "minecraft:waxed_copper_trapdoor",
-      "minecraft:waxed_copper_bulb",
       "minecraft:waxed_exposed_copper",
-      "minecraft:waxed_exposed_chiseled_copper",
-      "minecraft:waxed_exposed_copper_grate",
       "minecraft:waxed_exposed_cut_copper",
       "minecraft:waxed_exposed_cut_copper_stairs",
       "minecraft:waxed_exposed_cut_copper_slab",
-      "minecraft:waxed_exposed_copper_door",
-      "minecraft:waxed_exposed_copper_trapdoor",
-      "minecraft:waxed_exposed_copper_bulb",
       "minecraft:waxed_weathered_copper",
-      "minecraft:waxed_weathered_chiseled_copper",
-      "minecraft:waxed_weathered_copper_grate",
       "minecraft:waxed_weathered_cut_copper",
       "minecraft:waxed_weathered_cut_copper_stairs",
       "minecraft:waxed_weathered_cut_copper_slab",
-      "minecraft:waxed_weathered_copper_door",
-      "minecraft:waxed_weathered_copper_trapdoor",
-      "minecraft:waxed_weathered_copper_bulb",
       "minecraft:waxed_oxidized_copper",
-      "minecraft:waxed_oxidized_chiseled_copper",
-      "minecraft:waxed_oxidized_copper_grate",
       "minecraft:waxed_oxidized_cut_copper",
       "minecraft:waxed_oxidized_cut_copper_stairs",
-      "minecraft:waxed_oxidized_cut_copper_slab",
-      "minecraft:waxed_oxidized_copper_door",
-      "minecraft:waxed_oxidized_copper_trapdoor",
-      "minecraft:waxed_oxidized_copper_bulb"
+      "minecraft:waxed_oxidized_cut_copper_slab"
     ]
   },
   "mining_7": {
@@ -1266,7 +1201,6 @@
       "smithing": 7
     },
     "blocks": [
-      "minecraft:crafter",
       "minecraft:hopper"
     ],
     "crafting": [],
