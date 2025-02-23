@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.fabricmc.loader.api.FabricLoader;
 import net.levelz.LevelzMain;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
@@ -31,7 +32,7 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
 
     @Override
     public Identifier getFabricId() {
-        return LevelzMain.identifierOf("skill");
+        return LevelzMain.identifierOf("skills");
     }
 
     @Override
@@ -101,7 +102,13 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
                         JsonObject attributeJsonObject = attributeElement.getAsJsonObject();
 
                         //TODO EntityAttribute registry keys
-                        Identifier iden = Identifier.splitOn(attributeJsonObject.get("type").getAsString(), ':');
+                        Identifier iden;
+                        if (attributeJsonObject.get("type").getAsString().contains("attribute-backport:player.block_interaction_range") && FabricLoader.getInstance().isModLoaded("reach-entity-attributes")) {
+                            System.out.println("ASEX");
+                            iden = Identifier.splitOn("reach-entity-attributes:reach", ':');
+                        }else {
+                            iden = Identifier.splitOn(attributeJsonObject.get("type").getAsString(), ':');
+                        }
                         RegistryKey<EntityAttribute> asd = RegistryKey.of(RegistryKeys.ATTRIBUTE, iden);
                         Optional<RegistryEntry.Reference<EntityAttribute>> entityAttribute = Registries.ATTRIBUTE.getEntry(asd);
 
