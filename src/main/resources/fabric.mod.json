@@ -1,0 +1,51 @@
+{
+	"schemaVersion": 1,
+	"id": "levelz",
+	"version": "${version}",
+	"name": "LevelZ",
+	"description": "Adds player levels",
+	"authors": [
+		"Sygikal",
+		"Globox_Z"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/levelz/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.levelz.LevelzMain"
+		],
+		"client": [
+			"net.levelz.LevelzClient"
+		],
+		"modmenu": [
+			"net.levelz.config.ModMenuIntegration"
+		],
+		"emi": [
+			"net.levelz.compat.LevelzEmiPlugin"
+		],
+		"rei_client": [
+			"net.levelz.compat.LevelzReiPlugin"
+		],
+		"jade": [
+			"net.levelz.waila.LevelJadePlugin"
+		]
+	},
+	"mixins": [
+		"levelz.mixins.json"
+	],
+	"accessWidener": "levelz.accesswidener",
+	"depends": {
+		"fabricloader": ">=0.16.10",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

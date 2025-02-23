@@ -1,0 +1,12 @@
+{
+  "alchemy": {
+    "replace": false,
+    "id": 12,
+    "key": "alchemy",
+    "level": 20,
+    "attributes": [
+    ],
+    "bonus": [
+    ]
+  }
+}

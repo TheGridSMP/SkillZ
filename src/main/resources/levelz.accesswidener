@@ -1,0 +1,6 @@
+accessWidener v2 named
+
+accessible field net/minecraft/server/network/EntityTrackerEntry trackedPos Lnet/minecraft/entity/TrackedPosition;
+accessible field net/minecraft/entity/TrackedPosition pos Lnet/minecraft/util/math/Vec3d;
+accessible class net/minecraft/enchantment/EnchantmentHelper$Consumer
+accessible method net/minecraft/entity/vehicle/AbstractMinecartEntity getItem ()Lnet/minecraft/item/Item;
