@@ -36,11 +36,9 @@
         "type": "generic.attack_knockback",
         "operation": "ADDITION",
         "value": 0.05
-      }
-    ],
-    "oldattr": [
+      },
       {
-        "type": "player.sweeping_damage_ratio",
+        "type": "attribute-backport:player.sweeping_damage_ratio",
         "base": 0,
         "operation": "ADDITION",
         "value": 0.03
@@ -130,28 +128,26 @@
         "base": 0.09,
         "operation": "ADDITION",
         "value": 0.001
-      }
-    ],
-    "old": [
+      },
       {
-        "type": "player.sneaking_speed",
+        "type": "attribute-backport:player.sneaking_speed",
         "base": 0.2,
         "operation": "ADDITION",
         "value": 0.01
       },
       {
         "id": 4,
-        "type": "generic.oxygen_bonus",
+        "type": "attribute-backport:generic.oxygen_bonus",
         "operation": "ADDITION",
         "value": 0.2
       },
       {
-        "type": "player.submerged_mining_speed",
+        "type": "attribute-backport:player.submerged_mining_speed",
         "operation": "ADDITION",
         "value": 0.04
       },
       {
-        "type": "generic.water_movement_efficiency",
+        "type": "attribute-backport:generic.water_movement_efficiency",
         "operation": "ADDITION",
         "value": 0.02
       }
@@ -197,17 +193,16 @@
     "id": 6,
     "key": "mining",
     "level": 20,
-    "attributes": [],
-    "old": [
+    "attributes": [
       {
-        "type": "player.block_break_speed",
+        "type": "attribute-backport:player.block_break_speed",
         "base": 0.5,
         "operation": "ADDITION",
         "value": 0.05
       },
       {
         "id": 5,
-        "type": "player.mining_efficiency",
+        "type": "attribute-backport:player.mining_efficiency",
         "base": 0,
         "operation": "ADDITION",
         "value": 0.05
@@ -225,15 +220,14 @@
     "id": 7,
     "key": "smithing",
     "level": 20,
-    "attributes": [],
-    "old": [
+    "attributes": [
       {
-        "type": "generic.burning_time",
+        "type": "attribute-backport:generic.burning_time",
         "operation": "ADDITION",
         "value": -0.05
       },
       {
-        "type": "generic.explosion_knockback_resistance",
+        "type": "attribute-backport:generic.explosion_knockback_resistance",
         "operation": "ADDITION",
         "value": 0.05
       }
@@ -315,7 +309,7 @@
     "level": 20,
     "attributes": [
       {
-        "id": 4,
+        "id": 6,
         "type": "generic.luck",
         "base": -1,
         "operation": "ADDITION",
