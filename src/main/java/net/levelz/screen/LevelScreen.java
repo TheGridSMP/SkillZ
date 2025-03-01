@@ -12,8 +12,10 @@ import net.levelz.init.KeyInit;
 import net.levelz.level.LevelManager;
 import net.levelz.level.Skill;
 import net.levelz.level.SkillAttribute;
+import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.network.packet.AttributeSyncPacket;
 import net.levelz.network.packet.StatPacket;
+import net.levelz.screen.widget.BookWidget;
 import net.libz.api.Tab;
 import net.libz.util.DrawTabHelper;
 import net.minecraft.client.MinecraftClient;
@@ -24,13 +26,17 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class LevelScreen extends Screen implements Tab {
@@ -64,6 +70,7 @@ public class LevelScreen extends Screen implements Tab {
     protected void init() {
         super.init();
         ClientPlayNetworking.send(new AttributeSyncPacket());
+        this.attributes.clear();
 
         this.x = (this.width - this.backgroundWidth) / 2;
         this.y = (this.height - this.backgroundHeight) / 2;
@@ -192,7 +199,7 @@ public class LevelScreen extends Screen implements Tab {
             context.drawText(this.textRenderer, skillPointText, this.x + 62, this.y + 54, 0x3F3F3F, false);
 
             // Experience bar
-            context.drawTexture(ICON_TEXTURE, this.x + 62, this.y + 21, 0, 100, 131, 5);
+            //context.drawTexture(ICON_TEXTURE, this.x + 62, this.y + 21, 0, 100, 131, 5);
 
             int nextLevelExperience = this.levelManager.getNextLevelExperience();
             float levelProgress = this.levelManager.getLevelProgress();
@@ -224,7 +231,18 @@ public class LevelScreen extends Screen implements Tab {
             } else {
                 context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 45, 45, 80, 15, 13);
             }
+            //RED
+            //new Color(255, 100, 50)
+            //GREEN
+            //new Color(127, 255, 127)
+            //YELLOW
+            //new Color(246, 255, 127)
+            //BROWN
+            //new Color(255, 206, 127)
+            BookWidget book = new BookWidget(Text.translatable("restriction.levelz.mining"), new Color(255, 206, 127));
+            book.draw(this.textRenderer, context, mouseX, mouseY, this.x + 178, this.y + 65);
         }
+
 
         if (this.clientPlayerEntity != null) {
             //InventoryScreen.drawEntity(context, this.x + 33, this.y + 43, 30, this.quaternionf, null, this.clientPlayerEntity);
@@ -294,6 +312,7 @@ public class LevelScreen extends Screen implements Tab {
         if (!LevelManager.MINING_RESTRICTIONS.isEmpty() && isPointWithinBounds(this.x + 178, this.y + 45, 14, 13, mouseX, mouseY)) {
             this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             this.client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.MINING_RESTRICTIONS, Text.translatable("restriction.levelz.mining"), 1));
+            LevelManager.BLOCK_RESTRICTIONS.forEach((integer, playerRestriction) -> System.out.println(Registries.BLOCK.get(playerRestriction.getId())));
             return true;
         }
         /*if (this.clientPlayerEntity != null) {

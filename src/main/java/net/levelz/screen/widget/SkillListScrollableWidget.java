@@ -7,6 +7,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.levelz.data.LevelLists;
 import net.levelz.screen.SkillInfoScreen;
+import net.levelz.util.DrawUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -114,7 +115,8 @@ public class SkillListScrollableWidget extends ScrollableWidget {
                 if (stack != null) {
                     context.drawItem(stack, gridXSpace, this.ySpace);
 
-                    if (!tooltip.isEmpty() && this.isPointWithinBounds(gridXSpace - this.getX(), this.ySpace - this.getY() - (int) this.getScrollY(), 16, 16, mouseX, mouseY)) {
+                    //if (!tooltip.isEmpty() && this.isPointWithinBounds(gridXSpace - this.getX(), this.ySpace - this.getY() - (int) this.getScrollY(), 16, 16, mouseX, mouseY)) {
+                    if (!tooltip.isEmpty() && DrawUtil.isPointWithinBounds(gridXSpace - this.getX(), this.ySpace - this.getY() - (int) this.getScrollY(), 16, 16, mouseX -= this.getX(), mouseY -= this.getY())) {
                         context.disableScissor();
                         context.getMatrices().push();
                         context.getMatrices().translate(0.0, this.getScrollY(), 0.0);
