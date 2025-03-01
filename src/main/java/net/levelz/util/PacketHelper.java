@@ -79,7 +79,6 @@ public class PacketHelper {
         List<Integer> levels = new ArrayList<>();
         System.out.println(EnchantmentRegistry.ENCHANTMENTS);
         for (Map.Entry<Integer, EnchantmentZ> entry : EnchantmentRegistry.ENCHANTMENTS.entrySet()) {
-            System.out.println("Server joined");
             keys.add(entry.getKey());
             ids.add(LevelzMain.getEnchantmentIdAsString(entry.getValue().getEntry()));
             levels.add(entry.getValue().getLevel());
