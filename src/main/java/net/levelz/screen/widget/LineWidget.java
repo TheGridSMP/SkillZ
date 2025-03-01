@@ -142,7 +142,7 @@ public class LineWidget {
                     tooltipTitle = Enchantment.getName(enchantment, level);*/
                     drawContext.drawItem(stack, x + separator, y);
                 }
-                if (!showTooltip && LevelScreen.isPointWithinBounds(x + separator, y, 16, 16, mouseX, mouseY)) {
+                if (!showTooltip && DrawUtil.isPointWithinBounds(x + separator, y, 16, 16, mouseX, mouseY)) {
                     List<Text> tooltip = new ArrayList<>();
                     tooltip.add(tooltipTitle);
                     for (Map.Entry<Integer, Integer> restriction : entry.getValue().getSkillLevelRestrictions().entrySet()) {

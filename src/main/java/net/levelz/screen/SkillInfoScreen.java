@@ -10,6 +10,7 @@ import net.levelz.level.Skill;
 import net.levelz.level.SkillBonus;
 import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.screen.widget.LineWidget;
+import net.levelz.util.DrawUtil;
 import net.libz.api.Tab;
 import net.libz.util.DrawTabHelper;
 import net.minecraft.client.gui.DrawContext;
@@ -208,7 +209,7 @@ public class SkillInfoScreen extends Screen implements Tab {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double verticalAmount) {
-        if (this.lines.size() > 10 && LevelScreen.isPointWithinBounds(this.x + 7, this.y + 19, 186, 189, mouseX, mouseY)) {
+        if (this.lines.size() > 10 && DrawUtil.isPointWithinBounds(this.x + 7, this.y + 19, 186, 189, mouseX, mouseY)) {
             int maxRow = this.lines.size() - 10;
             int newRow = this.lineIndex;
             newRow = newRow - (int) (verticalAmount);
