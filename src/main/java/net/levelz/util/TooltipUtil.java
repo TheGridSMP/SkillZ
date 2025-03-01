@@ -71,15 +71,17 @@ public class TooltipUtil {
                     lines.add(Text.translatable("restriction.levelz.usable.tooltip"));
                     for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
                         if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
-                            lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
+                            lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
                         }
                     }
                 }*/
 
-                lines.add(Text.translatable("restriction.levelz.usable.tooltip"));
-                for (Map.Entry<Integer, Integer> entry : levelManager.getRequiredItemLevel(stack.getItem()).entrySet()) {
-                    if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
-                        lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
+                if (LevelManager.ITEM_RESTRICTIONS.containsKey(itemId)) {
+                    lines.add(Text.translatable("restriction.levelz.usable.tooltip"));
+                    for (Map.Entry<Integer, Integer> entry : levelManager.getRequiredItemLevel(stack.getItem()).entrySet()) {
+                        if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
+                            lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
+                        }
                     }
                 }
             }
