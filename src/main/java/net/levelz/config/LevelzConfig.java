@@ -389,8 +389,13 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     @ConfigEntry.Category("gui_settings")
     @Comment("Hide reached levels in tooltips")
     public boolean hideReachedLevels = true;
-    @Comment("Highlight locked blocks in red.")
-    public boolean highlightLocked = false;
+
+    @ConfigSync.ClientOnly
+    @ConfigEntry.Category("gui_settings")
+    @Comment("How locked blocks should highlight")
+    public BlockHighlightOption highlightOption = BlockHighlightOption.NORMAL;
+
+
     @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
     public boolean inventorySkillLevel = true;
@@ -435,6 +440,12 @@ public class LevelzConfig implements ConfigData, ConfigSync {
     @Override
     public void updateConfig(ConfigData data) {
         ConfigInit.CONFIG = (LevelzConfig) data;
+    }
+
+    public enum BlockHighlightOption {
+        NORMAL,
+        RED,
+        NONE;
     }
 
 }

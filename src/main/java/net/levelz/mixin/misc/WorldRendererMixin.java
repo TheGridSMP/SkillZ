@@ -3,6 +3,7 @@ package net.levelz.mixin.misc;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.levelz.access.LevelManagerAccess;
+import net.levelz.config.LevelzConfig;
 import net.levelz.init.ConfigInit;
 import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.BlockState;
@@ -59,10 +60,17 @@ public abstract class WorldRendererMixin {
     @Inject(method = "drawBlockOutline", at = @At(value = "HEAD"), cancellable = true)
     private void drawBlockOutlineMixin(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos blockPos, BlockState blockState,
                                        CallbackInfo info) {
-        if (ConfigInit.CONFIG.highlightLocked && (!((LevelManagerAccess) client.player).getLevelManager().hasRequiredMiningLevel(blockState.getBlock()) || !((LevelManagerAccess) client.player).getLevelManager().hasRequiredBlockLevel(blockState.getBlock()))) {
-            WorldRenderer.drawShapeOutline(matrices, vertexConsumer, blockState.getOutlineShape(this.world, blockPos, ShapeContext.of(entity)), (double) blockPos.getX() - cameraX,
-                    (double) blockPos.getY() - cameraY, (double) blockPos.getZ() - cameraZ, 1.0F, 0.0F, 0.0F, 0.4F, false);
-            info.cancel();
+        if ((!((LevelManagerAccess) client.player).getLevelManager().hasRequiredMiningLevel(blockState.getBlock()) || !((LevelManagerAccess) client.player).getLevelManager().hasRequiredBlockLevel(blockState.getBlock()))) {
+            switch (ConfigInit.CONFIG.highlightOption) {
+                case RED:
+                    WorldRenderer.drawShapeOutline(matrices, vertexConsumer, blockState.getOutlineShape(this.world, blockPos, ShapeContext.of(entity)), (double) blockPos.getX() - cameraX,
+                            (double) blockPos.getY() - cameraY, (double) blockPos.getZ() - cameraZ, 1.0F, 0.0F, 0.0F, 0.4F, false);
+                    info.cancel();
+                    break;
+                case NONE:
+                    info.cancel();
+                    break;
+            }
         }
     }
 }
