@@ -387,6 +387,8 @@ public class LevelzConfig implements ConfigData, ConfigSync {
 
     @ConfigSync.ClientOnly
     @ConfigEntry.Category("gui_settings")
+    @Comment("Hide reached levels in tooltips")
+    public boolean hideReachedLevels = true;
     @Comment("Highlight locked blocks in red.")
     public boolean highlightLocked = false;
     @ConfigSync.ClientOnly

@@ -6,9 +6,11 @@ import java.util.Map;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.levelz.access.LevelManagerAccess;
+import net.levelz.config.LevelzConfig;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
 import net.levelz.level.restriction.PlayerRestriction;
+import net.levelz.registry.EnchantmentRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -37,7 +39,8 @@ public class TooltipUtil {
     public static void renderItemTooltip(MinecraftClient client, ItemStack stack, List<Text> lines) {
         if (client.player != null) {
             LevelManager levelManager = ((LevelManagerAccess) client.player).getLevelManager();
-            boolean isCreative = client.player.isCreative(); // Add all lines, not only the missing ones
+            boolean isCreative = client.player.isCreative() || !ConfigInit.CONFIG.hideReachedLevels; // Add all lines, not only the missing ones
+            Formatting format = Formatting.GRAY;
 
             if (stack.getItem() instanceof BlockItem blockItem) {
                 int blockId = Registries.BLOCK.getRawId(blockItem.getBlock());
@@ -46,8 +49,9 @@ public class TooltipUtil {
                         PlayerRestriction playerRestriction = LevelManager.BLOCK_RESTRICTIONS.get(blockId);
                         lines.add(Text.translatable("restriction.levelz.usable.tooltip"));
                         for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
-                            if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
-                                lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
+                            boolean noHasLevel = levelManager.getSkillLevel(entry.getKey()) < entry.getValue();
+                            if (isCreative || noHasLevel) {
+                                lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CONFIG.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GREEN));
                             }
                         }
                     }
@@ -57,8 +61,9 @@ public class TooltipUtil {
                         PlayerRestriction playerRestriction = LevelManager.MINING_RESTRICTIONS.get(blockId);
                         lines.add(Text.translatable("restriction.levelz.mineable.tooltip"));
                         for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
-                            if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
-                                lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
+                            boolean noHasLevel = levelManager.getSkillLevel(entry.getKey()) < entry.getValue();
+                            if (isCreative || noHasLevel) {
+                                lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CONFIG.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GREEN));
                             }
                         }
                     }
@@ -79,8 +84,9 @@ public class TooltipUtil {
                 if (LevelManager.ITEM_RESTRICTIONS.containsKey(itemId)) {
                     lines.add(Text.translatable("restriction.levelz.usable.tooltip"));
                     for (Map.Entry<Integer, Integer> entry : levelManager.getRequiredItemLevel(stack.getItem()).entrySet()) {
-                        if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
-                            lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
+                        boolean noHasLevel = levelManager.getSkillLevel(entry.getKey()) < entry.getValue();
+                        if (isCreative || noHasLevel) {
+                            lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CONFIG.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GREEN));
                         }
                     }
                 }
@@ -90,8 +96,9 @@ public class TooltipUtil {
                     PlayerRestriction playerRestriction = LevelManager.CRAFTING_RESTRICTIONS.get(itemId);
                     lines.add(Text.translatable("restriction.levelz.craftable.tooltip"));
                     for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
-                        if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
-                            lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
+                        boolean noHasLevel = levelManager.getSkillLevel(entry.getKey()) < entry.getValue();
+                        if (isCreative || noHasLevel) {
+                            lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CONFIG.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GREEN));
                         }
                     }
                 }
@@ -108,8 +115,8 @@ public class TooltipUtil {
                             MutableText asd = Text.literal("");
                             int count = 0;
                             if (isCreative || !levelManager.hasRequiredEnchantmentLevel(Registries.ENCHANTMENT.getEntry(enchantment), enchantments.get(enchantment))) {
-                                /*int enchantmentId = EnchantmentRegistry.getId(Registries.ENCHANTMENT.getEntry(enchantment), enchantments.get(enchantment));
-                                if (LevelManager.ENCHANTMENT_RESTRICTIONS.containsKey(enchantmentId)) {
+                                int enchantmentId = EnchantmentRegistry.getId(Registries.ENCHANTMENT.getEntry(enchantment), enchantments.get(enchantment));
+                                /*if (LevelManager.ENCHANTMENT_RESTRICTIONS.containsKey(enchantmentId)) {
                                     PlayerRestriction playerRestriction = LevelManager.ENCHANTMENT_RESTRICTIONS.get(enchantmentId);
                                     for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
                                         if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
@@ -123,16 +130,19 @@ public class TooltipUtil {
                                         }
                                     }
                                 }*/
-                                Map<Integer, Integer> map = levelManager.getRequiredEnchantmentLevel(Registries.ENCHANTMENT.getEntry(enchantment), enchantments.get(enchantment));
-                                for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-                                    if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
-                                        //lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
-                                        asd.append(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
-                                        if ((map.size() - count) > 1) {
-                                            asd.append(Text.literal(",").formatted(Formatting.RED)).append(ScreenTexts.SPACE);
+                                if (LevelManager.ENCHANTMENT_RESTRICTIONS.containsKey(enchantmentId)) {
+                                    Map<Integer, Integer> map = levelManager.getRequiredEnchantmentLevel(Registries.ENCHANTMENT.getEntry(enchantment), enchantments.get(enchantment));
+                                    for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+                                        boolean noHasLevel = levelManager.getSkillLevel(entry.getKey()) < entry.getValue();
+                                        if (isCreative || noHasLevel) {
+                                            //lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
+                                            asd.append(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CONFIG.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GRAY));
+                                            if ((map.size() - count) > 1) {
+                                                asd.append(Text.literal(",").formatted(Formatting.GRAY)).append(ScreenTexts.SPACE);
+                                            }
+                                            changed = true;
+                                            count++;
                                         }
-                                        changed = true;
-                                        count++;
                                     }
                                 }
                             }
@@ -146,8 +156,8 @@ public class TooltipUtil {
                             tooltip.add(tooltip.indexOf(line) + 1, descriptionText);*/
                             //lines.add(lines.indexOf(line) + 1, Text.of("asd"));
                             if (changed) {
-                                lines.set(lines.indexOf(line), line.copy().append(ScreenTexts.SPACE).append(Text.literal("(").formatted(Formatting.RED))
-                                        .append(asd).append(Text.literal(")").formatted(Formatting.RED)));
+                                lines.set(lines.indexOf(line), line.copy().append(ScreenTexts.SPACE).append(Text.literal("(").formatted(Formatting.GRAY))
+                                        .append(asd).append(Text.literal(")").formatted(Formatting.GRAY)));
                             }
                             //lines.get(lines.indexOf(line)).copy().append(ScreenTexts.SPACE).append(Text.literal("(help 1)").formatted(Formatting.RED));
                             break;
