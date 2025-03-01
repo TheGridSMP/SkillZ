@@ -121,7 +121,7 @@ public class SkillInfoScreen extends Screen implements Tab {
             this.lines.add(new LineWidget(this.client, restrictionText, null, 0));
         }
         for (Map.Entry<Integer, Map<Integer, PlayerRestriction>> restrictions : map.entrySet()) {
-            this.lines.add(new LineWidget(this.client, Text.translatable("text.levelz.gui.short_level", restrictions.getKey()), null, 0));
+            this.lines.add(new LineWidget(this.client, Text.translatable("text.levelz.gui.short_level", restrictions.getKey()), null, code));
 
             if (restrictions.getValue().size() > 9) {
                 Map<Integer, PlayerRestriction> newMap = new TreeMap<>();
@@ -175,7 +175,11 @@ public class SkillInfoScreen extends Screen implements Tab {
             }
             int index = this.lineIndex + i;
 
-            this.lines.get(index).render(context, this.x + 12, this.y + 24 + i * 18, mouseX, mouseY);
+            if (this.lines.get(index).code == 2) {
+                this.lines.get(index).render(context, this.x + 12, this.y + 24 + i * 18, mouseX, mouseY);
+            }else {
+                this.lines.get(index).render(context, this.x + 12, this.y + 24 + i * 18, mouseX, mouseY);
+            }
         }
     }
 
