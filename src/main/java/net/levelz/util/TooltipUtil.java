@@ -165,24 +165,6 @@ public class TooltipUtil {
                     }
                 }
             }
-            /*if (stack.hasEnchantments()) {
-                System.out.println(stack.getEnchantments());
-                lines.
-                /*if (isCreative || !levelManager.hasRequiredEnchantmentLevel(stack.getItem())) {
-                    if (LevelManager.CRAFTING_RESTRICTIONS.containsKey(itemId)) {
-                        PlayerRestriction playerRestriction = LevelManager.CRAFTING_RESTRICTIONS.get(itemId);
-                        lines.add(Text.translatable("restriction.levelz.craftable.tooltip"));
-                        for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
-                            if (isCreative || levelManager.getSkillLevel(entry.getKey()) < entry.getValue()) {
-                                lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
-                            }
-                        }
-                    }
-                }
-            }*/
-            if (stack.getItem() instanceof EnchantedBookItem enchantedBookItem) {
-                //System.out.println(EnchantedBookItem.getEnchantmentNbt(stack));
-            }
             if (stack.getItem() instanceof SpawnEggItem spawnEggItem) {
                 if (isCreative || !levelManager.hasRequiredEntityLevel(spawnEggItem.getEntityType(stack.getNbt()))) {
                     int entityId = Registries.ENTITY_TYPE.getRawId(spawnEggItem.getEntityType(stack.getNbt()));
