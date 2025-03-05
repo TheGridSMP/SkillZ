@@ -64,8 +64,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
     //Updated
     @ModifyVariable(method = "attack", at = @At(value = "STORE", ordinal = 0), ordinal = 1)
     private boolean attackKnockbackChanceMixin(boolean original) {
-        System.out.println(original);
-        if (!original && BonusHelper.meleeKnockbackAttackChanceBonus(this.playerEntity)) {
+        if (!original && BonusHelper.doBooleanBonus("meleeKnockbackAttackChance", this.playerEntity, ConfigInit.MAIN.BONUSES.meleeKnockbackAttackChanceBonus)) {
             return true;
         }
         return original;
@@ -73,7 +72,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
 
     @ModifyVariable(method = "attack", at = @At(value = "STORE", ordinal = 1), ordinal = 2)
     private boolean attackCriticalChanceMixin(boolean original) {
-        if (!original && BonusHelper.meleeCriticalAttackChanceBonus(this.playerEntity)) {
+        if (!original && BonusHelper.doBooleanBonus("meleeCriticalAttackChance", this.playerEntity, ConfigInit.MAIN.BONUSES.meleeCriticalAttackChanceBonus)) {
             return true;
         }
         return original;
@@ -165,12 +164,12 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
 
     @Override
     public boolean allowMobDrop() {
-        return killedMobsInChunk < ConfigInit.CONFIG.mobKillCount;
+        return killedMobsInChunk < ConfigInit.MAIN.LEVEL.mobKillCount;
     }
 
     @Override
     protected void dropXp() {
-        if (this.playerEntity.getWorld() instanceof ServerWorld serverWorld && this.shouldDropXp() && this.getWorld().getGameRules().getBoolean(GameRules.DO_MOB_LOOT) && ConfigInit.CONFIG.resetCurrentXp) {
+        if (this.playerEntity.getWorld() instanceof ServerWorld serverWorld && this.shouldDropXp() && this.getWorld().getGameRules().getBoolean(GameRules.DO_MOB_LOOT) && ConfigInit.MAIN.EXPERIENCE.resetCurrentXp) {
             LevelExperienceOrbEntity.spawn(serverWorld, this.getPos(), (int) (this.levelManager.getLevelProgress() * this.levelManager.getNextLevelExperience()));
         }
         super.dropXp();

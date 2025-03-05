@@ -50,7 +50,16 @@ public abstract class AnimalEntityMixin extends PassiveEntity {
         }*/
         //TODO breedTwinChanceBonus
         if (getLovingPlayer() != null || other.getLovingPlayer() != null) {
-            BonusHelper.breedTwinChanceBonus(world, getLovingPlayer() != null ? getLovingPlayer() : other.getLovingPlayer(), passiveEntity, other);
+            //BonusHelper.breedTwinChanceBonus(world, getLovingPlayer() != null ? getLovingPlayer() : other.getLovingPlayer(), passiveEntity, other);
+            PlayerEntity playerEntity = getLovingPlayer() != null ? getLovingPlayer() : other.getLovingPlayer();
+            BonusHelper.doRunnableBonus("breedTwinChance", playerEntity, (level) -> {
+                if (playerEntity.getRandom().nextFloat() <= ConfigInit.MAIN.BONUSES.twinBreedChanceBonus) {
+                    PassiveEntity extraPassiveEntity = passiveEntity.createChild(world, other);
+                    extraPassiveEntity.setBaby(true);
+                    extraPassiveEntity.refreshPositionAndAngles(passiveEntity.getX(), passiveEntity.getY(), passiveEntity.getZ(), playerEntity.getRandom().nextFloat() * 360F, 0.0F);
+                    world.spawnEntityAndPassengers(extraPassiveEntity);
+                }
+            });
         }
     }
 

@@ -2,16 +2,12 @@ package net.levelz.mixin.player;
 
 import net.levelz.util.BonusHelper;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
-import net.levelz.stats.PlayerStatsManager;
-import net.levelz.stats.Skill;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -38,7 +34,9 @@ public class HungerManagerMixin {
 
     @Inject(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;heal(F)V", ordinal = 1))
     private void updateStaminaMixin(PlayerEntity player, CallbackInfo info) {
-        BonusHelper.healthRegenBonus(player);
+        BonusHelper.doRunnableBonus("healthRegen", player, (level) -> {
+            player.heal(level * ConfigInit.MAIN.BONUSES.healthRegenBonus);
+        });
     }
 
     @Inject(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V", shift = Shift.AFTER, ordinal = 0))
