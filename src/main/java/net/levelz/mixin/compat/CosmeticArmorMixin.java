@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 //import io.github.apace100.cosmetic_armor.CosmeticArmor;
 import net.fabricmc.fabric.api.util.TriState;
 import net.levelz.data.LevelLists;
-import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;

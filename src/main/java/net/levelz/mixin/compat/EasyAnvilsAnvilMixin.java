@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.levelz.data.LevelLists;
-import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,10 +25,10 @@ public class EasyAnvilsAnvilMixin {
     @Inject(method = "onUse", at = @At("HEAD"), cancellable = true)
     private void onUseMixin(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
         ArrayList<Object> levelList = LevelLists.anvilList;
-        if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
+        //if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
             player.sendMessage(Text.translatable("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
             info.setReturnValue(ActionResult.FAIL);
-        }
+        //}
     }
 
 }

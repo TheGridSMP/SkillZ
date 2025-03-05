@@ -1,20 +1,12 @@
 package net.levelz.mixin.block;
 
-import java.util.List;
-
 import net.levelz.util.BonusHelper;
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.init.ConfigInit;
-import net.levelz.init.TagInit;
-import net.levelz.stats.Skill;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PlantBlock;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 

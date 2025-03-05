@@ -1,22 +1,11 @@
 package net.levelz.mixin.entity;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.data.LevelLists;
-import net.levelz.entity.LevelExperienceOrbEntity;
-import net.levelz.init.ConfigInit;
-import net.levelz.stats.PlayerStatsManager;
-import net.levelz.stats.Skill;
-
 import net.levelz.util.BonusHelper;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -27,10 +16,6 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
 import net.minecraft.village.TradeOffer;
 import net.minecraft.world.World;
 

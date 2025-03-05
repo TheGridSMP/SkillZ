@@ -12,7 +12,6 @@ import draylar.magna.api.BlockFinder;
 import draylar.magna.api.BlockProcessor;
 import draylar.magna.api.BreakValidator;*/
 import net.levelz.data.LevelLists;
-import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

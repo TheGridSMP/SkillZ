@@ -2,9 +2,7 @@ package net.levelz;
 
 import net.fabricmc.api.ModInitializer;
 import net.levelz.init.*;
-import net.levelz.level.SkillAttribute;
 import net.levelz.network.LevelServerPacket;
-import net.levelz.network.PlayerStatsServerPacket;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.registry.entry.RegistryEntry;

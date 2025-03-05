@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 //import net.dualwielding.util.DualWieldingOffhandAttack;
 import net.levelz.data.LevelLists;
-import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.AxeItem;

@@ -1,23 +1,15 @@
 package net.levelz.mixin.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import net.levelz.access.LevelManagerAccess;
-import net.levelz.level.LevelManager;
-import net.levelz.level.SkillBonus;
 import net.levelz.util.BonusHelper;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.init.ConfigInit;
-import net.levelz.stats.Skill;
+
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PotionItem;
 import net.minecraft.world.World;

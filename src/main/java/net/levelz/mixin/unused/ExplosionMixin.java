@@ -1,4 +1,4 @@
-package net.levelz.mixin.misc;
+package net.levelz.mixin.unused;
 
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.At.Shift;
 
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -34,9 +33,9 @@ public class ExplosionMixin {
     private BlockState affectWorldMixin(BlockState original) {
         if (this.entity != null) {
             if (this.entity instanceof TntEntity && ((TntEntity) this.entity).getOwner() != null && ((TntEntity) this.entity).getOwner() instanceof PlayerEntity) {
-                if (PlayerStatsManager.listContainsItemOrBlock((PlayerEntity) ((TntEntity) this.entity).getOwner(), Registries.BLOCK.getRawId(original.getBlock()), 1)) {
+//                if (PlayerStatsManager.listContainsItemOrBlock((PlayerEntity) ((TntEntity) this.entity).getOwner(), Registries.BLOCK.getRawId(original.getBlock()), 1)) {
                     return Blocks.AIR.getDefaultState();
-                }
+//                }
             }
         }
         return original;

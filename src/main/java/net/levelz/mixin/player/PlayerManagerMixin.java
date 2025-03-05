@@ -1,39 +1,23 @@
 package net.levelz.mixin.player;
 
 import net.levelz.access.LevelManagerAccess;
-import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.init.ConfigInit;
-import net.levelz.init.CriteriaInit;
 import net.levelz.level.LevelManager;
-import net.levelz.network.PlayerStatsServerPacket;
-import net.levelz.stats.PlayerStatsManager;
-import net.levelz.stats.Skill;
 import net.levelz.util.PacketHelper;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.scoreboard.ScoreboardPlayerScore;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.UserCache;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameRules;
 
 import net.minecraft.world.World;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import java.util.Optional;
 
 import com.mojang.authlib.GameProfile;
 
@@ -99,9 +83,9 @@ public class PlayerManagerMixin {
     @Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getBossBarManager()Lnet/minecraft/entity/boss/BossBarManager;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void onPlayerConnectMixin(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info, GameProfile gameProfile, UserCache userCache, String string, NbtCompound optional, RegistryKey<World> registryKey, ServerWorld serverWorld, ServerWorld serverWorld2) {
         if (optional != null && optional.isEmpty()) {
-            if (ConfigInit.CONFIG.startPoints > 0) {
+            if (ConfigInit.MAIN.LEVEL.startPoints > 0) {
                 LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
-                levelManager.setSkillPoints(ConfigInit.CONFIG.startPoints);
+                levelManager.setSkillPoints(ConfigInit.MAIN.LEVEL.startPoints);
                 PacketHelper.updateLevels(player);
             }
 

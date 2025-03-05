@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import dev.emi.trinkets.api.TrinketItem;
 import net.levelz.data.LevelLists;
-import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
@@ -26,25 +25,25 @@ public class TrinketItemMixin {
         ArrayList<Object> levelList = LevelLists.customItemList;
         if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(stack.getItem()).toString())) {
             String string = Registries.ITEM.getId(stack.getItem()).toString();
-            if (!PlayerStatsManager.playerLevelisHighEnough(user, LevelLists.customItemList, string, true)) {
+//            if (!PlayerStatsManager.playerLevelisHighEnough(user, LevelLists.customItemList, string, true)) {
                 user.sendMessage(Text.translatable("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
                         true);
                 info.setReturnValue(false);
-            }
+//            }
         } else if (stack.getItem() instanceof ArmorItem armorItem) {
             levelList = LevelLists.armorList;
             String string = armorItem.getMaterial().getName().toLowerCase();
-            if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, string, true)) {
+//            if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, string, true)) {
                 user.sendMessage(Text.translatable("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
                         true);
                 info.setReturnValue(false);
-            }
+//            }
         } else {
             levelList = LevelLists.elytraList;
-            if (stack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(user, levelList, null, true)) {
+//            if (stack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(user, levelList, null, true)) {
                 user.sendMessage(Text.translatable("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
                 info.setReturnValue(false);
-            }
+//            }
         }
     }
 }

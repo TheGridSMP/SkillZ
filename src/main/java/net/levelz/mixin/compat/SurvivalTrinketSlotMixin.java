@@ -15,7 +15,6 @@ import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketInventory;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.levelz.data.LevelLists;
-import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
@@ -42,20 +41,20 @@ public class SurvivalTrinketSlotMixin {
             ArrayList<Object> levelList = LevelLists.customItemList;
             if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(stack.getItem()).toString())) {
                 String string = Registries.ITEM.getId(stack.getItem()).toString();
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, string, true)) {
+                //if (!PlayerStatsManager.playerLevelisHighEnough(player, LevelLists.customItemList, string, true)) {
                     info.setReturnValue(false);
-                }
+                //}
             } else if (stack.getItem() instanceof ArmorItem armorItem) {
                 levelList = LevelLists.armorList;
                 String string = armorItem.getMaterial().getName().toLowerCase();
-                if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, true)) {
+                //if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, true)) {
                     info.setReturnValue(false);
-                }
+                //}
             } else {
                 levelList = LevelLists.elytraList;
-                if (stack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
+                //if (stack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
                     info.setReturnValue(false);
-                }
+                //}
             }
         }
     }

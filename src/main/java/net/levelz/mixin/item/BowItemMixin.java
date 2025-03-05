@@ -1,35 +1,18 @@
 package net.levelz.mixin.item;
 
-import java.util.ArrayList;
-
-import net.levelz.access.LevelManagerAccess;
-import net.levelz.level.LevelManager;
-import net.levelz.level.SkillBonus;
 import net.levelz.util.BonusHelper;
-import net.minecraft.entity.projectile.ProjectileEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.data.LevelLists;
-import net.levelz.init.ConfigInit;
-import net.levelz.stats.PlayerStatsManager;
-import net.levelz.stats.Skill;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ArrowItem;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
 @Mixin(BowItem.class)

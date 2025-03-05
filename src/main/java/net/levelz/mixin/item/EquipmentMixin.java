@@ -11,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.levelz.data.LevelLists;
-import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
@@ -63,7 +62,7 @@ public interface EquipmentMixin {
         }
         LevelManager levelManager = ((LevelManagerAccess) user).getLevelManager();
         if (!levelManager.hasRequiredItemLevel(itemStack.getItem())) {
-            user.sendMessage(Text.translatable("item.levelz.locked.tooltip").formatted(Formatting.RED), true);
+            user.sendMessage(Text.translatable("restriction.levelz.locked.tooltip").formatted(Formatting.RED), true);
             info.setReturnValue(TypedActionResult.fail(itemStack));
         }
     }
