@@ -6,18 +6,21 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.levelz.LevelzMain;
+import net.levelz.access.LevelManagerAccess;
 import net.levelz.entity.render.LevelExperienceOrbEntityRenderer;
+import net.levelz.level.LevelManager;
 import net.levelz.screen.SkillInfoScreen;
 import net.levelz.screen.SkillRestrictionScreen;
 import net.levelz.screen.LevelScreen;
-import net.levelz.screen.widget.LevelzTab;
-import net.levelz.screen.widget.VanillaInventoryTab;
+import net.levelz.screen.widget.*;
 import net.levelz.util.TooltipUtil;
-import net.libz.registry.TabRegistry;
+import dev.sygii.tabapi.TabAPI;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+
+import java.awt.*;
 
 @Environment(EnvType.CLIENT)
 public class RenderInit {
@@ -31,8 +34,21 @@ public class RenderInit {
     public static void init() {
         EntityRendererRegistry.register(EntityInit.LEVEL_EXPERIENCE_ORB, LevelExperienceOrbEntityRenderer::new);
 
-        TabRegistry.registerInventoryTab(new VanillaInventoryTab(Text.translatable("container.crafting"), BAG_TAB_ICON, 0, InventoryScreen.class));
-        TabRegistry.registerInventoryTab(new LevelzTab(Text.translatable("screen.levelz.skill_screen"), SKILL_TAB_ICON, 1, LevelScreen.class, SkillInfoScreen.class, SkillRestrictionScreen.class));
+        TabAPI.registerInventoryTab(new VanillaInventoryTab(Text.translatable("container.crafting"), BAG_TAB_ICON, 0, InventoryScreen.class));
+        TabAPI.registerInventoryTab(new LevelzTab(Text.translatable("screen.levelz.skill_screen"), SKILL_TAB_ICON, 1, LevelScreen.class, SkillInfoScreen.class, SkillRestrictionScreen.class));
+
+        /*TabAPI.registerSideInventoryTab(new BookTab(Text.translatable("restriction.levelz.enchantments"),
+                new RestrictionBook(LevelManager.ENCHANTMENT_RESTRICTIONS, Text.translatable("restriction.levelz.enchantments"), 3),
+                new Color(178, 127, 255), 0, SkillRestrictionScreen.class));
+
+        TabAPI.registerSideInventoryTab(new BookTab(Text.translatable("restriction.levelz.entity_usage"),
+                new RestrictionBook(LevelManager.ENTITY_RESTRICTIONS, Text.translatable("restriction.levelz.entity_usage"), 2),
+                new Color(242, 127, 255), 1, SkillRestrictionScreen.class));
+
+        TabAPI.registerSideInventoryTab(new BookTab(Text.translatable("restriction.levelz.block_usage"),
+                new RestrictionBook(LevelManager.BLOCK_RESTRICTIONS, Text.translatable("restriction.levelz.block_usage"), 1),
+                new Color(123, 175, 255), 1, SkillRestrictionScreen.class));*/
+
 
         HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
             TooltipUtil.renderTooltip(MinecraftClient.getInstance(), drawContext);

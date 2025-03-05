@@ -11,8 +11,8 @@ import net.levelz.level.SkillBonus;
 import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.screen.widget.LineWidget;
 import net.levelz.util.DrawUtil;
-import net.libz.api.Tab;
-import net.libz.util.DrawTabHelper;
+import dev.sygii.tabapi.api.Tab;
+import dev.sygii.tabapi.util.DrawTabHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -187,7 +187,7 @@ public class SkillInfoScreen extends Screen implements Tab {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (this.client.options.inventoryKey.matchesKey(keyCode, scanCode)) {
-            if (ConfigInit.CONFIG.switchScreen) {
+            if (ConfigInit.CLIENT.switchScreen) {
                 this.client.setScreen(new LevelScreen());
             } else {
                 this.close();

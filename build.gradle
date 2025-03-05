@@ -54,9 +54,9 @@ dependencies {
 
 	modApi "com.terraformersmc:modmenu:${project.modmenu_version}"
 
-	modApi ('maven.modrinth:libz:1.0.2+1.20.1') {
+	/*modApi ('maven.modrinth:libz:1.0.2+1.20.1') {
 		exclude(group: "net.fabricmc.fabric-api")
-	}
+	}*/
 
 	modApi ("dev.emi:emi-fabric:1.1.19+1.20.1")
 	modApi ('maven.modrinth:jade:11.12.3+fabric')
@@ -83,6 +83,8 @@ dependencies {
 
 	modCompileOnly ("eu.pb4:placeholder-api:2.1.4+1.20.1")
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:12.1.785"
+
+	modCompileOnly files('run/mods/tabapi-1.0.0.jar')
 	
 }
 

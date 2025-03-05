@@ -12,12 +12,12 @@ import net.levelz.init.KeyInit;
 import net.levelz.level.LevelManager;
 import net.levelz.level.Skill;
 import net.levelz.level.SkillAttribute;
-import net.levelz.level.restriction.PlayerRestriction;
 import net.levelz.network.packet.AttributeSyncPacket;
 import net.levelz.network.packet.StatPacket;
 import net.levelz.screen.widget.BookWidget;
-import net.libz.api.Tab;
-import net.libz.util.DrawTabHelper;
+import net.levelz.util.DrawUtil;
+import dev.sygii.tabapi.api.Tab;
+import dev.sygii.tabapi.util.DrawTabHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -26,12 +26,10 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.registry.Registries;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.ColorHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -61,6 +59,8 @@ public class LevelScreen extends Screen implements Tab {
 
     private final WidgetButtonPage[] levelButtons = new WidgetButtonPage[12];
     private int skillRow = 0;
+
+    private List<BookWidget> bookWidgets = new ArrayList<>();
 
     public LevelScreen() {
         super(Text.translatable("screen.levelz.skill_screen"));
@@ -111,6 +111,33 @@ public class LevelScreen extends Screen implements Tab {
             }));
         }
         updateLevelButtons();
+
+        this.bookWidgets.clear();
+        bookWidgets.add(new BookWidget(Text.translatable("text.levelz.gui.attributes"), this.x + 178, this.y + 5,
+                () -> this.showAttributes = !this.showAttributes,
+                new Color(255, 206, 127), !this.attributes.isEmpty()));
+        bookWidgets.add(new BookWidget(Text.translatable("restriction.levelz.crafting"), this.x + 160, this.y + 68,
+                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.CRAFTING_RESTRICTIONS, Text.translatable("restriction.levelz.crafting"), 0)),
+                new Color(127, 255, 127), !LevelManager.CRAFTING_RESTRICTIONS.isEmpty()));
+        bookWidgets.add(new BookWidget(Text.translatable("restriction.levelz.mining"), this.x + 178, this.y + 68,
+                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.MINING_RESTRICTIONS, Text.translatable("restriction.levelz.mining"), 1)),
+                new Color(255, 255, 150), !LevelManager.MINING_RESTRICTIONS.isEmpty()));
+
+        bookWidgets.add(new BookWidget(Text.translatable("restriction.levelz.item_usage"), this.x + 142, this.y + 68,
+                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.ITEM_RESTRICTIONS, Text.translatable("restriction.levelz.item_usage"), 0)),
+                new Color(255, 121, 79), !LevelManager.ITEM_RESTRICTIONS.isEmpty()));
+
+        bookWidgets.add(new BookWidget(Text.translatable("restriction.levelz.block_usage"), this.x + 124, this.y + 68,
+                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.BLOCK_RESTRICTIONS, Text.translatable("restriction.levelz.block_usage"), 1)),
+                new Color(123, 175, 255), !LevelManager.BLOCK_RESTRICTIONS.isEmpty()));
+
+        bookWidgets.add(new BookWidget(Text.translatable("restriction.levelz.enchantments"), this.x + 106, this.y + 68,
+                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.ENCHANTMENT_RESTRICTIONS, Text.translatable("restriction.levelz.enchantments"), 3)),
+                new Color(178, 127, 255), !LevelManager.ENCHANTMENT_RESTRICTIONS.isEmpty()));
+
+        bookWidgets.add(new BookWidget(Text.translatable("restriction.levelz.entity_usage"), this.x + 88, this.y + 68,
+                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.ENTITY_RESTRICTIONS, Text.translatable("restriction.levelz.entity_usage"), 2)),
+                new Color(242, 127, 255), !LevelManager.ENTITY_RESTRICTIONS.isEmpty()));
     }
 
     @Override
@@ -132,7 +159,7 @@ public class LevelScreen extends Screen implements Tab {
             Text skillLevel = Text.translatable("text.levelz.gui.current_level", this.levelManager.getSkillLevel(skillId), LevelManager.SKILLS.get(skillId).maxLevel());
             context.drawText(this.textRenderer, skillLevel, this.x + (i % 2 == 0 ? 53 : 141) - this.textRenderer.getWidth(skillLevel) / 2, this.y + 94 + i / 2 * 20, 0x3F3F3F, false);
 
-            if (isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
+            if (DrawUtil.isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
                 context.drawTooltip(this.textRenderer, LevelManager.SKILLS.get(skillId).getText(), mouseX, mouseY);
             }
         }
@@ -181,14 +208,7 @@ public class LevelScreen extends Screen implements Tab {
 
                         k += 12;
                     }
-                } else {
-                    context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 5, 15, 114, 15, 13);
                 }
-                if (isPointWithinBounds(this.x + 178, this.y + 5, 15, 13, mouseX, mouseY)) {
-                    context.drawTooltip(this.textRenderer, Text.translatable("text.levelz.gui.attributes"), mouseX, mouseY);
-                }
-            } else {
-                context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 5, 0, 114, 15, 13);
             }
 
             // Level label
@@ -199,7 +219,7 @@ public class LevelScreen extends Screen implements Tab {
             context.drawText(this.textRenderer, skillPointText, this.x + 62, this.y + 54, 0x3F3F3F, false);
 
             // Experience bar
-            //context.drawTexture(ICON_TEXTURE, this.x + 62, this.y + 21, 0, 100, 131, 5);
+            context.drawTexture(ICON_TEXTURE, this.x + 62, this.y + 21, 0, 100, 131, 5);
 
             int nextLevelExperience = this.levelManager.getNextLevelExperience();
             float levelProgress = this.levelManager.getLevelProgress();
@@ -210,27 +230,6 @@ public class LevelScreen extends Screen implements Tab {
             Text currentXpText = Text.translatable("text.levelz.gui.current_xp", experience, nextLevelExperience);
             context.drawText(this.textRenderer, currentXpText, this.x - this.textRenderer.getWidth(currentXpText) / 2 + 127, this.y + 30, 0x3F3F3F, false);
 
-            if (!LevelManager.CRAFTING_RESTRICTIONS.isEmpty()) {
-                if (isPointWithinBounds(this.x + 178, this.y + 29, 14, 13, mouseX, mouseY)) {
-                    context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 29, 30, 80, 15, 13);
-                    context.drawTooltip(this.textRenderer, Text.translatable("restriction.levelz.crafting"), mouseX, mouseY);
-                } else {
-                    context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 29, 15, 80, 15, 13);
-                }
-            } else {
-                context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 29, 0, 80, 15, 13);
-            }
-
-            if (!LevelManager.MINING_RESTRICTIONS.isEmpty()) {
-                if (isPointWithinBounds(this.x + 178, this.y + 45, 14, 13, mouseX, mouseY)) {
-                    context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 45, 75, 80, 15, 13);
-                    context.drawTooltip(this.textRenderer, Text.translatable("restriction.levelz.mining"), mouseX, mouseY);
-                } else {
-                    context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 45, 60, 80, 15, 13);
-                }
-            } else {
-                context.drawTexture(ICON_TEXTURE, this.x + 178, this.y + 45, 45, 80, 15, 13);
-            }
             //RED
             //new Color(255, 100, 50)
             //GREEN
@@ -239,8 +238,9 @@ public class LevelScreen extends Screen implements Tab {
             //new Color(246, 255, 127)
             //BROWN
             //new Color(255, 206, 127)
-            BookWidget book = new BookWidget(Text.translatable("restriction.levelz.mining"), new Color(255, 206, 127));
-            book.draw(this.textRenderer, context, mouseX, mouseY, this.x + 178, this.y + 65);
+            for (BookWidget book : this.bookWidgets) {
+                book.draw(this.textRenderer, context, mouseX, mouseY);
+            }
         }
 
 
@@ -299,21 +299,11 @@ public class LevelScreen extends Screen implements Tab {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         DrawTabHelper.onTabButtonClick(client, this, this.x, this.y, mouseX, mouseY, this.getFocused() != null);
 
-        if (!this.attributes.isEmpty() && isPointWithinBounds(this.x + 178, this.y + 5, 15, 13, mouseX, mouseY)) {
-            this.showAttributes = !this.showAttributes;
-            this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            return true;
-        }
-        if (!LevelManager.CRAFTING_RESTRICTIONS.isEmpty() && isPointWithinBounds(this.x + 178, this.y + 29, 14, 13, mouseX, mouseY)) {
-            this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            this.client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.CRAFTING_RESTRICTIONS, Text.translatable("restriction.levelz.crafting"), 0));
-            return true;
-        }
-        if (!LevelManager.MINING_RESTRICTIONS.isEmpty() && isPointWithinBounds(this.x + 178, this.y + 45, 14, 13, mouseX, mouseY)) {
-            this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            this.client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.MINING_RESTRICTIONS, Text.translatable("restriction.levelz.mining"), 1));
-            LevelManager.BLOCK_RESTRICTIONS.forEach((integer, playerRestriction) -> System.out.println(Registries.BLOCK.get(playerRestriction.getId())));
-            return true;
+        for (BookWidget book : this.bookWidgets) {
+            if (book.context && book.isHovered((int)mouseX,(int) mouseY)) {
+                book.click(this.client, this.levelManager, mouseX, mouseY);
+                return true;
+            }
         }
         /*if (this.clientPlayerEntity != null) {
             if (isPointWithinBounds(this.x + 9, this.y + 67, 15, 10, mouseX, mouseY)) {
@@ -334,7 +324,7 @@ public class LevelScreen extends Screen implements Tab {
             if (this.levelManager.getPlayerSkills().size() <= skillId) {
                 break;
             }
-            if (isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
+            if (DrawUtil.isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
                 this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                 this.client.setScreen(new SkillInfoScreen(this.levelManager, skillId));
                 return true;
@@ -346,7 +336,7 @@ public class LevelScreen extends Screen implements Tab {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double verticalAmount) {
-        if (this.showAttributes && this.attributes.size() > 15 && isPointWithinBounds(this.x + 209, this.y + 7, 68, 201, mouseX, mouseY)) {
+        if (this.showAttributes && this.attributes.size() > 15 && DrawUtil.isPointWithinBounds(this.x + 209, this.y + 7, 68, 201, mouseX, mouseY)) {
             int maxAttributeRow = this.attributes.size() - 15;
             int newAttributeRow = this.attributeRow;
             newAttributeRow = newAttributeRow - (int) (verticalAmount);
@@ -356,7 +346,7 @@ public class LevelScreen extends Screen implements Tab {
                 this.attributeRow = Math.min(newAttributeRow, maxAttributeRow);
             }
         }
-        if (this.levelManager.getPlayerSkills().size() > 12 && isPointWithinBounds(this.x + 7, this.y + 86, 186, 122, mouseX, mouseY)) {
+        if (this.levelManager.getPlayerSkills().size() > 12 && DrawUtil.isPointWithinBounds(this.x + 7, this.y + 86, 186, 122, mouseX, mouseY)) {
 
             int maxSkillRow = (this.levelManager.getPlayerSkills().size() - 12) / 2;
             if (this.levelManager.getPlayerSkills().size() % 2 != 0) {
@@ -396,14 +386,14 @@ public class LevelScreen extends Screen implements Tab {
             }
 
 
-            if (ConfigInit.CONFIG.overallMaxLevel > 0 && this.levelManager.getOverallLevel() >= ConfigInit.CONFIG.overallMaxLevel) {
+            if (ConfigInit.MAIN.LEVEL.overallMaxLevel > 0 && this.levelManager.getOverallLevel() >= ConfigInit.MAIN.LEVEL.overallMaxLevel) {
                 this.levelButtons[i].active = false;
             } else if (LevelManager.SKILLS.get(skillId).maxLevel() <= this.levelManager.getPlayerSkills().get(skillId).getLevel()) {
                 this.levelButtons[i].active = false;
             } else {
                 this.levelButtons[i].active = this.levelManager.getSkillPoints() > 0;
             }
-            if (ConfigInit.CONFIG.allowHigherSkillLevel && this.levelManager.getSkillPoints() > 0) {
+            if (ConfigInit.MAIN.LEVEL.allowHigherSkillLevel && this.levelManager.getSkillPoints() > 0) {
                 boolean maxedAllSkills = true;
                 for (Skill skillCheck : LevelManager.SKILLS.values()) {
                     if (skillCheck.maxLevel() > this.levelManager.getSkillLevel(skillCheck.id())) {
@@ -416,10 +406,6 @@ public class LevelScreen extends Screen implements Tab {
                 }
             }
         }
-    }
-
-    public static boolean isPointWithinBounds(int x, int y, int width, int height, double pointX, double pointY) {
-        return pointX >= (double) (x - 1) && pointX < (double) (x + width + 1) && pointY >= (double) (y - 1) && pointY < (double) (y + height + 1);
     }
 
     private static class WidgetButtonPage extends ButtonWidget {

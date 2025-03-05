@@ -96,12 +96,19 @@ public class LineWidget {
             drawContext.drawText(this.client.textRenderer, this.text, x, y + 4, 0x3F3F3F, false);
         } else {
             int separator = 0;
+            //int count = 0;
+            //int vert = 0;
             boolean showTooltip = false;
             for (Map.Entry<Integer, PlayerRestriction> entry : this.restrictions.entrySet()) {
                 Text tooltipTitle = Text.literal("entry.getKey().toString()");
-                if (code != 2) {
-                    drawContext.drawTexture(LevelScreen.ICON_TEXTURE, x + separator - 1, y - 1, 0, 148, 18, 18);
-                }
+                //if (code != 2) {
+                /*if (count > 8) {
+                    count = 0;
+                    separator = 0;
+                    vert += 18;
+                }*/
+                drawContext.drawTexture(LevelScreen.ICON_TEXTURE, x + separator - 1, y - 1, 0, 148, 18, 18);
+                //}
                 if (this.code == 0) {
                     Item item = Registries.ITEM.get(entry.getKey());
                     tooltipTitle = item.getName();
@@ -151,7 +158,8 @@ public class LineWidget {
                     drawContext.drawTooltip(this.client.textRenderer, tooltip, mouseX, mouseY);
                     showTooltip = true;
                 }
-                separator += code == 2 ? 26 : 18;
+                separator += 18;
+                //count++;
             }
         }
     }

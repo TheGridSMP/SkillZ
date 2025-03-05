@@ -7,21 +7,26 @@ import net.levelz.init.ConfigInit;
 import net.levelz.init.KeyInit;
 import net.levelz.level.LevelManager;
 import net.levelz.level.restriction.PlayerRestriction;
+import net.levelz.registry.EnchantmentRegistry;
+import net.levelz.registry.EnchantmentZ;
 import net.levelz.screen.widget.LineWidget;
-import net.libz.api.Tab;
-import net.libz.util.DrawTabHelper;
+import net.levelz.util.DrawUtil;
+import dev.sygii.tabapi.api.Tab;
+import dev.sygii.tabapi.util.DrawTabHelper;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.EnchantmentLevelEntry;
+import net.minecraft.item.EnchantedBookItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Environment(EnvType.CLIENT)
@@ -80,7 +85,7 @@ public class SkillRestrictionScreen extends Screen implements Tab {
         } else {
             context.drawTexture(BACKGROUND_TEXTURE, this.x + 186, this.y + 20, 206, 0, 6, 31);
         }
-        int sortU = LevelScreen.isPointWithinBounds(this.x + 179, this.y + 4, 14, 14, mouseX, mouseY) ? 14 : 0;
+        int sortU = DrawUtil.isPointWithinBounds(this.x + 179, this.y + 4, 14, 14, mouseX, mouseY) ? 14 : 0;
         int sortV = this.sortAlphabetical ? 180 : 166;
         context.drawTexture(LevelScreen.ICON_TEXTURE, this.x + 179, this.y + 4, sortU, sortV, 14, 14);
 
@@ -101,7 +106,7 @@ public class SkillRestrictionScreen extends Screen implements Tab {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (this.client.options.inventoryKey.matchesKey(keyCode, scanCode)) {
-            if (ConfigInit.CONFIG.switchScreen) {
+            if (ConfigInit.CLIENT.switchScreen) {
                 this.client.setScreen(new LevelScreen());
             } else {
                 this.close();
@@ -118,7 +123,7 @@ public class SkillRestrictionScreen extends Screen implements Tab {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         DrawTabHelper.onTabButtonClick(client, this, this.x, this.y, mouseX, mouseY, false);
-        if (LevelScreen.isPointWithinBounds(this.x + 179, this.y + 4, 14, 14, mouseX, mouseY)) {
+        if (DrawUtil.isPointWithinBounds(this.x + 179, this.y + 4, 14, 14, mouseX, mouseY)) {
             this.sortAlphabetical = !this.sortAlphabetical;
             sortRestrictions();
             this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
@@ -129,7 +134,7 @@ public class SkillRestrictionScreen extends Screen implements Tab {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double verticalAmount) {
-        if (this.lines.size() > 10 && LevelScreen.isPointWithinBounds(this.x + 7, this.y + 19, 186, 189, mouseX, mouseY)) {
+        if (this.lines.size() > 10 && DrawUtil.isPointWithinBounds(this.x + 7, this.y + 19, 186, 189, mouseX, mouseY)) {
             int maxRow = this.lines.size() - 10;
             int newRow = this.lineIndex;
             newRow = newRow - (int) (verticalAmount);
@@ -144,56 +149,77 @@ public class SkillRestrictionScreen extends Screen implements Tab {
     }
 
     private void sortRestrictions() {
-        if (this.code == 0) {
-            if (this.sortAlphabetical) {
-                this.restrictions = this.restrictions.entrySet().stream()
-                        .sorted((entry1, entry2) -> {
-                            String itemName1 = Registries.ITEM.get(entry1.getKey()).getName().getString();
-                            String itemName2 = Registries.ITEM.get(entry2.getKey()).getName().getString();
-                            return itemName1.compareToIgnoreCase(itemName2);
-                        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-            } else {
-                this.restrictions = this.restrictions.entrySet().stream()
-                        .sorted((entry1, entry2) -> {
-                            int itemVar1 = entry1.getValue().getSkillLevelRestrictions().values().stream().findFirst().get();
-                            int itemVar2 = entry2.getValue().getSkillLevelRestrictions().values().stream().findFirst().get();
-                            return Integer.compare(itemVar1, itemVar2);
-                        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        if (this.sortAlphabetical) {
+            switch (this.code) {
+                case 0:
+                    this.restrictions = this.restrictions.entrySet().stream()
+                            .sorted((entry1, entry2) -> {
+                                String itemName1 = Registries.ITEM.get(entry1.getKey()).getName().getString();
+                                String itemName2 = Registries.ITEM.get(entry2.getKey()).getName().getString();
+                                return itemName1.compareToIgnoreCase(itemName2);
+                            }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+                    break;
+                case 1:
+                    this.restrictions = this.restrictions.entrySet().stream()
+                            .sorted((entry1, entry2) -> {
+                                String itemName1 = Registries.BLOCK.get(entry1.getKey()).getName().getString();
+                                String itemName2 = Registries.BLOCK.get(entry2.getKey()).getName().getString();
+                                return itemName1.compareToIgnoreCase(itemName2);
+                            }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+                    break;
+                case 2:
+                    this.restrictions = this.restrictions.entrySet().stream()
+                            .sorted((entry1, entry2) -> {
+                                String itemName1 = Registries.ENTITY_TYPE.get(entry1.getKey()).getName().getString();
+                                String itemName2 = Registries.ENTITY_TYPE.get(entry2.getKey()).getName().getString();
+                                return itemName1.compareToIgnoreCase(itemName2);
+                            }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+                    break;
+                case 3:
+                    this.restrictions = this.restrictions.entrySet().stream()
+                            .sorted((entry1, entry2) -> {
+                                String itemName1 = getEnchantmentName(entry1);
+                                String itemName2 = getEnchantmentName(entry2);
+                                //String itemName2 = Registries.ENCHANTMENT.get(entry2.getKey()).getName(getLevel(entry2)).getString();
+                                return itemName1.compareToIgnoreCase(itemName2);
+                            }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+                    break;
             }
-        } else {
-            if (this.sortAlphabetical) {
-                this.restrictions = this.restrictions.entrySet().stream()
-                        .sorted((entry1, entry2) -> {
-                            String itemName1 = Registries.BLOCK.get(entry1.getKey()).getName().getString();
-                            String itemName2 = Registries.BLOCK.get(entry2.getKey()).getName().getString();
-                            return itemName1.compareToIgnoreCase(itemName2);
-                        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-            } else {
-                this.restrictions = this.restrictions.entrySet().stream()
-                        .sorted((entry1, entry2) -> {
-                            int itemVar1 = entry1.getValue().getSkillLevelRestrictions().values().stream().findFirst().get();
-                            int itemVar2 = entry2.getValue().getSkillLevelRestrictions().values().stream().findFirst().get();
-                            return Integer.compare(itemVar1, itemVar2);
-                        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-            }
+        }else {
+            this.restrictions = this.restrictions.entrySet().stream()
+                    .sorted((entry1, entry2) -> {
+                        int itemVar1 = entry1.getValue().getSkillLevelRestrictions().values().stream().findFirst().get();
+                        int itemVar2 = entry2.getValue().getSkillLevelRestrictions().values().stream().findFirst().get();
+                        return Integer.compare(itemVar1, itemVar2);
+                    }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         }
         this.lines.clear();
 
         int count = 0;
         Map<Integer, PlayerRestriction> newMap = new LinkedHashMap<>();
         for (Map.Entry<Integer, PlayerRestriction> entry : this.restrictions.entrySet()) {
-            newMap.put(entry.getKey(), entry.getValue());
-            count++;
-            if (count == this.restrictions.size() - 1) {
-                this.lines.add(new LineWidget(this.client, null, newMap, code));
-                break;
-            }
-            if (count != 0 && count % 9 == 0) {
+            if (count > 8) {
                 this.lines.add(new LineWidget(this.client, null, new LinkedHashMap<>(newMap), code));
                 newMap.clear();
+                count = 0;
             }
-
+            newMap.put(entry.getKey(), entry.getValue());
+            count++;
         }
+        this.lines.add(new LineWidget(this.client, null, new LinkedHashMap<>(newMap), code));
+    }
+
+    public String getEnchantmentName(Map.Entry<Integer, PlayerRestriction> entry) {
+        EnchantmentZ enchantmentZ = EnchantmentRegistry.getEnchantmentZ(entry.getKey());
+        ItemStack stack = EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(enchantmentZ.getEntry().value(), enchantmentZ.getLevel()));
+        Map.Entry<Enchantment, Integer> asd = EnchantmentHelper.get(stack).entrySet().iterator().next();
+        Enchantment ench = asd.getKey();
+        return ench.getName(asd.getValue()).toString();
+    }
+
+    public Map<Integer, PlayerRestriction> getRestriction() {
+        return this.restrictions;
     }
 
 }
