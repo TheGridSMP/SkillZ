@@ -39,7 +39,7 @@ public class StrangePotionItem extends Item {
             Collections.shuffle(list);
 
             for (int skillId : list) {
-                if (levelManager.resetSkill(skillId) && !ConfigInit.CONFIG.opStrangePotion) {
+                if (levelManager.resetSkill(skillId) && !ConfigInit.MAIN.LEVEL.opStrangePotion) {
                     LevelHelper.updateSkill(playerEntity, LevelManager.SKILLS.get(skillId));
                     break;
                 }

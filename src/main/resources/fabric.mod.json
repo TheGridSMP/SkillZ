@@ -9,8 +9,8 @@
 		"Globox_Z"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://discord.gg/Yyyv6Ya",
+		"sources": "https://github.com/Sygikal/SkillZ"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/levelz/icon.png",
@@ -21,9 +21,6 @@
 		],
 		"client": [
 			"net.levelz.LevelzClient"
-		],
-		"modmenu": [
-			"net.levelz.config.ModMenuIntegration"
 		],
 		"emi": [
 			"net.levelz.compat.LevelzEmiPlugin"

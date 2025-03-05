@@ -50,7 +50,7 @@ public class PlayerEntityRendererMixin {
         if (!((ClientPlayerAccess) abstractClientPlayerEntity).shouldRenderClientName()) {
             return;
         }
-        if (ConfigInit.CONFIG.showLevel) {
+        if (ConfigInit.CLIENT.showLevel) {
             original.call(instance, abstractClientPlayerEntity, Team.decorateName(abstractClientPlayerEntity.getScoreboardTeam(),
                     Text.translatable("text.levelz.scoreboard", ((ClientPlayerListAccess) abstractClientPlayerEntity).getLevel(), abstractClientPlayerEntity.getName())), matrixStack, vertexConsumerProvider, i);
         } else {

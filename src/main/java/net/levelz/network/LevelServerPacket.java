@@ -32,13 +32,13 @@ public class LevelServerPacket {
                     Skill skill = LevelManager.SKILLS.get(id);
                     PlayerSkill playerSkill = levelManager.getPlayerSkills().get(id);
 
-                    if (ConfigInit.CONFIG.overallMaxLevel > 0 && ConfigInit.CONFIG.overallMaxLevel <= levelManager.getOverallLevel()) {
+                    if (ConfigInit.MAIN.LEVEL.overallMaxLevel > 0 && ConfigInit.MAIN.LEVEL.overallMaxLevel <= levelManager.getOverallLevel()) {
                         return;
                     }
-                    if (!ConfigInit.CONFIG.allowHigherSkillLevel && playerSkill.getLevel() >= skill.maxLevel()) {
+                    if (!ConfigInit.MAIN.LEVEL.allowHigherSkillLevel && playerSkill.getLevel() >= skill.maxLevel()) {
                         return;
                     }
-                    if (ConfigInit.CONFIG.allowHigherSkillLevel) {
+                    if (ConfigInit.MAIN.LEVEL.allowHigherSkillLevel) {
                         if (playerSkill.getLevel() >= skill.maxLevel()) {
                             for (Skill skillCheck : LevelManager.SKILLS.values()) {
                                 if (skillCheck.maxLevel() > levelManager.getSkillLevel(skillCheck.id())) {

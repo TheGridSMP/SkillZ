@@ -136,11 +136,11 @@ public abstract class BlockMixin {
     //TODO: level manager
     @Inject(method = "dropExperience", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V"))
     protected void dropExperienceMixin(ServerWorld world, BlockPos pos, int size, CallbackInfo info) {
-        if (ConfigInit.CONFIG.oreXPMultiplier > 0.0F) {
+        if (ConfigInit.MAIN.EXPERIENCE.oreXPMultiplier > 0.0F) {
             LevelExperienceOrbEntity.spawn(world, Vec3d.ofCenter(pos),
-                    (int) (size * ConfigInit.CONFIG.oreXPMultiplier
-                            * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.serverPlayerEntity != null
-                            ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((LevelManagerAccess) this.serverPlayerEntity).getLevelManager().getOverallLevel()
+                    (int) (size * ConfigInit.MAIN.EXPERIENCE.oreXPMultiplier
+                            * (ConfigInit.MAIN.EXPERIENCE.dropXPbasedOnLvl && this.serverPlayerEntity != null
+                            ? 1.0F + ConfigInit.MAIN.EXPERIENCE.basedOnMultiplier * ((LevelManagerAccess) this.serverPlayerEntity).getLevelManager().getOverallLevel()
                             : 1.0F)));
         }
     }

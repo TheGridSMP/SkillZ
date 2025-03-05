@@ -137,7 +137,7 @@ public class LevelManager {
 
     public void addExperienceLevels(int levels) {
         this.overallLevel += levels;
-        this.skillPoints += ConfigInit.CONFIG.pointsPerLevel;
+        this.skillPoints += ConfigInit.MAIN.LEVEL.pointsPerLevel;
         if (this.overallLevel < 0) {
             this.overallLevel = 0;
             this.levelProgress = 0.0F;
@@ -146,8 +146,8 @@ public class LevelManager {
     }
 
     public boolean isMaxLevel() {
-        if (ConfigInit.CONFIG.overallMaxLevel > 0) {
-            return this.overallLevel >= ConfigInit.CONFIG.overallMaxLevel;
+        if (ConfigInit.MAIN.LEVEL.overallMaxLevel > 0) {
+            return this.overallLevel >= ConfigInit.MAIN.LEVEL.overallMaxLevel;
         } else {
             int maxLevel = 0;
             for (Skill skill : SKILLS.values()) {
@@ -166,9 +166,9 @@ public class LevelManager {
         if (isMaxLevel()) {
             return 0;
         }
-        int experienceCost = (int) (ConfigInit.CONFIG.xpBaseCost + ConfigInit.CONFIG.xpCostMultiplicator * Math.pow(this.overallLevel, ConfigInit.CONFIG.xpExponent));
-        if (ConfigInit.CONFIG.xpMaxCost != 0) {
-            return experienceCost >= ConfigInit.CONFIG.xpMaxCost ? ConfigInit.CONFIG.xpMaxCost : experienceCost;
+        int experienceCost = (int) (ConfigInit.MAIN.EXPERIENCE.xpBaseCost + ConfigInit.MAIN.EXPERIENCE.xpCostMultiplicator * Math.pow(this.overallLevel, ConfigInit.MAIN.EXPERIENCE.xpExponent));
+        if (ConfigInit.MAIN.EXPERIENCE.xpMaxCost != 0) {
+            return experienceCost >= ConfigInit.MAIN.EXPERIENCE.xpMaxCost ? ConfigInit.MAIN.EXPERIENCE.xpMaxCost : experienceCost;
         } else {
             return experienceCost;
         }

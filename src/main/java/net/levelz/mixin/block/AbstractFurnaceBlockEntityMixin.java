@@ -17,7 +17,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.levelz.access.PlayerStatsManagerAccess;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
 import net.levelz.init.TagInit;
@@ -48,7 +47,7 @@ public class AbstractFurnaceBlockEntityMixin {
 
     @Inject(method = "getRecipesUsedAndDropExperience", at = @At(value = "TAIL"))
     private void getRecipesUsedAndDropExperienceMixin(ServerWorld world, Vec3d pos, CallbackInfoReturnable<List<Recipe<?>>> info) {
-        if (ConfigInit.CONFIG.furnaceXPMultiplier > 0.0F) {
+        if (ConfigInit.MAIN.EXPERIENCE.furnaceXPMultiplier > 0.0F) {
             for (Object2IntMap.Entry<Identifier> entry : this.recipesUsed.object2IntEntrySet()) {
                 world.getRecipeManager().get((Identifier) entry.getKey()).ifPresent(recipe -> {
                     if (!recipe.getOutput(world.getRegistryManager()).isIn(TagInit.RESTRICTED_FURNACE_EXPERIENCE_ITEMS)) {
@@ -58,9 +57,9 @@ public class AbstractFurnaceBlockEntityMixin {
                             ++i;
                         }
                         LevelExperienceOrbEntity.spawn(world, pos,
-                                (int) (i * ConfigInit.CONFIG.furnaceXPMultiplier
-                                        * (ConfigInit.CONFIG.dropXPbasedOnLvl && serverPlayerEntity != null
-                                                ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((LevelManagerAccess) serverPlayerEntity).getLevelManager().getOverallLevel()
+                                (int) (i * ConfigInit.MAIN.EXPERIENCE.furnaceXPMultiplier
+                                        * (ConfigInit.MAIN.EXPERIENCE.dropXPbasedOnLvl && serverPlayerEntity != null
+                                                ? 1.0F + ConfigInit.MAIN.EXPERIENCE.basedOnMultiplier * ((LevelManagerAccess) serverPlayerEntity).getLevelManager().getOverallLevel()
                                                 : 1.0F)));
                     }
                 });

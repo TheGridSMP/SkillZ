@@ -22,7 +22,7 @@ public class PlayerListHudMixin {
 
     @Inject(method = "getPlayerName", at = @At(value = "RETURN", ordinal = 1), cancellable = true)
     private void getPlayerNameMixin(PlayerListEntry entry, CallbackInfoReturnable<Text> info) {
-        if (ConfigInit.CONFIG.showLevelList)
+        if (ConfigInit.CLIENT.showLevelList)
             info.setReturnValue(this.applyGameModeFormatting(entry,
                     Team.decorateName(entry.getScoreboardTeam(), Text.translatable("text.levelz.scoreboard", ((ClientPlayerListAccess) entry).getLevel(), entry.getProfile().getName()))));
     }

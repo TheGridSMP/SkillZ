@@ -10,8 +10,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.stats.PlayerStatsManager;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -31,7 +29,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
     protected void drawBackgroundMixin(DrawContext context, float delta, int mouseX, int mouseY, CallbackInfo info) {
         assert this.client != null;
         assert this.client.player != null;
-        if (ConfigInit.CONFIG.inventorySkillLevel) {
+        if (ConfigInit.CLIENT.inventorySkillLevel) {
             LevelManager levelManager = (((LevelManagerAccess) this.client.player).getLevelManager());
             // 0xAARRGGBB Format
             int color = 0xFFFFFF;
@@ -41,8 +39,8 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 
             context.getMatrices().push();
             context.getMatrices().scale(0.6F, 0.6F, 1F);
-            context.getMatrices().translate((28 + ConfigInit.CONFIG.inventorySkillLevelPosX + this.x) / 0.6F,
-                    (8 + ConfigInit.CONFIG.inventorySkillLevelPosY + this.y + textRenderer.fontHeight / 2F) / 0.6F, 70.0D);
+            context.getMatrices().translate((28 + ConfigInit.CLIENT.inventorySkillLevelPosX + this.x) / 0.6F,
+                    (8 + ConfigInit.CLIENT.inventorySkillLevelPosY + this.y + textRenderer.fontHeight / 2F) / 0.6F, 70.0D);
             context.drawText(this.textRenderer, Text.translatable("text.levelz.gui.short_level", levelManager.getOverallLevel()), 0, -textRenderer.fontHeight / 2, color, false);
             context.getMatrices().pop();
         }

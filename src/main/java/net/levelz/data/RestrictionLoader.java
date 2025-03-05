@@ -53,14 +53,14 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
         LevelManager.MINING_RESTRICTIONS.clear();
         LevelManager.ENCHANTMENT_RESTRICTIONS.clear();
 
-        if (!ConfigInit.CONFIG.restrictions) {
+        if (!ConfigInit.MAIN.PROGRESSION.restrictions) {
             return;
         }
         EnchantmentRegistry.updateEnchantments();
 
         manager.findResources("restriction", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
             try {
-                if (!ConfigInit.CONFIG.defaultRestrictions && id.getPath().endsWith("/default.json")) {
+                if (!ConfigInit.MAIN.PROGRESSION.defaultRestrictions && id.getPath().endsWith("/default.json")) {
                     return;
                 }
                 InputStream stream = resourceRef.getInputStream();

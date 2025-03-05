@@ -1,33 +1,23 @@
 package net.levelz.mixin.entity;
 
-import java.util.ArrayList;
-
+import net.levelz.access.LevelManagerAccess;
 import net.levelz.util.BonusHelper;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.levelz.access.PlayerStatsManagerAccess;
-import net.levelz.data.LevelLists;
 import net.levelz.entity.LevelExperienceOrbEntity;
 import net.levelz.init.ConfigInit;
-import net.levelz.stats.PlayerStatsManager;
-import net.levelz.stats.Skill;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
 @Mixin(AnimalEntity.class)
@@ -66,12 +56,13 @@ public abstract class AnimalEntityMixin extends PassiveEntity {
 
     @Inject(method = "Lnet/minecraft/entity/passive/AnimalEntity;breed(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/passive/AnimalEntity;Lnet/minecraft/entity/passive/PassiveEntity;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
     private void breedExperienceMixin(ServerWorld world, AnimalEntity other, @Nullable PassiveEntity baby, CallbackInfo info) {
-        if (ConfigInit.CONFIG.breedingXPMultiplier > 0.0F)
+        if (ConfigInit.MAIN.EXPERIENCE.breedingXPMultiplier > 0.0F) {
             LevelExperienceOrbEntity.spawn(world, this.getPos().add(0.0D, 0.1D, 0.0D),
-                    (int) ((this.getRandom().nextInt(7) + 1) * ConfigInit.CONFIG.breedingXPMultiplier
-                            * (ConfigInit.CONFIG.dropXPbasedOnLvl && getLovingPlayer() != null
-                                    ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((PlayerStatsManagerAccess) getLovingPlayer()).getPlayerStatsManager().getOverallLevel()
-                                    : 1.0F)));
+                    (int) ((this.getRandom().nextInt(7) + 1) * ConfigInit.MAIN.EXPERIENCE.breedingXPMultiplier
+                            * (ConfigInit.MAIN.EXPERIENCE.dropXPbasedOnLvl && getLovingPlayer() != null
+                            ? 1.0F + ConfigInit.MAIN.EXPERIENCE.basedOnMultiplier * ((LevelManagerAccess) getLovingPlayer()).getLevelManager().getOverallLevel()
+                            : 1.0F)));
+        }
     }
 
     @Shadow

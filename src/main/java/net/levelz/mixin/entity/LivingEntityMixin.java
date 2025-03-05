@@ -107,7 +107,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "drop", at = @At(value = "HEAD"), cancellable = true)
     protected void dropMixin(DamageSource source, CallbackInfo info) {
-        if (!((Object) this instanceof PlayerEntity) && attackingPlayer != null && this.playerHitTimer > 0 && ConfigInit.CONFIG.disableMobFarms
+        if (!((Object) this instanceof PlayerEntity) && attackingPlayer != null && this.playerHitTimer > 0 && ConfigInit.MAIN.LEVEL.disableMobFarms
                 && !((PlayerDropAccess) attackingPlayer).allowMobDrop()) {
             info.cancel();
         }
@@ -115,20 +115,20 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;drop(Lnet/minecraft/entity/damage/DamageSource;)V"))
     private void onDeathMixin(DamageSource source, CallbackInfo info) {
-        if (attackingPlayer != null && this.playerHitTimer > 0 && ConfigInit.CONFIG.disableMobFarms) {
+        if (attackingPlayer != null && this.playerHitTimer > 0 && ConfigInit.MAIN.LEVEL.disableMobFarms) {
             ((PlayerDropAccess) attackingPlayer).increaseKilledMobStat(this.getWorld().getChunk(this.getBlockPos()));
         }
     }
 
     @Inject(method = "dropXp", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V"))
     protected void dropXpMixin(CallbackInfo info) {
-        if (ConfigInit.CONFIG.mobXPMultiplier > 0.0F) {
-            if (!ConfigInit.CONFIG.spawnerMobXP && (Object) this instanceof MobEntity mobEntity && ((MobEntityAccess) mobEntity).isSpawnerMob()) {
+        if (ConfigInit.MAIN.EXPERIENCE.mobXPMultiplier > 0.0F) {
+            if (!ConfigInit.MAIN.EXPERIENCE.spawnerMobXP && (Object) this instanceof MobEntity mobEntity && ((MobEntityAccess) mobEntity).isSpawnerMob()) {
             } else {
                 LevelExperienceOrbEntity.spawn((ServerWorld) this.getWorld(), this.getPos(),
-                        (int) (this.getXpToDrop() * ConfigInit.CONFIG.mobXPMultiplier
-                                * (ConfigInit.CONFIG.dropXPbasedOnLvl && this.attackingPlayer != null
-                                        ? 1.0F + ConfigInit.CONFIG.basedOnMultiplier * ((LevelManagerAccess) this.attackingPlayer).getLevelManager().getOverallLevel()
+                        (int) (this.getXpToDrop() * ConfigInit.MAIN.EXPERIENCE.mobXPMultiplier
+                                * (ConfigInit.MAIN.EXPERIENCE.dropXPbasedOnLvl && this.attackingPlayer != null
+                                        ? 1.0F + ConfigInit.MAIN.EXPERIENCE.basedOnMultiplier * ((LevelManagerAccess) this.attackingPlayer).getLevelManager().getOverallLevel()
                                         : 1.0F)));
             }
         }

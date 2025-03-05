@@ -6,7 +6,6 @@ import java.util.Map;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.levelz.access.LevelManagerAccess;
-import net.levelz.config.LevelzConfig;
 import net.levelz.init.ConfigInit;
 import net.levelz.level.LevelManager;
 import net.levelz.level.restriction.PlayerRestriction;
@@ -19,7 +18,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraft.registry.Registries;
@@ -39,7 +37,7 @@ public class TooltipUtil {
     public static void renderItemTooltip(MinecraftClient client, ItemStack stack, List<Text> lines) {
         if (client.player != null) {
             LevelManager levelManager = ((LevelManagerAccess) client.player).getLevelManager();
-            boolean isCreative = client.player.isCreative() || !ConfigInit.CONFIG.hideReachedLevels; // Add all lines, not only the missing ones
+            boolean isCreative = client.player.isCreative() || !ConfigInit.CLIENT.hideReachedLevels; // Add all lines, not only the missing ones
             Formatting format = Formatting.GRAY;
 
             if (stack.getItem() instanceof BlockItem blockItem) {
@@ -51,7 +49,7 @@ public class TooltipUtil {
                         for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
                             boolean noHasLevel = levelManager.getSkillLevel(entry.getKey()) < entry.getValue();
                             if (isCreative || noHasLevel) {
-                                lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CONFIG.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GREEN));
+                                lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CLIENT.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GREEN));
                             }
                         }
                     }
@@ -63,7 +61,7 @@ public class TooltipUtil {
                         for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
                             boolean noHasLevel = levelManager.getSkillLevel(entry.getKey()) < entry.getValue();
                             if (isCreative || noHasLevel) {
-                                lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CONFIG.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GREEN));
+                                lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CLIENT.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GREEN));
                             }
                         }
                     }
@@ -86,7 +84,7 @@ public class TooltipUtil {
                     for (Map.Entry<Integer, Integer> entry : levelManager.getRequiredItemLevel(stack.getItem()).entrySet()) {
                         boolean noHasLevel = levelManager.getSkillLevel(entry.getKey()) < entry.getValue();
                         if (isCreative || noHasLevel) {
-                            lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CONFIG.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GREEN));
+                            lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CLIENT.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GREEN));
                         }
                     }
                 }
@@ -98,7 +96,7 @@ public class TooltipUtil {
                     for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
                         boolean noHasLevel = levelManager.getSkillLevel(entry.getKey()) < entry.getValue();
                         if (isCreative || noHasLevel) {
-                            lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CONFIG.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GREEN));
+                            lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CLIENT.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GREEN));
                         }
                     }
                 }
@@ -136,7 +134,7 @@ public class TooltipUtil {
                                         boolean noHasLevel = levelManager.getSkillLevel(entry.getKey()) < entry.getValue();
                                         if (isCreative || noHasLevel) {
                                             //lines.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).getKey() + ".tooltip", entry.getValue()).formatted(Formatting.RED));
-                                            asd.append(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CONFIG.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GRAY));
+                                            asd.append(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted((ConfigInit.CLIENT.hideReachedLevels || noHasLevel) ? Formatting.RED : Formatting.GRAY));
                                             if ((map.size() - count) > 1) {
                                                 asd.append(Text.literal(",").formatted(Formatting.GRAY)).append(ScreenTexts.SPACE);
                                             }
@@ -184,7 +182,7 @@ public class TooltipUtil {
 
     // Recommend to play with https://www.curseforge.com/minecraft/mc-mods/health-overlay-fabric
     public static void renderTooltip(MinecraftClient client, DrawContext context) {
-        if (client.crosshairTarget != null && ConfigInit.CONFIG.showLockedBlockInfo) {
+        if (client.crosshairTarget != null && ConfigInit.CLIENT.showLockedBlockInfo) {
 
             HitResult hitResult = client.crosshairTarget;
             if (hitResult.getType() == HitResult.Type.ENTITY) {
@@ -199,7 +197,7 @@ public class TooltipUtil {
                         textList.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(formatting));
                     }
                     renderTooltip(client, context, textList,
-                            null, context.getScaledWindowWidth() / 2 + ConfigInit.CONFIG.lockedBlockInfoPosX, ConfigInit.CONFIG.lockedBlockInfoPosY);
+                            null, context.getScaledWindowWidth() / 2 + ConfigInit.CLIENT.lockedBlockInfoPosX, ConfigInit.CLIENT.lockedBlockInfoPosY);
                 }
             } else if (hitResult.getType() == HitResult.Type.BLOCK) {
                 Block block = client.world.getBlockState(((BlockHitResult) hitResult).getBlockPos()).getBlock();
@@ -227,7 +225,7 @@ public class TooltipUtil {
                 }
                 if (!textList.isEmpty()) {
                     renderTooltip(client, context, textList,
-                            Registries.BLOCK.getId(block), context.getScaledWindowWidth() / 2 + ConfigInit.CONFIG.lockedBlockInfoPosX, ConfigInit.CONFIG.lockedBlockInfoPosY);
+                            Registries.BLOCK.getId(block), context.getScaledWindowWidth() / 2 + ConfigInit.CLIENT.lockedBlockInfoPosX, ConfigInit.CLIENT.lockedBlockInfoPosY);
                 }
             }
         }

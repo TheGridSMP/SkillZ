@@ -51,7 +51,7 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
             System.out.println(id.getPath());
             System.out.println(id.getNamespace());
             try {
-                if (!ConfigInit.CONFIG.defaultSkills && id.getPath().endsWith("/default.json")) {
+                if (!ConfigInit.MAIN.PROGRESSION.defaultSkills && id.getPath().endsWith("/default.json")) {
                     return;
                 }
                 InputStream stream = resourceRef.getInputStream();

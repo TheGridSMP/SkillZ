@@ -47,13 +47,13 @@ public class EventInit {
         });
 
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-            if (ConfigInit.CONFIG.hardMode) {
+            if (ConfigInit.MAIN.LEVEL.hardMode) {
                 newPlayer.getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, newPlayer));
                 newPlayer.getScoreboard().forEachScore(CriteriaInit.LEVELZ, newPlayer.getEntityName(), ScoreboardPlayerScore::clearScore);
             } else {
                 PacketHelper.updatePlayerSkills(newPlayer, oldPlayer);
 
-                if (ConfigInit.CONFIG.resetCurrentXp) {
+                if (ConfigInit.MAIN.EXPERIENCE.resetCurrentXp) {
                     LevelManager levelManager = ((LevelManagerAccess) newPlayer).getLevelManager();
                     levelManager.setLevelProgress(0);
                     levelManager.setTotalLevelExperience(0);
