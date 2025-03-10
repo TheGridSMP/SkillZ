@@ -101,7 +101,6 @@
 		"block.AbstractFurnaceBlockEntityMixin",
 		"block.BlockMixin",
 		"block.PlantBlockMixin",
-		"compat.BackpackItemMixin",
 		"entity.AnimalEntityMixin",
 		"entity.EnderDragonEntityMixin",
 		"entity.EntityAccessor",
