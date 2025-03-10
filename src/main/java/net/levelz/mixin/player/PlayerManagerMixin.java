@@ -82,14 +82,13 @@ public class PlayerManagerMixin {
 
     @Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;getBossBarManager()Lnet/minecraft/entity/boss/BossBarManager;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILSOFT)
     private void onPlayerConnectMixin(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info, GameProfile gameProfile, UserCache userCache, String string, NbtCompound optional, RegistryKey<World> registryKey, ServerWorld serverWorld, ServerWorld serverWorld2) {
-        if (optional != null && optional.isEmpty()) {
+       if (optional == null || optional.isEmpty()) {
             if (ConfigInit.MAIN.LEVEL.startPoints > 0) {
                 LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
                 levelManager.setSkillPoints(ConfigInit.MAIN.LEVEL.startPoints);
                 PacketHelper.updateLevels(player);
             }
-
-        }
+       }
     }
 
 }
