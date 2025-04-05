@@ -8,7 +8,7 @@ import net.skillz.SkillZMain;
 import net.skillz.init.ItemInit;
 import net.minecraft.item.Items;
 
-public class LevelzEmiPlugin implements EmiPlugin {
+public class SkillZEMIPlugin implements EmiPlugin {
 
     @Override
     public void register(EmiRegistry registry) {

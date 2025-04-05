@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
 @Environment(EnvType.CLIENT)
-public class LevelzReiPlugin implements REIClientPlugin {
+public class SkillZREIPlugin implements REIClientPlugin {
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {

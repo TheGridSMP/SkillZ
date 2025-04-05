@@ -54,7 +54,7 @@ public class SkillInfoScreen extends Screen implements Tab {
         this.y = (this.height - this.backgroundHeight) / 2;
 
         for (int i = 0; i < 50; i++) {
-            String skillExtra = "skill.levelz." + this.skill.key() + "." + i;
+            String skillExtra = "skill.skillz." + this.skill.key() + "." + i;
             Text skillExtraText = Text.translatable(skillExtra);
 
             if (skillExtraText.getString().equals(skillExtra)) {
@@ -63,8 +63,8 @@ public class SkillInfoScreen extends Screen implements Tab {
             this.lines.add(new LineWidget(this.client, skillExtraText, null, 0));
         }
         if (!this.lines.isEmpty()) {
-            //this.lines.addFirst(new LineWidget(this.client, Text.translatable("skill.levelz.info"), null, 0));
-            this.lines.add(0, new LineWidget(this.client, Text.translatable("skill.levelz.info"), null, 0));
+            //this.lines.addFirst(new LineWidget(this.client, Text.translatable("skill.skillz.info"), null, 0));
+            this.lines.add(0, new LineWidget(this.client, Text.translatable("skill.skillz.info"), null, 0));
         }
         int skillInfoLines = this.lines.size();
         for (String bonusKey : SkillBonus.BONUS_KEYS) {
@@ -72,8 +72,8 @@ public class SkillInfoScreen extends Screen implements Tab {
                 SkillBonus bonus = LevelManager.BONUSES.get(bonusKey);
                 if (bonus.getId() == this.skill.id()) {
                     for (int i = 0; i < 50; i++) {
-                        String bonusInfo = "bonus.levelz." + bonus.getKey() + "." + i;
-                        Text bonusInfoText = Text.translatable(bonusInfo, Text.translatable("text.levelz.gui.short_lower_level", bonus.getLevel()));
+                        String bonusInfo = "bonus.skillz." + bonus.getKey() + "." + i;
+                        Text bonusInfoText = Text.translatable(bonusInfo, Text.translatable("text.skillz.gui.short_lower_level", bonus.getLevel()));
 
                         if (bonusInfoText.getString().equals(bonusInfo)) {
                             break;
@@ -87,13 +87,13 @@ public class SkillInfoScreen extends Screen implements Tab {
             }
         }
         if (this.lines.size() > skillInfoLines) {
-            this.lines.add(skillInfoLines, new LineWidget(this.client, Text.translatable("bonus.levelz.info"), null, 0));
+            this.lines.add(skillInfoLines, new LineWidget(this.client, Text.translatable("bonus.skillz.info"), null, 0));
         }
 
-        addRestrictionLines(LevelManager.ITEM_RESTRICTIONS, Text.translatable("restriction.levelz.item_usage"), 0);
-        addRestrictionLines(LevelManager.BLOCK_RESTRICTIONS, Text.translatable("restriction.levelz.block_usage"), 1);
-        addRestrictionLines(LevelManager.ENTITY_RESTRICTIONS, Text.translatable("restriction.levelz.entity_usage"), 2);
-        addRestrictionLines(LevelManager.ENCHANTMENT_RESTRICTIONS, Text.translatable("restriction.levelz.enchantments"), 3);
+        addRestrictionLines(LevelManager.ITEM_RESTRICTIONS, Text.translatable("restriction.skillz.item_usage"), 0);
+        addRestrictionLines(LevelManager.BLOCK_RESTRICTIONS, Text.translatable("restriction.skillz.block_usage"), 1);
+        addRestrictionLines(LevelManager.ENTITY_RESTRICTIONS, Text.translatable("restriction.skillz.entity_usage"), 2);
+        addRestrictionLines(LevelManager.ENCHANTMENT_RESTRICTIONS, Text.translatable("restriction.skillz.enchantments"), 3);
     }
 
     private void addRestrictionLines(Map<Integer, PlayerRestriction> levelRestrictions, Text restrictionText, int code) {
@@ -122,7 +122,7 @@ public class SkillInfoScreen extends Screen implements Tab {
             this.lines.add(new LineWidget(this.client, restrictionText, null, 0));
         }
         for (Map.Entry<Integer, Map<Integer, PlayerRestriction>> restrictions : map.entrySet()) {
-            this.lines.add(new LineWidget(this.client, Text.translatable("text.levelz.gui.short_level", restrictions.getKey()), null, code));
+            this.lines.add(new LineWidget(this.client, Text.translatable("text.skillz.gui.short_level", restrictions.getKey()), null, code));
 
             if (restrictions.getValue().size() > 9) {
                 Map<Integer, PlayerRestriction> newMap = new TreeMap<>();
@@ -168,7 +168,7 @@ public class SkillInfoScreen extends Screen implements Tab {
         DrawTabHelper.drawTab(client, context, this, this.x, this.y, mouseX, mouseY);
 
         context.drawText(this.textRenderer, this.title, this.x + 7, this.y + 7, 0x3F3F3F, false);
-        context.drawText(this.textRenderer, Text.translatable("text.levelz.gui.short_level", this.levelManager.getSkillLevel(this.skill.id())), this.x + 11 + this.textRenderer.getWidth(this.title), this.y + 7, 0x3F3F3F, false);
+        context.drawText(this.textRenderer, Text.translatable("text.skillz.gui.short_level", this.levelManager.getSkillLevel(this.skill.id())), this.x + 11 + this.textRenderer.getWidth(this.title), this.y + 7, 0x3F3F3F, false);
 
         for (int i = 0; i < 10; i++) {
             if (this.lines.size() <= i) {

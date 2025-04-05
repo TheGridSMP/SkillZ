@@ -23,7 +23,7 @@ public class LevelWTHITProvider implements IBlockComponentProvider {
                 for (Map.Entry<Integer, Integer> entry : levelManager.getRequiredMiningLevel(accessor.getBlock()).entrySet()) {
                     Formatting formatting =
                             levelManager.getSkillLevel(entry.getKey()) < entry.getValue() ? Formatting.RED : Formatting.GREEN;
-                    tooltip.addLine(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(formatting));
+                    tooltip.addLine(Text.translatable("restriction.skillz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(formatting));
                 }
             }
         }

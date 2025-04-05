@@ -25,7 +25,7 @@ public class TrinketItemMixin {
         if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(stack.getItem()).toString())) {
             String string = Registries.ITEM.getId(stack.getItem()).toString();
 //            if (!PlayerStatsManager.playerLevelisHighEnough(user, LevelLists.customItemList, string, true)) {
-                user.sendMessage(Text.translatable("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
+                user.sendMessage(Text.translatable("item.skillz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
                         true);
                 info.setReturnValue(false);
 //            }
@@ -33,14 +33,14 @@ public class TrinketItemMixin {
             levelList = LevelLists.armorList;
             String string = armorItem.getMaterial().getName().toLowerCase();
 //            if (!PlayerStatsManager.playerLevelisHighEnough(user, levelList, string, true)) {
-                user.sendMessage(Text.translatable("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
+                user.sendMessage(Text.translatable("item.skillz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
                         true);
                 info.setReturnValue(false);
 //            }
         } else {
             levelList = LevelLists.elytraList;
 //            if (stack.getItem() == Items.ELYTRA && !PlayerStatsManager.playerLevelisHighEnough(user, levelList, null, true)) {
-                user.sendMessage(Text.translatable("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
+                user.sendMessage(Text.translatable("item.skillz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
                 info.setReturnValue(false);
 //            }
         }

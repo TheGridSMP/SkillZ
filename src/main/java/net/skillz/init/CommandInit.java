@@ -161,7 +161,7 @@ public class CommandInit {
                 } else if (skillKey.equals("level")) {
                     levelManager.setOverallLevel(playerSkillLevel);
                     final int level = playerSkillLevel;
-                    serverPlayerEntity.getScoreboard().forEachScore(CriteriaInit.LEVELZ, serverPlayerEntity.getEntityName(), score -> score.setScore(level));
+                    serverPlayerEntity.getScoreboard().forEachScore(CriteriaInit.SKILLZ, serverPlayerEntity.getEntityName(), score -> score.setScore(level));
                     serverPlayerEntity.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
                 } else {
                     levelManager.setSkillLevel(skill.id(), playerSkillLevel);

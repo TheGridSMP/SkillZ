@@ -23,7 +23,7 @@ public class AxeItemMixin {
         if (!player.isCreative() && !player.isSpectator()) {
             LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
             if (!levelManager.hasRequiredItemLevel(player.getStackInHand(context.getHand()).getItem())) {
-                player.sendMessage(Text.translatable("restriction.levelz.locked.tooltip").formatted(Formatting.RED), true);
+                player.sendMessage(Text.translatable("restriction.skillz.locked.tooltip").formatted(Formatting.RED), true);
                 info.setReturnValue(ActionResult.PASS);
             }
         }

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import net.fabricmc.loader.api.FabricLoader;
 
-public class LevelzMixinPlugin implements IMixinConfigPlugin {
+public class SkillZMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void onLoad(String mixinPackage) {
@@ -23,7 +23,7 @@ public class LevelzMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (!FabricLoader.getInstance().isModLoaded("trinkets")
-                && (mixinClassName.equals("net.levelz.mixin.compat.TrinketItemMixin") || mixinClassName.equals("net.levelz.mixin.compat.SurvivalTrinketSlotMixin")))
+                && (mixinClassName.equals("net.skillz.mixin.compat.TrinketItemMixin") || mixinClassName.equals("net.skillz.mixin.compat.SurvivalTrinketSlotMixin")))
             return false;
 
         if (mixinClassName.contains("LevelManagerCompatMixin") && !FabricLoader.getInstance().isModLoaded("create") && !FabricLoader.getInstance().isModLoaded("computercraft"))

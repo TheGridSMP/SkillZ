@@ -1,6 +1,6 @@
 {
     "parent": "item/generated",
     "textures": {
-        "layer0": "levelz:item/strange_potion"
+        "layer0": "skillz:item/strange_potion"
     }
 }

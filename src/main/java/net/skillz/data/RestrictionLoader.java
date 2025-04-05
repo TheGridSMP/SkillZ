@@ -23,11 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static net.skillz.SkillZMain.LOGGER;
+
 public class RestrictionLoader implements SimpleSynchronousResourceReloadListener {
 
     public static final Identifier ID = SkillZMain.identifierOf("restriction");
-
-    private static final Logger LOGGER = LogManager.getLogger("LevelZ");
 
     private static final List<Integer> blockList = new ArrayList<>();
     private static final List<Integer> craftingList = new ArrayList<>();

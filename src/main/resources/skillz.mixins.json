@@ -3,7 +3,7 @@
 	"minVersion": "0.8",
 	"package": "net.skillz.mixin",
 	"compatibilityLevel": "JAVA_17",
-	"plugin": "net.skillz.mixin.LevelzMixinPlugin",
+	"plugin": "net.skillz.mixin.SkillZMixinPlugin",
 	"disabled": [
 		"compat.CosmeticArmorMixin",
 		"compat.BlockBreakerMixin"

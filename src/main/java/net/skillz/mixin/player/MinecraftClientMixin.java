@@ -62,7 +62,7 @@ public class MinecraftClientMixin {
             if (item != null && !item.equals(Items.AIR)) {
                 LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
                 if (!levelManager.hasRequiredItemLevel(item)) {
-                    player.sendMessage(Text.translatable("item.levelz.locked.tooltip").formatted(Formatting.RED), true);
+                    player.sendMessage(Text.translatable("item.skillz.locked.tooltip").formatted(Formatting.RED), true);
                     return true;
                 }
             }
@@ -93,7 +93,7 @@ public class MinecraftClientMixin {
                     String string = Registries.ITEM.getId(item).toString();
                     if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, true)) {
                         player.sendMessage(
-                                Text.translatable("item.levelz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
+                                Text.translatable("item.skillz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
                                 true);
                         return true;
                     }
@@ -116,7 +116,7 @@ public class MinecraftClientMixin {
                         String material = ((ToolItem) item).getMaterial().toString().toLowerCase();
                         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, true)) {
                             player.sendMessage(Text
-                                    .translatable("item.levelz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
+                                    .translatable("item.skillz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
                                     .formatted(Formatting.RED), true);
                             return true;
                         }

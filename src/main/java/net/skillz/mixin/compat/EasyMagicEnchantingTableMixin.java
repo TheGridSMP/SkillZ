@@ -25,10 +25,10 @@ public class EasyMagicEnchantingTableMixin {
     @Inject(method = "onUse", at = @At("HEAD"), cancellable = true)
     private void onUseMixin(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> info) {
         if (!world.isClient) {
-            ArrayList<Object> levelList = LevelLists.enchantingTableList;
+            //ArrayList<Object> levelList = LevelLists.enchantingTableList;
             //if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
-                player.sendMessage(Text.translatable("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
-                info.setReturnValue(ActionResult.FAIL);
+                //player.sendMessage(Text.translatable("item.skillz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
+                //info.setReturnValue(ActionResult.FAIL);
             //}
         }
     }

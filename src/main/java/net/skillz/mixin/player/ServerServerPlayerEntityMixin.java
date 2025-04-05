@@ -48,7 +48,7 @@ public abstract class ServerServerPlayerEntityMixin extends PlayerEntity impleme
                 //CriteriaInit.LEVEL_UP.trigger(serverPlayerEntity);
                 CriteriaInit.LEVEL_UP.trigger(serverPlayerEntity, levelManager.getOverallLevel());
                 serverPlayerEntity.getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
-                serverPlayerEntity.getScoreboard().forEachScore(CriteriaInit.LEVELZ, this.getEntityName(), ScoreboardPlayerScore::incrementScore);
+                serverPlayerEntity.getScoreboard().forEachScore(CriteriaInit.SKILLZ, this.getEntityName(), ScoreboardPlayerScore::incrementScore);
 
                 if (levelManager.getOverallLevel() > 0) {
                     serverPlayerEntity.getWorld().playSound(null, serverPlayerEntity.getX(), serverPlayerEntity.getY(), serverPlayerEntity.getZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, serverPlayerEntity.getSoundCategory(), 1.0F, 1.0F);

@@ -26,7 +26,7 @@ public class PiglinBrainMixin {
     private static void dropBarteredItemMixin(PiglinEntity piglin, PlayerEntity player, List<ItemStack> items, CallbackInfo info) {
         ArrayList<Object> levelList = LevelLists.piglinList;
         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
-            player.sendMessage(Text.translatable("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
+            player.sendMessage(Text.translatable("item.skillz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
             if (!items.isEmpty()) {
                 piglin.swingHand(Hand.OFF_HAND);
                 LookTargetUtil.give(piglin, new ItemStack(Items.GOLD_INGOT), player.getPos().add(0.0, 1.0, 0.0));
@@ -39,7 +39,7 @@ public class PiglinBrainMixin {
     private static void playerInteractMixin(PiglinEntity piglin, PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
         ArrayList<Object> levelList = LevelLists.piglinList;
         if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
-            player.sendMessage(Text.translatable("item.levelz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
+            player.sendMessage(Text.translatable("item.skillz." + levelList.get(0) + ".tooltip", levelList.get(1)).formatted(Formatting.RED), true);
             info.setReturnValue(ActionResult.FAIL);
         }
     }*/
@@ -51,7 +51,7 @@ public class PiglinBrainMixin {
         }
         LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
         if (!levelManager.hasRequiredEntityLevel(piglin.getType())) {
-            player.sendMessage(Text.translatable("restriction.levelz.locked.tooltip").formatted(Formatting.RED), true);
+            player.sendMessage(Text.translatable("restriction.skillz.locked.tooltip").formatted(Formatting.RED), true);
             if (!items.isEmpty()) {
                 piglin.swingHand(Hand.OFF_HAND);
                 LookTargetUtil.give(piglin, new ItemStack(Items.GOLD_INGOT), player.getPos().add(0.0, 1.0, 0.0));

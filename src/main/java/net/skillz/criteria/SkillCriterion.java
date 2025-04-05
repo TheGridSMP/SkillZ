@@ -11,7 +11,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 public class SkillCriterion extends AbstractCriterion<SkillCriterion.Conditions> {
-    static final Identifier ID = new Identifier("levelz:skill");
+    static final Identifier ID = new Identifier("skillz:skill");
 
     @Override
     public Identifier getId() {

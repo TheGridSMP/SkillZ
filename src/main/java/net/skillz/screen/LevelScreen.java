@@ -63,7 +63,7 @@ public class LevelScreen extends Screen implements Tab {
     private List<BookWidget> bookWidgets = new ArrayList<>();
 
     public LevelScreen() {
-        super(Text.translatable("screen.levelz.skill_screen"));
+        super(Text.translatable("screen.skillz.skill_screen"));
     }
 
     @Override
@@ -113,30 +113,30 @@ public class LevelScreen extends Screen implements Tab {
         updateLevelButtons();
 
         this.bookWidgets.clear();
-        bookWidgets.add(new BookWidget(Text.translatable("text.levelz.gui.attributes"), this.x + 178, this.y + 5,
+        bookWidgets.add(new BookWidget(Text.translatable("text.skillz.gui.attributes"), this.x + 178, this.y + 5,
                 () -> this.showAttributes = !this.showAttributes,
                 new Color(255, 206, 127), !this.attributes.isEmpty()));
-        bookWidgets.add(new BookWidget(Text.translatable("restriction.levelz.crafting"), this.x + 160, this.y + 68,
-                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.CRAFTING_RESTRICTIONS, Text.translatable("restriction.levelz.crafting"), 0)),
+        bookWidgets.add(new BookWidget(Text.translatable("restriction.skillz.crafting"), this.x + 160, this.y + 68,
+                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.CRAFTING_RESTRICTIONS, Text.translatable("restriction.skillz.crafting"), 0)),
                 new Color(127, 255, 127), !LevelManager.CRAFTING_RESTRICTIONS.isEmpty()));
-        bookWidgets.add(new BookWidget(Text.translatable("restriction.levelz.mining"), this.x + 178, this.y + 68,
-                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.MINING_RESTRICTIONS, Text.translatable("restriction.levelz.mining"), 1)),
+        bookWidgets.add(new BookWidget(Text.translatable("restriction.skillz.mining"), this.x + 178, this.y + 68,
+                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.MINING_RESTRICTIONS, Text.translatable("restriction.skillz.mining"), 1)),
                 new Color(255, 255, 150), !LevelManager.MINING_RESTRICTIONS.isEmpty()));
 
-        bookWidgets.add(new BookWidget(Text.translatable("restriction.levelz.item_usage"), this.x + 142, this.y + 68,
-                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.ITEM_RESTRICTIONS, Text.translatable("restriction.levelz.item_usage"), 0)),
+        bookWidgets.add(new BookWidget(Text.translatable("restriction.skillz.item_usage"), this.x + 142, this.y + 68,
+                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.ITEM_RESTRICTIONS, Text.translatable("restriction.skillz.item_usage"), 0)),
                 new Color(255, 121, 79), !LevelManager.ITEM_RESTRICTIONS.isEmpty()));
 
-        bookWidgets.add(new BookWidget(Text.translatable("restriction.levelz.block_usage"), this.x + 124, this.y + 68,
-                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.BLOCK_RESTRICTIONS, Text.translatable("restriction.levelz.block_usage"), 1)),
+        bookWidgets.add(new BookWidget(Text.translatable("restriction.skillz.block_usage"), this.x + 124, this.y + 68,
+                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.BLOCK_RESTRICTIONS, Text.translatable("restriction.skillz.block_usage"), 1)),
                 new Color(123, 175, 255), !LevelManager.BLOCK_RESTRICTIONS.isEmpty()));
 
-        bookWidgets.add(new BookWidget(Text.translatable("restriction.levelz.enchantments"), this.x + 106, this.y + 68,
-                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.ENCHANTMENT_RESTRICTIONS, Text.translatable("restriction.levelz.enchantments"), 3)),
+        bookWidgets.add(new BookWidget(Text.translatable("restriction.skillz.enchantments"), this.x + 106, this.y + 68,
+                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.ENCHANTMENT_RESTRICTIONS, Text.translatable("restriction.skillz.enchantments"), 3)),
                 new Color(178, 127, 255), !LevelManager.ENCHANTMENT_RESTRICTIONS.isEmpty()));
 
-        bookWidgets.add(new BookWidget(Text.translatable("restriction.levelz.entity_usage"), this.x + 88, this.y + 68,
-                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.ENTITY_RESTRICTIONS, Text.translatable("restriction.levelz.entity_usage"), 2)),
+        bookWidgets.add(new BookWidget(Text.translatable("restriction.skillz.entity_usage"), this.x + 88, this.y + 68,
+                () -> client.setScreen(new SkillRestrictionScreen(this.levelManager, LevelManager.ENTITY_RESTRICTIONS, Text.translatable("restriction.skillz.entity_usage"), 2)),
                 new Color(242, 127, 255), !LevelManager.ENTITY_RESTRICTIONS.isEmpty()));
     }
 
@@ -156,7 +156,7 @@ public class LevelScreen extends Screen implements Tab {
             context.drawTexture(BACKGROUND_TEXTURE, this.x + (i % 2 == 0 ? 8 : 96), this.y + 87 + i / 2 * 20, 0, 215, 88, 20);
             context.drawTexture(SkillZMain.identifierOf("textures/gui/sprites/" + LevelManager.SKILLS.get(skillId).key() + ".png"), this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 0, 0, 16, 16, 16, 16);
 
-            Text skillLevel = Text.translatable("text.levelz.gui.current_level", this.levelManager.getSkillLevel(skillId), LevelManager.SKILLS.get(skillId).maxLevel());
+            Text skillLevel = Text.translatable("text.skillz.gui.current_level", this.levelManager.getSkillLevel(skillId), LevelManager.SKILLS.get(skillId).maxLevel());
             context.drawText(this.textRenderer, skillLevel, this.x + (i % 2 == 0 ? 53 : 141) - this.textRenderer.getWidth(skillLevel) / 2, this.y + 94 + i / 2 * 20, 0x3F3F3F, false);
 
             if (DrawUtil.isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
@@ -179,7 +179,7 @@ public class LevelScreen extends Screen implements Tab {
         super.render(context, mouseX, mouseY, delta);
 
         if (this.client != null && this.client.player != null) {
-            Text title = Text.translatable("text.levelz.gui.title", this.client.player.getName().getString());
+            Text title = Text.translatable("text.skillz.gui.title", this.client.player.getName().getString());
             context.drawText(this.textRenderer, title, this.x + 118 - this.textRenderer.getWidth(title) / 2, this.y + 7, 0x3F3F3F, false);
 
             if (!this.attributes.isEmpty()) {
@@ -194,7 +194,7 @@ public class LevelScreen extends Screen implements Tab {
                     } else {
                         context.drawTexture(ATTRIBUTE_BACKGROUND_TEXTURE, this.x + 270, this.y + 8, 88, 0, 6, 41);
                     }
-                    context.drawText(this.textRenderer, Text.translatable("text.levelz.gui.attributes"), this.x + 214, this.y + 12, 0xE0E0E0, false);
+                    context.drawText(this.textRenderer, Text.translatable("text.skillz.gui.attributes"), this.x + 214, this.y + 12, 0xE0E0E0, false);
 
                     int k = 27;
                     for (int i = this.attributeRow; i < this.attributeRow + maxAttributes; i++) {
@@ -212,10 +212,10 @@ public class LevelScreen extends Screen implements Tab {
             }
 
             // Level label
-            Text skillLevelText = Text.translatable("text.levelz.gui.level", this.levelManager.getOverallLevel());
+            Text skillLevelText = Text.translatable("text.skillz.gui.level", this.levelManager.getOverallLevel());
             context.drawText(this.textRenderer, skillLevelText, this.x + 62, this.y + 42, 0x3F3F3F, false);
             // Point label
-            Text skillPointText = Text.translatable("text.levelz.gui.points", this.levelManager.getSkillPoints());
+            Text skillPointText = Text.translatable("text.skillz.gui.points", this.levelManager.getSkillPoints());
             context.drawText(this.textRenderer, skillPointText, this.x + 62, this.y + 54, 0x3F3F3F, false);
 
             // Experience bar
@@ -227,7 +227,7 @@ public class LevelScreen extends Screen implements Tab {
 
             context.drawTexture(ICON_TEXTURE, this.x + 62, this.y + 21, 0, 105, (int) (130.0f * levelProgress), 5);
             // current xp label
-            Text currentXpText = Text.translatable("text.levelz.gui.current_xp", experience, nextLevelExperience);
+            Text currentXpText = Text.translatable("text.skillz.gui.current_xp", experience, nextLevelExperience);
             context.drawText(this.textRenderer, currentXpText, this.x - this.textRenderer.getWidth(currentXpText) / 2 + 127, this.y + 30, 0x3F3F3F, false);
 
             //RED

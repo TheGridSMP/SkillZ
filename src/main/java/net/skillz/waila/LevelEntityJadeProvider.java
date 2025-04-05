@@ -28,7 +28,7 @@ public enum LevelEntityJadeProvider implements IEntityComponentProvider {
             for (Map.Entry<Integer, Integer> entry : levelManager.getRequiredEntityLevel(entityAccessor.getEntity().getType()).entrySet()) {
                 Formatting formatting =
                         levelManager.getSkillLevel(entry.getKey()) < entry.getValue() ? Formatting.RED : Formatting.GREEN;
-                tooltip.add(Text.translatable("restriction.levelz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(formatting));
+                tooltip.add(Text.translatable("restriction.skillz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(formatting));
             }
         }
     }

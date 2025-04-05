@@ -23,10 +23,10 @@
 			"net.skillz.SkillZClient"
 		],
 		"emi": [
-			"net.skillz.compat.LevelzEmiPlugin"
+			"net.skillz.compat.SkillZEMIPlugin"
 		],
 		"rei_client": [
-			"net.skillz.compat.LevelzReiPlugin"
+			"net.skillz.compat.SkillZREIPlugin"
 		],
 		"jade": [
 			"net.skillz.waila.LevelJadePlugin"

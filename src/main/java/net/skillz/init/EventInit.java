@@ -49,7 +49,7 @@ public class EventInit {
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
             if (ConfigInit.MAIN.LEVEL.hardMode) {
                 newPlayer.getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, newPlayer));
-                newPlayer.getScoreboard().forEachScore(CriteriaInit.LEVELZ, newPlayer.getEntityName(), ScoreboardPlayerScore::clearScore);
+                newPlayer.getScoreboard().forEachScore(CriteriaInit.SKILLZ, newPlayer.getEntityName(), ScoreboardPlayerScore::clearScore);
             } else {
                 PacketHelper.updatePlayerSkills(newPlayer, oldPlayer);
 
@@ -72,7 +72,7 @@ public class EventInit {
                 if (!levelManager.hasRequiredItemLevel(player.getStackInHand(hand).getItem())) {
                     System.out.println(levelManager.getRequiredItemLevel(player.getStackInHand(hand).getItem()));
                     //player.sendMessage(Text.literal(customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED), true);
-                    player.sendMessage(Text.translatable("restriction.levelz.locked.tooltip").formatted(Formatting.RED), true);
+                    player.sendMessage(Text.translatable("restriction.skillz.locked.tooltip").formatted(Formatting.RED), true);
                     return TypedActionResult.fail(player.getStackInHand(hand));
                 }
             }
@@ -85,7 +85,7 @@ public class EventInit {
                 if (world.canPlayerModifyAt(player, blockPos)) {
                     LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
                     if (!levelManager.hasRequiredBlockLevel(world.getBlockState(blockPos).getBlock())) {
-                        player.sendMessage(Text.translatable("restriction.levelz.locked.tooltip").formatted(Formatting.RED), true);
+                        player.sendMessage(Text.translatable("restriction.skillz.locked.tooltip").formatted(Formatting.RED), true);
                         return ActionResult.success(false);
                     }
                 }
@@ -98,7 +98,7 @@ public class EventInit {
                 if (!entity.hasControllingPassenger() || !((EntityAccessor) entity).callCanAddPassenger(player)) {
                     LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
                     if (!levelManager.hasRequiredEntityLevel(entity.getType())) {
-                        player.sendMessage(Text.translatable("restriction.levelz.locked.tooltip").formatted(Formatting.RED), true);
+                        player.sendMessage(Text.translatable("restriction.skillz.locked.tooltip").formatted(Formatting.RED), true);
                         return ActionResult.success(false);
                     }
                 }

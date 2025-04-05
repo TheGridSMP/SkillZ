@@ -12,9 +12,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
-public class LevelzTab extends InventoryTab {
+public class SkillTab extends InventoryTab {
 
-    public LevelzTab(Text title, Identifier texture, int preferedPos, Class<?>... screenClasses) {
+    public SkillTab(Text title, Identifier texture, int preferedPos, Class<?>... screenClasses) {
         super(title, texture, preferedPos, screenClasses);
     }
 

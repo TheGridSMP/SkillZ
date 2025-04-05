@@ -160,12 +160,12 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
 
         for (int i = 0; i < skillCount.get(); i++) {
             if (!LevelManager.SKILLS.containsKey(i)) {
-                throw new MissingResourceException("Missing skill with id " + i + "! Please add a skill with this id.", this.getClass().getName(), "LevelZ");
+                throw new MissingResourceException("Missing skill with id " + i + "! Please add a skill with this id.", this.getClass().getName(), SkillZMain.MOD_ID);
             }
         }
         for (int i = 0; i < attributeIds.size(); i++) {
             if (!attributeIds.contains(i)) {
-                throw new MissingResourceException("Missing attribute with id " + i + "! Please add an attribute with this id.", this.getClass().getName(), "LevelZ");
+                throw new MissingResourceException("Missing attribute with id " + i + "! Please add an attribute with this id.", this.getClass().getName(), SkillZMain.MOD_ID);
             }
         }
         Map<Integer, Skill> sortedMap = new TreeMap<>(LevelManager.SKILLS);
