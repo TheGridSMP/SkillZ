@@ -5,14 +5,14 @@ import com.google.gson.JsonObject;
 import net.minecraft.util.JsonHelper;
 
 public class NumberPredicate {
-    private final int levelZ;
+    private final int level;
 
-    public NumberPredicate(int levelZ) {
-        this.levelZ = levelZ;
+    public NumberPredicate(int level) {
+        this.level = level;
     }
 
     public boolean test(int level) {
-        if (this.levelZ == 0 || this.levelZ == level) {
+        if (this.level == 0 || this.level == level) {
             return true;
         } else {
             return false;
@@ -26,7 +26,7 @@ public class NumberPredicate {
 
     public JsonElement toJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("level", (Number) this.levelZ);
+        jsonObject.addProperty("level", (Number) this.level);
         return jsonObject;
     }
 
