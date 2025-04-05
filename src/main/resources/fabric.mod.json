@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
-	"id": "levelz",
+	"id": "skillz",
 	"version": "${version}",
-	"name": "LevelZ",
+	"name": "SkillZ",
 	"description": "Adds player levels",
 	"authors": [
 		"Sygikal",
@@ -13,35 +13,37 @@
 		"sources": "https://github.com/Sygikal/SkillZ"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/levelz/icon.png",
+	"icon": "assets/skillz/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"net.levelz.LevelzMain"
+			"net.skillz.SkillZMain"
 		],
 		"client": [
-			"net.levelz.LevelzClient"
+			"net.skillz.SkillZClient"
 		],
 		"emi": [
-			"net.levelz.compat.LevelzEmiPlugin"
+			"net.skillz.compat.LevelzEmiPlugin"
 		],
 		"rei_client": [
-			"net.levelz.compat.LevelzReiPlugin"
+			"net.skillz.compat.LevelzReiPlugin"
 		],
 		"jade": [
-			"net.levelz.waila.LevelJadePlugin"
+			"net.skillz.waila.LevelJadePlugin"
 		]
 	},
 	"mixins": [
-		"levelz.mixins.json"
+		"skillz.mixins.json"
 	],
-	"accessWidener": "levelz.accesswidener",
+	"accessWidener": "skillz.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.16.10",
 		"minecraft": "~1.20.1",
 		"java": ">=17",
 		"fabric-api": "*",
-		"tabapi": ">=1.0.0"
+		"tabapi": ">=1.0.0",
+		"fzzy_config": "*",
+		"attribute-backport": "*"
 	},
 	"suggests": {
 		"another-mod": "*"

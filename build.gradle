@@ -38,7 +38,7 @@ fabricApi {
 }
 
 loom {
-	accessWidenerPath = file("src/main/resources/levelz.accesswidener")
+	accessWidenerPath = file("src/main/resources/skillz.accesswidener")
 }
 
 dependencies {
