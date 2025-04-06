@@ -19,8 +19,7 @@
     "items": [
       "minecraft:brush"
     ],
-    "mining": [],
-    "components": {}
+    "mining": []
   },
   "constitution_10": {
     "replace": false,
