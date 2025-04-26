@@ -19,6 +19,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import org.apache.commons.compress.utils.FileNameUtils;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -56,6 +57,8 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
                 }
                 InputStream stream = resourceRef.getInputStream();
                 JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+
+                String skillId = FileNameUtils.getBaseName(id.getPath());
 
                 for (String mapKey : data.keySet()) {
                     JsonObject skillJsonObject = data.getAsJsonObject(mapKey);
