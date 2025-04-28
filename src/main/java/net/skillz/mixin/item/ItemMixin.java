@@ -38,7 +38,7 @@ public class ItemMixin {
     @Inject(method = "inventoryTick", at = @At(value = "HEAD"))
     private void hold(ItemStack stack, World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
         if (entity instanceof ServerPlayerEntity) {
-            stack.getAttributeModifiers(EquipmentSlot.MAINHAND).forEach((k, v )-> {
+            /*stack.getAttributeModifiers(EquipmentSlot.MAINHAND).forEach((k, v )-> {
                 if (k == SkillZMain.skillAttribute) {
                     LevelManager levelManager = ((LevelManagerAccess) entity).getLevelManager();
                     if (selected) {
@@ -64,7 +64,7 @@ public class ItemMixin {
                         );
                     }
                 }
-            });
+            });*/
         }
     }
 }
