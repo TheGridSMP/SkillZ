@@ -1,0 +1,18 @@
+{
+  "maxlevel": 20,
+  "attributes": [],
+  "bonus": [
+    {
+      "level": 20,
+      "key": "potionEffectChance"
+    },
+    {
+      "level": 10,
+      "key": "healthAbsorption"
+    },
+    {
+      "level": 1,
+      "key": "damageReflection"
+    }
+  ]
+}

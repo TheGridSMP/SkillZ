@@ -1,0 +1,18 @@
+{
+  "maxlevel": 20,
+  "attributes": [],
+  "bonus": [
+    {
+      "level": 1,
+      "key": "priceDiscount"
+    },
+    {
+      "level": 8,
+      "key": "tradeXp"
+    },
+    {
+      "level": 20,
+      "key": "merchantImmune"
+    }
+  ]
+}

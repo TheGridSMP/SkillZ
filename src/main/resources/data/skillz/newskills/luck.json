@@ -1,0 +1,30 @@
+{
+  "maxlevel": 20,
+  "attributes": [
+    {
+      "id": 6,
+      "type": "generic.luck",
+      "base": -1,
+      "operation": "ADDITION",
+      "value": 0.15
+    }
+  ],
+  "bonus": [
+    {
+      "level": 20,
+      "key": "anvilXpChance"
+    },
+    {
+      "level": 1,
+      "key": "meleeKnockbackAttackChance"
+    },
+    {
+      "level": 1,
+      "key": "meleeCriticalAttackChance"
+    },
+    {
+      "level": 1,
+      "key": "damageReflectionChance"
+    }
+  ]
+}

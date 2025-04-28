@@ -1,0 +1,33 @@
+{
+  "maxlevel": 20,
+  "attributes": [
+    {
+      "type": "attribute-backport:generic.burning_time",
+      "operation": "ADDITION",
+      "value": -0.05
+    },
+    {
+      "type": "attribute-backport:generic.explosion_knockback_resistance",
+      "operation": "ADDITION",
+      "value": 0.05
+    }
+  ],
+  "bonus": [
+    {
+      "level": 1,
+      "key": "itemDamageChance"
+    },
+    {
+      "level": 15,
+      "key": "tntStrength"
+    },
+    {
+      "level": 20,
+      "key": "anvilXpCap"
+    },
+    {
+      "level": 10,
+      "key": "anvilXpDiscount"
+    }
+  ]
+}

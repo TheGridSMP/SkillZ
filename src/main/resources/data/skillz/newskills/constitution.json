@@ -1,0 +1,18 @@
+{
+  "maxlevel": 20,
+  "attributes": [
+    {
+      "id": 0,
+      "type": "generic.max_health",
+      "base": 8,
+      "operation": "ADDITION",
+      "value": 1
+    }
+  ],
+  "bonus": [
+    {
+      "level": 10,
+      "key": "healthRegen"
+    }
+  ]
+}

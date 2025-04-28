@@ -1,0 +1,14 @@
+{
+  "maxlevel": 20,
+  "attributes": [],
+  "bonus": [
+    {
+      "level": 20,
+      "key": "breedTwinChance"
+    },
+    {
+      "level": 10,
+      "key": "plantDropChance"
+    }
+  ]
+}

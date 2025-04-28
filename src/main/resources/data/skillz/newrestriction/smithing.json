@@ -1,0 +1,118 @@
+[
+  {
+    "replace": false,
+    "skills": {
+      "smithing": 1
+    },
+    "blocks": [
+      "minecraft:furnace"
+    ],
+    "crafting": [],
+    "entities": [],
+    "items": [],
+    "mining": []
+  },
+  {
+    "replace": false,
+    "skills": {
+      "smithing": 3
+    },
+    "blocks": [
+      "minecraft:dispenser",
+      "minecraft:dropper"
+    ],
+    "crafting": [],
+    "entities": [],
+    "items": [],
+    "mining": []
+  },
+  {
+    "replace": false,
+    "skills": {
+      "smithing": 5
+    },
+    "blocks": [
+      "minecraft:anvil",
+      "minecraft:chipped_anvil",
+      "minecraft:damaged_anvil"
+    ],
+    "crafting": [],
+    "entities": [],
+    "items": [],
+    "mining": []
+  },
+  {
+    "replace": false,
+    "skills": {
+      "smithing": 7
+    },
+    "blocks": [
+      "minecraft:hopper"
+    ],
+    "crafting": [],
+    "entities": [],
+    "items": [],
+    "mining": []
+  },
+  {
+    "replace": false,
+    "skills": {
+      "smithing": 8
+    },
+    "blocks": [
+      "minecraft:grindstone",
+      "minecraft:stonecutter"
+    ],
+    "crafting": [],
+    "entities": [],
+    "items": [],
+    "mining": []
+  },
+  {
+    "replace": false,
+    "skills": {
+      "smithing": 10
+    },
+    "blocks": [
+      "minecraft:blast_furnace"
+    ],
+    "crafting": [],
+    "entities": [],
+    "items": [],
+    "mining": []
+  },
+  {
+    "replace": false,
+    "skills": {
+      "smithing": 15
+    },
+    "blocks": [
+      "minecraft:smithing_table"
+    ],
+    "crafting": [],
+    "entities": [],
+    "items": [],
+    "mining": []
+  },
+  {
+    "replace": false,
+    "skills": {
+      "smithing": 20
+    },
+    "blocks": [],
+    "crafting": [
+      "minecraft:netherite_shovel",
+      "minecraft:netherite_pickaxe",
+      "minecraft:netherite_axe",
+      "minecraft:netherite_hoe",
+      "minecraft:netherite_sword",
+      "minecraft:netherite_helmet",
+      "minecraft:netherite_chestplate",
+      "minecraft:netherite_leggings",
+      "minecraft:netherite_boots"
+    ],
+    "entities": [],
+    "items": [],
+    "mining": []
+  }
+]

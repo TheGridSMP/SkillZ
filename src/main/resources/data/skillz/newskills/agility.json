@@ -1,0 +1,48 @@
+{
+  "maxlevel": 20,
+  "attributes": [
+    {
+      "id": 3,
+      "type": "generic.movement_speed",
+      "base": 0.09,
+      "operation": "ADDITION",
+      "value": 0.001
+    },
+    {
+      "type": "attribute-backport:player.sneaking_speed",
+      "base": 0.2,
+      "operation": "ADDITION",
+      "value": 0.01
+    },
+    {
+      "id": 4,
+      "type": "attribute-backport:generic.oxygen_bonus",
+      "operation": "ADDITION",
+      "value": 0.2
+    },
+    {
+      "type": "attribute-backport:player.submerged_mining_speed",
+      "operation": "ADDITION",
+      "value": 0.04
+    },
+    {
+      "type": "attribute-backport:generic.water_movement_efficiency",
+      "operation": "ADDITION",
+      "value": 0.02
+    }
+  ],
+  "bonus": [
+    {
+      "level": 1,
+      "key": "exhaustionReduction"
+    },
+    {
+      "level": 10,
+      "key": "evadingDamageChance"
+    },
+    {
+      "level": 1,
+      "key": "fallDamageReduction"
+    }
+  ]
+}

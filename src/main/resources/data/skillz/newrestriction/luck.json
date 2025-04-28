@@ -1,0 +1,15 @@
+[
+  {
+    "replace": false,
+    "skills": {
+      "luck": 15
+    },
+    "blocks": [
+      "minecraft:beacon"
+    ],
+    "crafting": [],
+    "entities": [],
+    "items": [],
+    "mining": []
+  }
+]

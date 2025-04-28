@@ -1,0 +1,24 @@
+{
+  "maxlevel": 20,
+  "attributes": [
+    {
+      "type": "attribute-backport:player.block_break_speed",
+      "base": 0.5,
+      "operation": "ADDITION",
+      "value": 0.05
+    },
+    {
+      "id": 5,
+      "type": "attribute-backport:player.mining_efficiency",
+      "base": 0,
+      "operation": "ADDITION",
+      "value": 0.05
+    }
+  ],
+  "bonus": [
+    {
+      "level": 10,
+      "key": "miningDropChance"
+    }
+  ]
+}

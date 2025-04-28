@@ -1,0 +1,10 @@
+{
+  "maxlevel": 20,
+  "attributes": [],
+  "bonus": [
+    {
+      "level": 1,
+      "key": "foodIncreasion"
+    }
+  ]
+}

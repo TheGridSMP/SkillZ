@@ -1,0 +1,33 @@
+{
+  "maxlevel": 20,
+  "attributes": [
+    {
+      "type": "generic.follow_range",
+      "operation": "ADDITION",
+      "value": 1
+    },
+    {
+      "type": "attribute-backport:player.block_interaction_range",
+      "operation": "ADDITION",
+      "value": 0.1
+    }
+  ],
+  "bonus": [
+    {
+      "level": 1,
+      "key": "bowDamage"
+    },
+    {
+      "level": 15,
+      "key": "bowDoubleDamageChance"
+    },
+    {
+      "level": 5,
+      "key": "crossbowDamage"
+    },
+    {
+      "level": 20,
+      "key": "crossbowDoubleDamageChance"
+    }
+  ]
+}

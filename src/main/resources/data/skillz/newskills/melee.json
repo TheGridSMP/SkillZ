@@ -1,0 +1,32 @@
+{
+  "maxlevel": 20,
+  "attributes": [
+    {
+      "id": 1,
+      "type": "generic.attack_damage",
+      "operation": "ADDITION",
+      "value": 0.2
+    },
+    {
+      "type": "generic.attack_knockback",
+      "operation": "ADDITION",
+      "value": 0.05
+    },
+    {
+      "type": "attribute-backport:player.sweeping_damage_ratio",
+      "base": 0,
+      "operation": "ADDITION",
+      "value": 0.03
+    }
+  ],
+  "bonus": [
+    {
+      "level": 1,
+      "key": "meleeCriticalAttackDamage"
+    },
+    {
+      "level": 15,
+      "key": "meleeDoubleAttackDamageChance"
+    }
+  ]
+}

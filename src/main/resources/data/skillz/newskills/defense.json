@@ -1,0 +1,22 @@
+{
+  "maxlevel": 20,
+  "attributes": [
+    {
+      "id": 2,
+      "type": "generic.armor",
+      "operation": "ADDITION",
+      "value": 0.25
+    },
+    {
+      "type": "generic.knockback_resistance",
+      "operation": "ADDITION",
+      "value": 0.05
+    }
+  ],
+  "bonus": [
+    {
+      "level": 20,
+      "key": "deathGraceChance"
+    }
+  ]
+}

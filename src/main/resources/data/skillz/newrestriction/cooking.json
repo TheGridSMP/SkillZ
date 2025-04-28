@@ -1,0 +1,41 @@
+[
+  {
+    "replace": false,
+    "skills": {
+      "cooking": 4
+    },
+    "blocks": [],
+    "crafting": [],
+    "entities": [],
+    "items": [
+      "minecraft:milk_bucket"
+    ],
+    "mining": []
+  },
+  {
+    "replace": false,
+    "skills": {
+      "cooking": 8
+    },
+    "blocks": [
+      "minecraft:smoker"
+    ],
+    "crafting": [],
+    "entities": [],
+    "items": [],
+    "mining": []
+  },
+  {
+    "replace": false,
+    "skills": {
+      "cooking": 10
+    },
+    "blocks": [
+      "minecraft:cauldron"
+    ],
+    "crafting": [],
+    "entities": [],
+    "items": [],
+    "mining": []
+  }
+]
