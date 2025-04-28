@@ -41,10 +41,10 @@ public class SkillBonus {
     // evadingDamageChance: Chance to evade incoming damage
 
     private final String key;
-    private final int id;
+    private final String id;
     private final int level;
 
-    public SkillBonus(String key, int id, int level) {
+    public SkillBonus(String key, String id, int level) {
         this.id = id;
         this.level = level;
         this.key = key;
@@ -54,7 +54,7 @@ public class SkillBonus {
         return key;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

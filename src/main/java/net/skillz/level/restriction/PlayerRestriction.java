@@ -5,9 +5,9 @@ import java.util.Map;
 public class PlayerRestriction {
 
     private final int id;
-    private final Map<Integer, Integer> skillLevelRestrictions; // skillid, lvl
+    private final Map<String, Integer> skillLevelRestrictions; // skillid, lvl
 
-    public PlayerRestriction(int id, Map<Integer, Integer> skillLevelRestrictions) {
+    public PlayerRestriction(int id, Map<String, Integer> skillLevelRestrictions) {
         this.id = id;
         this.skillLevelRestrictions = skillLevelRestrictions;
     }
@@ -16,7 +16,7 @@ public class PlayerRestriction {
         return id;
     }
 
-    public Map<Integer, Integer> getSkillLevelRestrictions() {
+    public Map<String, Integer> getSkillLevelRestrictions() {
         return skillLevelRestrictions;
     }
 }

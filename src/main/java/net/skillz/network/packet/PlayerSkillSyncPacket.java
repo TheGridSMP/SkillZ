@@ -11,24 +11,24 @@ import java.util.List;
 public class PlayerSkillSyncPacket implements FabricPacket {
     public static final Identifier PACKET_ID = SkillZMain.identifierOf("player_skill_sync_packet");
     protected final List<Integer> playerSkillLevels;
-    protected final List<Integer> playerSkillIds;
+    protected final List<String> playerSkillIds;
 
     public static final PacketType<PlayerSkillSyncPacket> TYPE = PacketType.create(
             PACKET_ID, PlayerSkillSyncPacket::new
     );
 
     public PlayerSkillSyncPacket(PacketByteBuf buf) {
-        this(buf.readList(PacketByteBuf::readInt), buf.readList(PacketByteBuf::readInt));
+        this(buf.readList(PacketByteBuf::readString), buf.readList(PacketByteBuf::readInt));
     }
 
-    public PlayerSkillSyncPacket(List<Integer> playerSkillIds, List<Integer> playerSkillLevels) {
+    public PlayerSkillSyncPacket(List<String> playerSkillIds, List<Integer> playerSkillLevels) {
         this.playerSkillIds = playerSkillIds;
         this.playerSkillLevels = playerSkillLevels;
     }
 
     @Override
     public void write(PacketByteBuf buf) {
-        buf.writeCollection(this.playerSkillIds, PacketByteBuf::writeInt);
+        buf.writeCollection(this.playerSkillIds, PacketByteBuf::writeString);
         buf.writeCollection(this.playerSkillLevels, PacketByteBuf::writeInt);
     }
 

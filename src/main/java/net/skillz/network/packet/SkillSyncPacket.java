@@ -17,8 +17,7 @@ import java.util.List;
 
 public class SkillSyncPacket implements FabricPacket {
     public static final Identifier PACKET_ID = SkillZMain.identifierOf("skill_sync_packet");
-    protected final List<Integer> skillIds;
-    protected final List<String> skillKeys;
+    protected final List<String> skillIds;
     protected final List<Integer> skillMaxLevels;
 
     protected final List<SkillAttributesRecord> skillAttributes;
@@ -29,12 +28,11 @@ public class SkillSyncPacket implements FabricPacket {
     );
 
     public SkillSyncPacket(PacketByteBuf buf) {
-        this(buf.readList(PacketByteBuf::readInt), buf.readList(PacketByteBuf::readString), buf.readList(PacketByteBuf::readInt), buf.readList(SkillAttributesRecord::read), SkillBonusesRecord.read(buf));
+        this(buf.readList(PacketByteBuf::readString), buf.readList(PacketByteBuf::readInt), buf.readList(SkillAttributesRecord::read), SkillBonusesRecord.read(buf));
     }
 
-    public SkillSyncPacket(List<Integer> skillIds, List<String> skillKeys, List<Integer> skillMaxLevels, List<SkillAttributesRecord> skillAttributes, SkillBonusesRecord skillBonuses) {
+    public SkillSyncPacket(List<String> skillIds, List<Integer> skillMaxLevels, List<SkillAttributesRecord> skillAttributes, SkillBonusesRecord skillBonuses) {
         this.skillIds = skillIds;
-        this.skillKeys = skillKeys;
         this.skillMaxLevels = skillMaxLevels;
         this.skillAttributes = skillAttributes;
         this.skillBonuses = skillBonuses;
@@ -42,8 +40,7 @@ public class SkillSyncPacket implements FabricPacket {
 
     @Override
     public void write(PacketByteBuf buf) {
-        buf.writeCollection(this.skillIds, PacketByteBuf::writeInt);
-        buf.writeCollection(this.skillKeys, PacketByteBuf::writeString);
+        buf.writeCollection(this.skillIds, PacketByteBuf::writeString);
         buf.writeCollection(this.skillMaxLevels, PacketByteBuf::writeInt);
         buf.writeCollection(this.skillAttributes, (bufx, list) -> new SkillAttributesRecord(list.skillAttributes()).write(bufx));
         this.skillBonuses.write(buf);
@@ -54,11 +51,7 @@ public class SkillSyncPacket implements FabricPacket {
         return TYPE;
     }
 
-    public List<String> skillKeys() {
-        return skillKeys;
-    }
-
-    public List<Integer> skillIds() {
+    public List<String> skillIds() {
         return skillIds;
     }
 
@@ -114,7 +107,7 @@ public class SkillSyncPacket implements FabricPacket {
             for (int i = 0; i < skillBonuses().size(); i++) {
                 SkillBonus skillBonus = skillBonuses().get(i);
                 buf.writeString(skillBonus.getKey());
-                buf.writeInt(skillBonus.getId());
+                buf.writeString(skillBonus.getId());
                 buf.writeInt(skillBonus.getLevel());
             }
         }
@@ -124,7 +117,7 @@ public class SkillSyncPacket implements FabricPacket {
             int size = buf.readInt();
             for (int i = 0; i < size; i++) {
                 String key = buf.readString();
-                int id = buf.readInt();
+                String id = buf.readString();
                 int level = buf.readInt();
                 skillBonuses.add(new SkillBonus(key, id, level));
             }

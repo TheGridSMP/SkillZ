@@ -100,15 +100,17 @@ public class LevelScreen extends Screen implements Tab {
         for (int i = 0; i < attributeCount; i++) {
             this.attributes.add(skillAttributes.get(i));
         }
-        for (int i = 0; i < 12; i++) {
-            if (this.levelManager.getPlayerSkills().size() <= i) {
-                break;
+        int i = 0;
+        for (Skill skill : LevelManager.SKILLS.values()) {
+            if (i < 12) {
+                if (this.levelManager.getPlayerSkills().size() <= i) {
+                    break;
+                }
+                this.levelButtons[i] = this.addDrawableChild(new WidgetButtonPage(skill,this.x + (i % 2 == 0 ? 80 : 169), this.y + 91 + i / 2 * 20, 13, 13, 33, 42, true, true, null, button -> {
+                    ClientPlayNetworking.send(new StatPacket(skill.id(), 1));
+                }));
+                i++;
             }
-
-            final int skillId = i;
-            this.levelButtons[i] = this.addDrawableChild(new WidgetButtonPage(this.x + (i % 2 == 0 ? 80 : 169), this.y + 91 + i / 2 * 20, 13, 13, 33, 42, true, true, null, button -> {
-                ClientPlayNetworking.send(new StatPacket(this.skillRow * 2 + skillId, 1));
-            }));
         }
         updateLevelButtons();
 
@@ -145,22 +147,28 @@ public class LevelScreen extends Screen implements Tab {
         this.renderBackground(context);
         context.drawTexture(BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
 
-        for (int i = 0; i < 12; i++) {
-            int skillId = i + this.skillRow * 2;
-            if (LevelManager.SKILLS.size() <= skillId) {
-                break;
-            }
-            if (this.levelManager.getPlayerSkills().size() <= skillId) {
-                break;
-            }
-            context.drawTexture(BACKGROUND_TEXTURE, this.x + (i % 2 == 0 ? 8 : 96), this.y + 87 + i / 2 * 20, 0, 215, 88, 20);
-            context.drawTexture(SkillZMain.identifierOf("textures/gui/sprites/" + LevelManager.SKILLS.get(skillId).key() + ".png"), this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 0, 0, 16, 16, 16, 16);
+        {
+            int i = 0;
+            for (Skill skill : LevelManager.SKILLS.values()) {
+                if (i < 12) {
+                    int skillId = i + this.skillRow * 2;
+                    if (LevelManager.SKILLS.size() <= skillId) {
+                        break;
+                    }
+                    if (this.levelManager.getPlayerSkills().size() <= skillId) {
+                        break;
+                    }
+                    context.drawTexture(BACKGROUND_TEXTURE, this.x + (i % 2 == 0 ? 8 : 96), this.y + 87 + i / 2 * 20, 0, 215, 88, 20);
+                    context.drawTexture(SkillZMain.identifierOf("textures/gui/sprites/" + skill.id() + ".png"), this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 0, 0, 16, 16, 16, 16);
 
-            Text skillLevel = Text.translatable("text.skillz.gui.current_level", this.levelManager.getSkillLevel(skillId), LevelManager.SKILLS.get(skillId).maxLevel());
-            context.drawText(this.textRenderer, skillLevel, this.x + (i % 2 == 0 ? 53 : 141) - this.textRenderer.getWidth(skillLevel) / 2, this.y + 94 + i / 2 * 20, 0x3F3F3F, false);
+                    Text skillLevel = Text.translatable("text.skillz.gui.current_level", this.levelManager.getSkillLevel(skill.id()), LevelManager.SKILLS.get(skill.id()).maxLevel());
+                    context.drawText(this.textRenderer, skillLevel, this.x + (i % 2 == 0 ? 53 : 141) - this.textRenderer.getWidth(skillLevel) / 2, this.y + 94 + i / 2 * 20, 0x3F3F3F, false);
 
-            if (DrawUtil.isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
-                context.drawTooltip(this.textRenderer, LevelManager.SKILLS.get(skillId).getText(), mouseX, mouseY);
+                    if (DrawUtil.isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
+                        context.drawTooltip(this.textRenderer, skill.getText(), mouseX, mouseY);
+                    }
+                    i++;
+                }
             }
         }
         if (this.levelManager.getPlayerSkills().size() > 12) {
@@ -316,18 +324,23 @@ public class LevelScreen extends Screen implements Tab {
                 return true;
             }
         }*/
-        for (int i = 0; i < 12; i++) {
-            int skillId = i + this.skillRow * 2;
-            if (LevelManager.SKILLS.size() <= skillId) {
-                break;
-            }
-            if (this.levelManager.getPlayerSkills().size() <= skillId) {
-                break;
-            }
-            if (DrawUtil.isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
-                this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                this.client.setScreen(new SkillInfoScreen(this.levelManager, skillId));
-                return true;
+
+        int i = 0;
+        for (Skill skill : LevelManager.SKILLS.values()) {
+            if (i < 12) {
+                int skillId = i + this.skillRow * 2;
+                if (LevelManager.SKILLS.size() <= skillId) {
+                    break;
+                }
+                if (this.levelManager.getPlayerSkills().size() <= skillId) {
+                    break;
+                }
+                if (DrawUtil.isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
+                    this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                    this.client.setScreen(new SkillInfoScreen(this.levelManager, skill.id()));
+                    return true;
+                }
+                i++;
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
@@ -385,10 +398,10 @@ public class LevelScreen extends Screen implements Tab {
                 this.levelButtons[i].visible = true;
             }
 
-
+            String skrillix = this.levelButtons[i].skill.id();
             if (ConfigInit.MAIN.LEVEL.overallMaxLevel > 0 && this.levelManager.getOverallLevel() >= ConfigInit.MAIN.LEVEL.overallMaxLevel) {
                 this.levelButtons[i].active = false;
-            } else if (LevelManager.SKILLS.get(skillId).maxLevel() <= this.levelManager.getPlayerSkills().get(skillId).getLevel()) {
+            } else if (LevelManager.SKILLS.get(skrillix).maxLevel() <= this.levelManager.getPlayerSkills().get(skrillix).getLevel()) {
                 this.levelButtons[i].active = false;
             } else {
                 this.levelButtons[i].active = this.levelManager.getSkillPoints() > 0;
@@ -410,6 +423,7 @@ public class LevelScreen extends Screen implements Tab {
 
     private static class WidgetButtonPage extends ButtonWidget {
 
+        private final Skill skill;
         private final boolean hoverOutline;
         private final boolean clickable;
         private final int textureX;
@@ -417,8 +431,9 @@ public class LevelScreen extends Screen implements Tab {
         private List<Text> tooltip = new ArrayList<Text>();
         private int clickedKey = -1;
 
-        public WidgetButtonPage(int x, int y, int sizeX, int sizeY, int textureX, int textureY, boolean hoverOutline, boolean clickable, @Nullable Text tooltip, ButtonWidget.PressAction onPress) {
+        public WidgetButtonPage(Skill skill, int x, int y, int sizeX, int sizeY, int textureX, int textureY, boolean hoverOutline, boolean clickable, @Nullable Text tooltip, ButtonWidget.PressAction onPress) {
             super(x, y, sizeX, sizeY, ScreenTexts.EMPTY, onPress, DEFAULT_NARRATION_SUPPLIER);
+            this.skill = skill;
             this.hoverOutline = hoverOutline;
             this.clickable = clickable;
             this.textureX = textureX;

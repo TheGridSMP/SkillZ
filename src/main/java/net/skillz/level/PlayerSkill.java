@@ -4,27 +4,27 @@ import net.minecraft.nbt.NbtCompound;
 
 public class PlayerSkill {
 
-    private final int id;
+    private final String id;
     private int level;
 
-    public PlayerSkill(int id, int level) {
+    public PlayerSkill(String id, int level) {
         this.id = id;
         this.level = level;
     }
 
     public PlayerSkill(NbtCompound nbt) {
-        this.id = nbt.getInt("Id");
+        this.id = nbt.getString("Id");
         this.level = nbt.getInt("Level");
     }
 
     public NbtCompound writeDataToNbt() {
         NbtCompound nbt = new NbtCompound();
-        nbt.putInt("Id", this.id);
+        nbt.putString("Id", this.id);
         nbt.putInt("Level", this.level);
         return nbt;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

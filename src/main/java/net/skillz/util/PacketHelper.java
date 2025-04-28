@@ -27,15 +27,13 @@ public class PacketHelper {
     }
 
     public static void updateSkills(ServerPlayerEntity serverPlayerEntity) {
-        List<Integer> skillIds = new ArrayList<>();
-        List<String> skillKeys = new ArrayList<>();
+        List<String> skillIds = new ArrayList<>();
         List<Integer> skillMaxLevels = new ArrayList<>();
         List<SkillSyncPacket.SkillAttributesRecord> skillAttributes = new ArrayList<>();
         List<SkillBonus> skillBonuses = new ArrayList<>(LevelManager.BONUSES.values());
 
         for (Skill skill : LevelManager.SKILLS.values()) {
             skillIds.add(skill.id());
-            skillKeys.add(skill.key());
             skillMaxLevels.add(skill.maxLevel());
 
             List<SkillAttribute> skillAttributeList = new ArrayList<>(skill.attributes());
@@ -43,7 +41,7 @@ public class PacketHelper {
         }
 
         SkillSyncPacket.SkillBonusesRecord skillBonusesRecord = new SkillSyncPacket.SkillBonusesRecord(skillBonuses);
-        ServerPlayNetworking.send(serverPlayerEntity, new SkillSyncPacket(skillIds, skillKeys, skillMaxLevels, skillAttributes, skillBonusesRecord));
+        ServerPlayNetworking.send(serverPlayerEntity, new SkillSyncPacket(skillIds, skillMaxLevels, skillAttributes, skillBonusesRecord));
     }
 
     public static void updatePlayerSkills(ServerPlayerEntity serverPlayerEntity, @Nullable ServerPlayerEntity oldPlayerEntity) {
@@ -56,7 +54,7 @@ public class PacketHelper {
             levelManager.setSkillPoints(oldLevelManager.getSkillPoints());
             levelManager.setLevelProgress(oldLevelManager.getLevelProgress());
         }
-        List<Integer> playerSkillIds = new ArrayList<>();
+        List<String> playerSkillIds = new ArrayList<>();
         List<Integer> playerSkillLevels = new ArrayList<>();
         for (PlayerSkill playerSkill : levelManager.getPlayerSkills().values()) {
             playerSkillIds.add(playerSkill.getId());

@@ -1,6 +1,9 @@
 package net.skillz;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.entity.attribute.ClampedEntityAttribute;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.skillz.init.*;
 import net.skillz.network.LevelServerPacket;
 import net.minecraft.enchantment.Enchantment;
@@ -14,6 +17,10 @@ public class SkillZMain implements ModInitializer {
     public static final String MOD_ID = "skillz";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
+    /*public static EntityAttribute skillAttribute = register(
+            "item_bonus", new ClampedEntityAttribute("attribute.name.item_bonus", 0.0, -9999.0, 9999.0).setTracked(true)
+    );*/
+
     @Override
     public void onInitialize() {
         CommandInit.init();
@@ -23,8 +30,6 @@ public class SkillZMain implements ModInitializer {
         EntityInit.init();
         EventInit.init();
         LoaderInit.init();
-        //JsonReaderInit.init();
-        //PlayerStatsServerPacket.init();
         LevelServerPacket.init();
         TagInit.init();
         ItemInit.init();
@@ -41,6 +46,10 @@ public class SkillZMain implements ModInitializer {
     public static String getEntityAttributeIdAsString(RegistryEntry<EntityAttribute> skillAttribute) {
         return (String)skillAttribute.getKey().map(key -> key.getValue().toString()).orElse("[unregistered]");
     }
+
+    /*private static EntityAttribute register(String id, EntityAttribute attribute) {
+        return Registry.register(Registries.ATTRIBUTE, id, attribute);
+    }*/
 }
 
 // vvv this is bars vvv

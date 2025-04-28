@@ -1,5 +1,6 @@
 package net.skillz.level;
 
+import net.minecraft.entity.attribute.EntityAttribute;
 import net.skillz.init.ConfigInit;
 import net.skillz.level.restriction.PlayerRestriction;
 import net.skillz.registry.EnchantmentRegistry;
@@ -22,7 +23,8 @@ import java.util.Map;
 
 public class LevelManager {
 
-    public static final Map<Integer, Skill> SKILLS = new HashMap<>();
+    public static final Map<String, Skill> SKILLS = new HashMap<>();
+    public static final Map<String, EntityAttribute> SKILLATTRIBUTES = new HashMap<>();
     public static final Map<Integer, PlayerRestriction> BLOCK_RESTRICTIONS = new HashMap<>();
     public static final Map<Integer, PlayerRestriction> CRAFTING_RESTRICTIONS = new HashMap<>();
     public static final Map<Integer, PlayerRestriction> ENTITY_RESTRICTIONS = new HashMap<>();
@@ -32,7 +34,7 @@ public class LevelManager {
     public static final Map<String, SkillBonus> BONUSES = new HashMap<>();
 
     private final PlayerEntity playerEntity;
-    private Map<Integer, PlayerSkill> playerSkills = new HashMap<>();
+    private Map<String, PlayerSkill> playerSkills = new HashMap<>();
 
     // Level
     private int overallLevel;
@@ -86,11 +88,11 @@ public class LevelManager {
         nbt.put("Skills", skills);
     }
 
-    public Map<Integer, PlayerSkill> getPlayerSkills() {
+    public Map<String, PlayerSkill> getPlayerSkills() {
         return playerSkills;
     }
 
-    public void setPlayerSkills(Map<Integer, PlayerSkill> playerSkills) {
+    public void setPlayerSkills(Map<String, PlayerSkill> playerSkills) {
         this.playerSkills = playerSkills;
     }
 
@@ -126,11 +128,11 @@ public class LevelManager {
         return levelProgress;
     }
 
-    public void setSkillLevel(int skillId, int level) {
+    public void setSkillLevel(String skillId, int level) {
         this.playerSkills.get(skillId).setLevel(level);
     }
 
-    public int getSkillLevel(int skillId) {
+    public int getSkillLevel(String skillId) {
         // Maybe add a containsKey check here
         return this.playerSkills.get(skillId).getLevel();
     }
@@ -179,7 +181,7 @@ public class LevelManager {
         int itemId = Registries.BLOCK.getRawId(block);
         if (BLOCK_RESTRICTIONS.containsKey(itemId)) {
             PlayerRestriction playerRestriction = BLOCK_RESTRICTIONS.get(itemId);
-            for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
+            for (Map.Entry<String, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
                 if (this.getSkillLevel(entry.getKey()) < entry.getValue()) {
                     return false;
                 }
@@ -188,13 +190,14 @@ public class LevelManager {
         return true;
     }
 
-    public Map<Integer, Integer> getRequiredBlockLevel(Block block) {
+    public Map<String, Integer> getRequiredBlockLevel(Block block) {
         int itemId = Registries.BLOCK.getRawId(block);
         if (BLOCK_RESTRICTIONS.containsKey(itemId)) {
             PlayerRestriction playerRestriction = BLOCK_RESTRICTIONS.get(itemId);
             return playerRestriction.getSkillLevelRestrictions();
         }
-        return Map.of(0, 0);
+        //return Map.of(0, 0);
+        return null;
     }
 
     // crafting
@@ -202,7 +205,7 @@ public class LevelManager {
         int itemId = Registries.ITEM.getRawId(item);
         if (CRAFTING_RESTRICTIONS.containsKey(itemId)) {
             PlayerRestriction playerRestriction = CRAFTING_RESTRICTIONS.get(itemId);
-            for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
+            for (Map.Entry<String, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
                 if (this.getSkillLevel(entry.getKey()) < entry.getValue()) {
                     return false;
                 }
@@ -211,13 +214,13 @@ public class LevelManager {
         return true;
     }
 
-    public Map<Integer, Integer> getRequiredCraftingLevel(Item item) {
+    public Map<String, Integer> getRequiredCraftingLevel(Item item) {
         int itemId = Registries.ITEM.getRawId(item);
         if (CRAFTING_RESTRICTIONS.containsKey(itemId)) {
             PlayerRestriction playerRestriction = CRAFTING_RESTRICTIONS.get(itemId);
             return playerRestriction.getSkillLevelRestrictions();
         }
-        return Map.of(0, 0);
+        return null;
     }
 
     // entity
@@ -225,7 +228,7 @@ public class LevelManager {
         int entityId = Registries.ENTITY_TYPE.getRawId(entityType);
         if (ENTITY_RESTRICTIONS.containsKey(entityId)) {
             PlayerRestriction playerRestriction = ENTITY_RESTRICTIONS.get(entityId);
-            for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
+            for (Map.Entry<String, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
                 if (this.getSkillLevel(entry.getKey()) < entry.getValue()) {
                     return false;
                 }
@@ -234,13 +237,13 @@ public class LevelManager {
         return true;
     }
 
-    public Map<Integer, Integer> getRequiredEntityLevel(EntityType<?> entityType) {
+    public Map<String, Integer> getRequiredEntityLevel(EntityType<?> entityType) {
         int entityId = Registries.ENTITY_TYPE.getRawId(entityType);
         if (ENTITY_RESTRICTIONS.containsKey(entityId)) {
             PlayerRestriction playerRestriction = ENTITY_RESTRICTIONS.get(entityId);
             return playerRestriction.getSkillLevelRestrictions();
         }
-        return Map.of(0, 0);
+        return null;
     }
 
     // item
@@ -248,7 +251,7 @@ public class LevelManager {
         int itemId = Registries.ITEM.getRawId(item);
         if (ITEM_RESTRICTIONS.containsKey(itemId)) {
             PlayerRestriction playerRestriction = ITEM_RESTRICTIONS.get(itemId);
-            for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
+            for (Map.Entry<String, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
                 if (this.getSkillLevel(entry.getKey()) < entry.getValue()) {
                     return false;
                 }
@@ -257,13 +260,13 @@ public class LevelManager {
         return true;
     }
 
-    public Map<Integer, Integer> getRequiredItemLevel(Item item) {
+    public Map<String, Integer> getRequiredItemLevel(Item item) {
         int itemId = Registries.ITEM.getRawId(item);
         if (ITEM_RESTRICTIONS.containsKey(itemId)) {
             PlayerRestriction playerRestriction = ITEM_RESTRICTIONS.get(itemId);
             return playerRestriction.getSkillLevelRestrictions();
         }
-        return Map.of(0, 0);
+        return null;
     }
 
     // mining
@@ -271,7 +274,7 @@ public class LevelManager {
         int itemId = Registries.BLOCK.getRawId(block);
         if (MINING_RESTRICTIONS.containsKey(itemId)) {
             PlayerRestriction playerRestriction = MINING_RESTRICTIONS.get(itemId);
-            for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
+            for (Map.Entry<String, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
                 if (this.getSkillLevel(entry.getKey()) < entry.getValue()) {
                     return false;
                 }
@@ -280,13 +283,13 @@ public class LevelManager {
         return true;
     }
 
-    public Map<Integer, Integer> getRequiredMiningLevel(Block block) {
+    public Map<String, Integer> getRequiredMiningLevel(Block block) {
         int itemId = Registries.BLOCK.getRawId(block);
         if (MINING_RESTRICTIONS.containsKey(itemId)) {
             PlayerRestriction playerRestriction = MINING_RESTRICTIONS.get(itemId);
             return playerRestriction.getSkillLevelRestrictions();
         }
-        return Map.of(0, 0);
+        return null;
     }
 
     // enchantment
@@ -294,7 +297,7 @@ public class LevelManager {
         int enchantmentId = EnchantmentRegistry.getId(enchantment, level);
         if (ENCHANTMENT_RESTRICTIONS.containsKey(enchantmentId)) {
             PlayerRestriction playerRestriction = ENCHANTMENT_RESTRICTIONS.get(enchantmentId);
-            for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
+            for (Map.Entry<String, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
                 if (this.getSkillLevel(entry.getKey()) < entry.getValue()) {
                     return false;
                 }
@@ -303,16 +306,16 @@ public class LevelManager {
         return true;
     }
 
-    public Map<Integer, Integer> getRequiredEnchantmentLevel(RegistryEntry<Enchantment> enchantment, int level) {
+    public Map<String, Integer> getRequiredEnchantmentLevel(RegistryEntry<Enchantment> enchantment, int level) {
         int enchantmentId = EnchantmentRegistry.getId(enchantment, level);
         if (ENCHANTMENT_RESTRICTIONS.containsKey(enchantmentId)) {
             PlayerRestriction playerRestriction = ENCHANTMENT_RESTRICTIONS.get(enchantmentId);
             return playerRestriction.getSkillLevelRestrictions();
         }
-        return Map.of(0, 0);
+        return null;
     }
 
-    public boolean resetSkill(int skillId) {
+    public boolean resetSkill(String skillId) {
         int level = this.getSkillLevel(skillId);
         if (level > 0) {
             this.setSkillPoints(this.getSkillPoints() + level);

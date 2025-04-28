@@ -94,8 +94,8 @@ public class RestrictionPacket implements FabricPacket {
                 PlayerRestriction playerRestriction = restrictions().get(i);
                 buf.writeInt(playerRestriction.getId());
                 buf.writeInt(playerRestriction.getSkillLevelRestrictions().size());
-                for (Map.Entry<Integer, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
-                    buf.writeInt(entry.getKey());
+                for (Map.Entry<String, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
+                    buf.writeString(entry.getKey());
                     buf.writeInt(entry.getValue());
                 }
             }
@@ -112,9 +112,9 @@ public class RestrictionPacket implements FabricPacket {
             for (int i = 0; i < size; i++) {
                 int id = buf.readInt();
                 int skillLevelSize = buf.readInt();
-                Map<Integer, Integer> skillLevelRestrictions = new HashMap<>();
+                Map<String, Integer> skillLevelRestrictions = new HashMap<>();
                 for (int u = 0; u < skillLevelSize; u++) {
-                    int skillId = buf.readInt();
+                    String skillId = buf.readString();
                     int skillLevel = buf.readInt();
                     skillLevelRestrictions.put(skillId, skillLevel);
                 }

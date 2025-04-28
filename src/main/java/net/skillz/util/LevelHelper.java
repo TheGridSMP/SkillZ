@@ -2,9 +2,7 @@ package net.skillz.util;
 
 import net.skillz.SkillZMain;
 import net.skillz.access.LevelManagerAccess;
-import net.skillz.level.LevelManager;
-import net.skillz.level.Skill;
-import net.skillz.level.SkillAttribute;
+import net.skillz.level.*;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -22,7 +20,7 @@ public class LevelHelper {
                 if (skillAttribute.getBaseValue() > -9999.0f) {
                     attr.setBaseValue(skillAttribute.getBaseValue());
                 }
-                Identifier identifier = SkillZMain.identifierOf(skill.key());
+                Identifier identifier = SkillZMain.identifierOf(skill.id());
                 UUID uid = UUID.nameUUIDFromBytes(identifier.toString().getBytes());
                 if (attr.getModifier(uid) != null && attr.hasModifier(attr.getModifier(uid))) {
                     attr.removeModifier(uid);

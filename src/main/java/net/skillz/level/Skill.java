@@ -4,10 +4,10 @@ import net.minecraft.text.Text;
 
 import java.util.List;
 
-public record Skill(int id, String key, int maxLevel, List<SkillAttribute> attributes) {
+public record Skill(String id, int maxLevel, List<SkillAttribute> attributes) {
 
     public Text getText() {
-        return Text.translatable("skill.skillz." + key);
+        return Text.translatable("skill.skillz." + id);
     }
 
 }

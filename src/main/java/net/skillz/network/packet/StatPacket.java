@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier;
 public class StatPacket implements FabricPacket {
     public static final Identifier PACKET_ID = SkillZMain.identifierOf("stat_packet");
 
-    protected final int id;
+    protected final String id;
     protected final int level;
 
     public static final PacketType<StatPacket> TYPE = PacketType.create(
@@ -24,17 +24,17 @@ public class StatPacket implements FabricPacket {
     );
 
     public StatPacket(PacketByteBuf buf) {
-        this(buf.readInt(), buf.readInt());
+        this(buf.readString(), buf.readInt());
     }
 
-    public StatPacket(int id, int level) {
+    public StatPacket(String id, int level) {
         this.id = id;
         this.level = level;
     }
 
     @Override
     public void write(PacketByteBuf buf) {
-        buf.writeInt(this.id);
+        buf.writeString(this.id);
         buf.writeInt(this.level);
     }
 
@@ -47,7 +47,7 @@ public class StatPacket implements FabricPacket {
         return level;
     }
 
-    public int id() {
+    public String id() {
         return id;
     }
 

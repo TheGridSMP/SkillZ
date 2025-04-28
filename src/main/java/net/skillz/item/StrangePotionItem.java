@@ -35,10 +35,10 @@ public class StrangePotionItem extends Item {
             Criteria.CONSUME_ITEM.trigger(playerEntity, stack);
 
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
-            List<Integer> list = new ArrayList<>(levelManager.getPlayerSkills().keySet());
+            List<String> list = new ArrayList<>(levelManager.getPlayerSkills().keySet());
             Collections.shuffle(list);
 
-            for (int skillId : list) {
+            for (String skillId : list) {
                 if (levelManager.resetSkill(skillId) && !ConfigInit.MAIN.LEVEL.opStrangePotion) {
                     LevelHelper.updateSkill(playerEntity, LevelManager.SKILLS.get(skillId));
                     break;

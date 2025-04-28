@@ -150,7 +150,7 @@ public class LineWidget {
                 if (!showTooltip && DrawUtil.isPointWithinBounds(x + separator, y, 16, 16, mouseX, mouseY)) {
                     List<Text> tooltip = new ArrayList<>();
                     tooltip.add(tooltipTitle);
-                    for (Map.Entry<Integer, Integer> restriction : entry.getValue().getSkillLevelRestrictions().entrySet()) {
+                    for (Map.Entry<String, Integer> restriction : entry.getValue().getSkillLevelRestrictions().entrySet()) {
                         tooltip.add(Text.of(LevelManager.SKILLS.get(restriction.getKey()).getText().getString() + " " + Text.translatable("text.skillz.gui.short_level", restriction.getValue()).getString()));
                     }
                     drawContext.drawTooltip(this.client.textRenderer, tooltip, mouseX, mouseY);

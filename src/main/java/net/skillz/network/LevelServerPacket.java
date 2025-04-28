@@ -22,7 +22,7 @@ public class LevelServerPacket {
 
         ServerPlayNetworking.registerGlobalReceiver(StatPacket.PACKET_ID, (server, player, handler, buffer, sender)  -> {
             StatPacket payload = new StatPacket(buffer);
-            int id = payload.id();
+            String id = payload.id();
             int level = payload.level();
 
             server.execute(() -> {
@@ -49,7 +49,7 @@ public class LevelServerPacket {
                     }
 
                     for (int i = 1; i <= level; i++) {
-                        CriteriaInit.SKILL_UP.trigger(player, skill.key(), playerSkill.getLevel() + level);
+                        CriteriaInit.SKILL_UP.trigger(player, skill.id(), playerSkill.getLevel() + level);
                     }
 
                     levelManager.setSkillLevel(id, playerSkill.getLevel() + level);

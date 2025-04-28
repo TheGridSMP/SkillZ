@@ -27,8 +27,7 @@ public class LevelClientPacket {
     public static void init() {
         ClientPlayNetworking.registerGlobalReceiver(SkillSyncPacket.PACKET_ID, (client, handler, buf, sender) -> {
             SkillSyncPacket payload = new SkillSyncPacket(buf);
-            List<Integer> skillIds = payload.skillIds();
-            List<String> skillKeys = payload.skillKeys();
+            List<String> skillIds = payload.skillIds();
             List<Integer> skillMaxLevels = payload.skillMaxLevels();
             List<SkillSyncPacket.SkillAttributesRecord> skillAttributes = payload.skillAttributes();
             SkillSyncPacket.SkillBonusesRecord skillBonuses = payload.skillBonuses();
@@ -38,7 +37,7 @@ public class LevelClientPacket {
 
                 LevelManager.SKILLS.clear();
                 for (int i = 0; i < skillIds.size(); i++) {
-                    Skill skill = new Skill(skillIds.get(i), skillKeys.get(i), skillMaxLevels.get(i), skillAttributes.get(i).skillAttributes());
+                    Skill skill = new Skill(skillIds.get(i) , skillMaxLevels.get(i), skillAttributes.get(i).skillAttributes());
                     LevelManager.SKILLS.put(skillIds.get(i), skill);
 
                     if (!levelManager.getPlayerSkills().containsKey(skillIds.get(i))) {
@@ -55,7 +54,7 @@ public class LevelClientPacket {
         });
 
         ClientPlayNetworking.registerGlobalReceiver(PlayerSkillSyncPacket.PACKET_ID, (client, handler, buf, sender) -> {
-            List<Integer> playerSkillIds = buf.readList(PacketByteBuf::readInt);
+            List<String> playerSkillIds = buf.readList(PacketByteBuf::readString);
             List<Integer> playerSkillLevels = buf.readList(PacketByteBuf::readInt);
 
             client.execute(() -> {
@@ -123,7 +122,7 @@ public class LevelClientPacket {
 
         ClientPlayNetworking.registerGlobalReceiver(StatPacket.PACKET_ID, (client, handler, buf, sender) -> {
             StatPacket payload = new StatPacket(buf);
-            int id = payload.id();
+            String id = payload.id();
             int level = payload.level();
             client.execute(() -> {
                 LevelManager levelManager = ((LevelManagerAccess) client.player).getLevelManager();

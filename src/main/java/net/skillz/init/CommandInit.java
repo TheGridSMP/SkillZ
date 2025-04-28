@@ -24,7 +24,7 @@ import java.util.Collection;
 public class CommandInit {
 
     private static final SuggestionProvider<ServerCommandSource> SKILLS_SUGGESTION_PROVIDER = (context, builder) -> CommandSource.suggestMatching(
-            LevelManager.SKILLS.values().stream().map(Skill::key), builder);
+            LevelManager.SKILLS.values().stream().map(Skill::id), builder);
 
     public static void init() {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated, environment) -> {
@@ -121,7 +121,7 @@ public class CommandInit {
                     playerSkillLevel = levelManager.getOverallLevel();
                 } else {
                     for (Skill overallSkill : LevelManager.SKILLS.values()) {
-                        if (overallSkill.key().equals(skillKey)) {
+                        if (overallSkill.id().equals(skillKey)) {
                             playerSkillLevel = levelManager.getSkillLevel(overallSkill.id());
                             skill = overallSkill;
                             break;
@@ -141,7 +141,7 @@ public class CommandInit {
                 } else if (reference == 3) {
                     if (skillKey.equals("all")) {
                         for (Skill overallSkill : LevelManager.SKILLS.values()) {
-                            final String finalSkill = overallSkill.key();
+                            final String finalSkill = overallSkill.id();
                             source.sendFeedback(() -> Text.translatable("commands.level.printLevel", serverPlayerEntity.getDisplayName(),
                                             StringUtils.capitalize(finalSkill) + (finalSkill.equals("level") || finalSkill.equals("points") ? ":" : " Level:"),
                                             finalSkill.equals("level") ? levelManager.getOverallLevel()

@@ -20,10 +20,10 @@ public class LevelEntityWTHITProvider implements IEntityComponentProvider {
         if (config.getBoolean(RenderInit.MINEABLE_INFO)) {
             LevelManager levelManager = ((LevelManagerAccess) accessor.getPlayer()).getLevelManager();
             if (!levelManager.hasRequiredEntityLevel(accessor.getEntity().getType())) {
-                for (Map.Entry<Integer, Integer> entry : levelManager.getRequiredEntityLevel(accessor.getEntity().getType()).entrySet()) {
+                for (Map.Entry<String, Integer> entry : levelManager.getRequiredEntityLevel(accessor.getEntity().getType()).entrySet()) {
                     Formatting formatting =
                             levelManager.getSkillLevel(entry.getKey()) < entry.getValue() ? Formatting.RED : Formatting.GREEN;
-                    tooltip.addLine(Text.translatable("restriction.skillz." + LevelManager.SKILLS.get(entry.getKey()).key() + ".tooltip", entry.getValue()).formatted(formatting));
+                    tooltip.addLine(Text.translatable("restriction.skillz." + LevelManager.SKILLS.get(entry.getKey()).id() + ".tooltip", entry.getValue()).formatted(formatting));
                 }
             }
         }
