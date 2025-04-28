@@ -60,7 +60,7 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
         }
         EnchantmentRegistry.updateEnchantments();
 
-        manager.findResources("newrestriction", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
+        manager.findResources("restriction", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
             try {
                 if (!ConfigInit.MAIN.PROGRESSION.defaultRestrictions && id.getPath().endsWith("/default.json")) {
                     return;
@@ -76,8 +76,6 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                 }*/
 
                 for (JsonElement element : data) {
-                    System.out.println(element);
-
                     JsonObject restrictionJsonObject = element.getAsJsonObject();
                     Map<String, Integer> skillLevelRestrictions = new HashMap<>();
                     boolean replace = restrictionJsonObject.has("replace") && restrictionJsonObject.get("replace").getAsBoolean();

@@ -49,10 +49,10 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
         AtomicInteger skillCount = new AtomicInteger();
         List<Integer> attributeIds = new ArrayList<>();
 
-        manager.findResources("newskills", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
-            System.out.println(id);
+        manager.findResources("skill", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
+            /*System.out.println(id);
             System.out.println(id.getPath());
-            System.out.println(id.getNamespace());
+            System.out.println(id.getNamespace());*/
             try {
                 if (!ConfigInit.MAIN.PROGRESSION.defaultSkills && id.getPath().endsWith("/default.json")) {
                     return;
