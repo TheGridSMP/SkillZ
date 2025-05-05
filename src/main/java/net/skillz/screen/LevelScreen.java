@@ -127,6 +127,7 @@ public class LevelScreen extends Screen implements Tab {
 
             i++;
         }
+        updateLevelButtons();
 
         this.bookWidgets.clear();
         bookWidgets.add(new BookWidget(Text.translatable("text.skillz.gui.attributes"), this.x + 178, this.y + 5,
@@ -184,7 +185,7 @@ public class LevelScreen extends Screen implements Tab {
                     i++;
                 //}
             }
-        }
+        }*/
         if (this.levelManager.getPlayerSkills().size() > 12) {
             int scrollLevels = (this.levelManager.getPlayerSkills().size() - 12) / 2;
             if (this.levelManager.getPlayerSkills().size() % 2 != 0) {
@@ -195,19 +196,29 @@ public class LevelScreen extends Screen implements Tab {
             context.drawTexture(BACKGROUND_TEXTURE, this.x + 186, this.y + 87 + sliderY, 200, 0, 6, 34);
         } else {
             context.drawTexture(BACKGROUND_TEXTURE, this.x + 186, this.y + 87, 206, 0, 6, 34);
-        }*/
+        }
 
         {
             int i = 0;
             for (WidgetButtonPage page : newLeveButtons) {
-                if (page.chopped) {
+                if (page.chopped && (i < 12)) {
                     context.drawTexture(BACKGROUND_TEXTURE, this.x + (i % 2 == 0 ? 8 : 96), this.y + 87 + i / 2 * 20, 0, 215, 88, 20);
                     context.drawTexture(SkillZMain.identifierOf("textures/gui/sprites/" + page.skill.id() + ".png"), this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 0, 0, 16, 16, 16, 16);
 
                     Text skillLevel = Text.translatable("text.skillz.gui.current_level", this.levelManager.getSkillLevel(page.skill.id()), LevelManager.SKILLS.get(page.skill.id()).maxLevel());
                     context.drawText(this.textRenderer, skillLevel, this.x + (i % 2 == 0 ? 53 : 141) - this.textRenderer.getWidth(skillLevel) / 2, this.y + 94 + i / 2 * 20, 0x3F3F3F, false);
 
-                    page.renderButton(context, mouseX, mouseX, delta);
+                    //page.renderButton(context, mouseX, mouseX, delta);
+                    MinecraftClient minecraftClient = MinecraftClient.getInstance();
+                    context.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                    RenderSystem.enableBlend();
+                    RenderSystem.enableDepthTest();
+                    int xx = page.hoverOutline ? page.getTextureY() : 0;
+                    context.drawTexture(ICON_TEXTURE, this.x + (i % 2 == 0 ? 80 : 169), this.y + 91 + i / 2 * 20, page.textureX + xx * page.getWidth(), page.textureY, page.getWidth(), page.getHeight());
+                    context.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
+                    if (page.isHovered()) {
+                        context.drawTooltip(minecraftClient.textRenderer, page.tooltip, mouseX, mouseY);
+                    }
 
                     if (DrawUtil.isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
                         context.drawTooltip(this.textRenderer, page.skill.getText(), mouseX, mouseY);
@@ -378,6 +389,26 @@ public class LevelScreen extends Screen implements Tab {
                 i++;
             }
         }*/
+
+        {
+            int i = 0;
+            for (WidgetButtonPage page : newLeveButtons) {
+                if (page.chopped && (i < 12)) {
+                    if (DrawUtil.isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
+                        this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                        this.client.setScreen(new SkillInfoScreen(this.levelManager, page.skill.id()));
+                        return true;
+                    }
+
+                    if (DrawUtil.isPointWithinBounds(this.x + (i % 2 == 0 ? 80 : 169), this.y + 91 + i / 2 * 20, 13, 13, mouseX, mouseY)) {
+                        this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                        page.onClick(mouseX, mouseY);
+                        return true;
+                    }
+                    i++;
+                }
+            }
+        }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -398,21 +429,57 @@ public class LevelScreen extends Screen implements Tab {
             //System.out.println(this.newLeveButtons.size());
             //this.newLeveButtons.get(this.newLeveButtons.size()-1).visible = false;
             //this.newLeveButtons.get(0).visible = false;
-            int i = 0;
-            int x = 0;
-            for (WidgetButtonPage page : this.newLeveButtons) {
-                System.out.println(i + " " + x);
-                if (!page.chopped) {
-                    x++;
-                }
-                if (page.chopped) {
-                    if (i < 2 + x) {
-                        this.newLeveButtons.get(i).chopped = false;
+
+            if (verticalAmount < 0) {
+                int i = 0;
+                int x = 0;
+                for (WidgetButtonPage page : this.newLeveButtons) {
+                    if (this.newLeveButtons.size() > 12) {
+                        int others = this.newLeveButtons.size() - 12;
+                        if (x < others) {
+                            //System.out.println(i + " " + x + " " + others);
+                            if (!page.chopped) {
+                                x++;
+                            }
+                            /*if (i > 11) {
+                                this.newLeveButtons.get(i+x).chopped = true;
+                            }*/
+                            if (page.chopped) {
+                                if (i < 2 + x) {
+                                    this.newLeveButtons.get(i).chopped = false;
+                                }
+                            }
+                            i++;
+                        }
                     }
                 }
-                i++;
+            }else {
+                int i = 0;
+                int x = 0;
+                //System.out.println(this.newLeveButtons.size());
+                for (WidgetButtonPage page : this.newLeveButtons) {
+                    if (this.newLeveButtons.size() > 12) {
+                        int others = this.newLeveButtons.size() - 12;
+                        //if (x < others) {
+                            //System.out.println(i + " " + x + " " + others);
+                            /*if (!page.chopped) {
+                                x++;
+                            }*/
+                            /*if (i > 11) {
+                                this.newLeveButtons.get(i).chopped = false;
+                            }*/
+                            if (!page.chopped) {
+                                if (i < 2) {
+                                    this.newLeveButtons.get(i).chopped = true;
+                                }
+                            }
+                            i++;
+                        //}
+                    }
+                }
             }
-            /*int maxSkillRow = (this.levelManager.getPlayerSkills().size() - 12) / 2;
+
+            int maxSkillRow = (this.levelManager.getPlayerSkills().size() - 12) / 2;
             if (this.levelManager.getPlayerSkills().size() % 2 != 0) {
                 maxSkillRow += 1;
             }
@@ -426,7 +493,7 @@ public class LevelScreen extends Screen implements Tab {
             }
             if (oldSkillRow != this.skillRow) {
                 updateLevelButtons();
-            }*/
+            }
         }
         return super.mouseScrolled(mouseX, mouseY, verticalAmount);
     }
@@ -437,25 +504,15 @@ public class LevelScreen extends Screen implements Tab {
     }
 
     public void updateLevelButtons() {
-        for (int i = 0; i < this.levelButtons.length; i++) {
-            if (this.levelManager.getPlayerSkills().size() <= i) {
-                break;
-            }
-            int skillId = i + this.skillRow * 2;
-            if (LevelManager.SKILLS.size() <= skillId) {
-                this.levelButtons[i].visible = false;
-                return;
-            } else {
-                this.levelButtons[i].visible = true;
-            }
-
-            String skrillix = this.levelButtons[i].skill.id();
+        int i = 0;
+        for (WidgetButtonPage page : newLeveButtons) {
+            String skrillix = page.skill.id();
             if (ConfigInit.MAIN.LEVEL.overallMaxLevel > 0 && this.levelManager.getOverallLevel() >= ConfigInit.MAIN.LEVEL.overallMaxLevel) {
-                this.levelButtons[i].active = false;
+                page.active = false;
             } else if (LevelManager.SKILLS.get(skrillix).maxLevel() <= this.levelManager.getPlayerSkills().get(skrillix).getLevel()) {
-                this.levelButtons[i].active = false;
+                page.active = false;
             } else {
-                this.levelButtons[i].active = this.levelManager.getSkillPoints() > 0;
+                page.active = this.levelManager.getSkillPoints() > 0;
             }
             if (ConfigInit.MAIN.LEVEL.allowHigherSkillLevel && this.levelManager.getSkillPoints() > 0) {
                 boolean maxedAllSkills = true;
@@ -466,9 +523,10 @@ public class LevelScreen extends Screen implements Tab {
                     }
                 }
                 if (maxedAllSkills) {
-                    this.levelButtons[i].active = true;
+                    page.active = true;
                 }
             }
+            i++;
         }
     }
 
