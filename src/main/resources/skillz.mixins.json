@@ -136,6 +136,7 @@
     "misc.VehicleInventoryMixin",
     "network.ClientPlayNetworkHandlerMixin",
     "network.ClientPlayPacketListenerMixin",
+    "network.NetworkStateMixin",
     "player.ClientPlayerListS2CPacketMixin",
     "player.CraftingScreenHandlerMixin",
     "player.HungerManagerMixin",
