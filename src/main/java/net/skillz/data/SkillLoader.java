@@ -5,8 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.entity.attribute.ClampedEntityAttribute;
-import net.minecraft.registry.Registry;
 import net.skillz.SkillZMain;
 import net.skillz.init.ConfigInit;
 import net.skillz.level.LevelManager;
@@ -21,7 +19,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
-import org.apache.commons.compress.utils.FileNameUtils;
+import net.skillz.util.FileUtil;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,7 +58,7 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
                 InputStream stream = resourceRef.getInputStream();
                 JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
 
-                String skillId = FileNameUtils.getBaseName(id.getPath());
+                String skillId = FileUtil.getBaseName(id.getPath());
 
                 int maxLevel = data.get("maxlevel").getAsInt();
                 List<SkillAttribute> attributes = new ArrayList<>();

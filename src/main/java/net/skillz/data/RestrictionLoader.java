@@ -8,15 +8,12 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.skillz.SkillZMain;
 import net.skillz.init.ConfigInit;
 import net.skillz.level.LevelManager;
-import net.skillz.level.Skill;
 import net.skillz.level.restriction.PlayerRestriction;
 import net.skillz.registry.EnchantmentRegistry;
 import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
-import org.apache.commons.compress.utils.FileNameUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.skillz.util.FileUtil;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -68,7 +65,7 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                 InputStream stream = resourceRef.getInputStream();
                 JsonArray data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonArray();
 
-                String restrictionFile = FileNameUtils.getBaseName(id.getPath());
+                String restrictionFile = FileUtil.getBaseName(id.getPath());
 
                 /*Map<String, Integer> skillKeyIdMap = new HashMap<>();
                 for (Skill skill : LevelManager.SKILLS.values()) {
