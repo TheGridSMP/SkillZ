@@ -23,7 +23,7 @@ public enum LevelEntityJadeProvider implements IEntityComponentProvider {
 
     @Override
     public void appendTooltip(ITooltip tooltip, EntityAccessor entityAccessor, IPluginConfig iPluginConfig) {
-        LevelManager levelManager = ((LevelManagerAccess) entityAccessor.getPlayer()).getLevelManager();
+        LevelManager levelManager = ((LevelManagerAccess) entityAccessor.getPlayer()).skillz$getLevelManager();
         if (!levelManager.hasRequiredEntityLevel(entityAccessor.getEntity().getType())) {
             for (Map.Entry<String, Integer> entry : levelManager.getRequiredEntityLevel(entityAccessor.getEntity().getType()).entrySet()) {
                 Formatting formatting =

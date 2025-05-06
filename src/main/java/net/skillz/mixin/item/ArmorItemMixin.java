@@ -22,29 +22,13 @@ public class ArmorItemMixin {
 
     @Inject(method = "dispenseArmor", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;getPreferredEquipmentSlot(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/entity/EquipmentSlot;"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private static void dispenseArmorMixin(BlockPointer pointer, ItemStack armor, CallbackInfoReturnable<Boolean> info, BlockPos blockPos, List<LivingEntity> list, LivingEntity livingEntity) {
-        /*if (livingEntity instanceof PlayerEntity && armor.getItem() instanceof ArmorItem) {
-            ArrayList<Object> levelList = LevelLists.customItemList;
-            try {
-                if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(armor.getItem()).toString())) {
-                    if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) livingEntity, levelList, Registries.ITEM.getId(armor.getItem()).toString(), true))
-                        info.setReturnValue(false);
-                } else {
-                    levelList = LevelLists.armorList;
-                    if (!PlayerStatsManager.playerLevelisHighEnough((PlayerEntity) livingEntity, levelList, ((ArmorItem) armor.getItem()).getMaterial().getName().toLowerCase(), true))
-                        info.setReturnValue(false);
-                }
-            } catch (AbstractMethodError ignore) {
-            }
-        }*/
-        if (livingEntity instanceof PlayerEntity playerEntity) {
-            if (playerEntity.isCreative()) {
-                return;
-            }
-            LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
-            if (!levelManager.hasRequiredItemLevel(armor.getItem())) {
-                info.setReturnValue(false);
-            }
-        }
+        if (!(livingEntity instanceof PlayerEntity player) || player.isCreative())
+            return;
+
+        LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
+
+        if (!levelManager.hasRequiredItemLevel(armor.getItem()))
+            info.setReturnValue(false);
     }
 
 }

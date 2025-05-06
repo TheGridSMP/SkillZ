@@ -34,7 +34,7 @@ public class StrangePotionItem extends Item {
         if (!world.isClient() && user instanceof ServerPlayerEntity playerEntity) {
             Criteria.CONSUME_ITEM.trigger(playerEntity, stack);
 
-            LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
+            LevelManager levelManager = ((LevelManagerAccess) playerEntity).skillz$getLevelManager();
             List<String> list = new ArrayList<>(levelManager.getPlayerSkills().keySet());
             Collections.shuffle(list);
 

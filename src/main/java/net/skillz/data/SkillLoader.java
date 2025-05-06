@@ -28,9 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class SkillLoader implements SimpleSynchronousResourceReloadListener {
 
-    //private static List<String> skillList = new ArrayList<>();
-    private static final List<Integer> skillList = new ArrayList<>();
-
     @Override
     public Identifier getFabricId() {
         return SkillZMain.identifierOf("skills");
@@ -48,13 +45,10 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
         List<Integer> attributeIds = new ArrayList<>();
 
         manager.findResources("skill", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
-            System.out.println(id);
-            //System.out.println(id.getPath());
-            //System.out.println(id.getNamespace());
             try {
-                if (!ConfigInit.MAIN.PROGRESSION.defaultSkills && id.getNamespace().equals("skillz")) {
+                if (!ConfigInit.MAIN.PROGRESSION.defaultSkills && id.getNamespace().equals("skillz"))
                     return;
-                }
+
                 InputStream stream = resourceRef.getInputStream();
                 JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
 
@@ -69,7 +63,6 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
                     //TODO EntityAttribute registry keys
                     Identifier iden;
                     if (attributeJsonObject.get("type").getAsString().contains("attribute-backport:player.block_interaction_range") && FabricLoader.getInstance().isModLoaded("reach-entity-attributes")) {
-                        System.out.println("ASEX");
                         iden = Identifier.splitOn("reach-entity-attributes:reach", ':');
                     }else {
                         iden = Identifier.splitOn(attributeJsonObject.get("type").getAsString(), ':');
@@ -95,7 +88,6 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
                         }
                     } else {
                         SkillZMain.LOGGER.warn("Attribute {} is not a usable attribute in skill {}.", attributeJsonObject.get("type").getAsString(), data.get("id").getAsString());
-                        continue;
                     }
                 }
 
@@ -122,18 +114,10 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
             }
         });
 
-        /*for (int i = 0; i < skillCount.get(); i++) {
-            if (!LevelManager.SKILLS.containsKey(i)) {
-                throw new MissingResourceException("Missing skill with id " + i + "! Please add a skill with this id.", this.getClass().getName(), SkillZMain.MOD_ID);
-            }
-        }*/
         for (int i = 0; i < attributeIds.size(); i++) {
             if (!attributeIds.contains(i)) {
                 throw new MissingResourceException("Missing attribute with id " + i + "! Please add an attribute with this id.", this.getClass().getName(), SkillZMain.MOD_ID);
             }
         }
-        /*Map<Integer, Skill> sortedMap = new TreeMap<>(LevelManager.SKILLS);
-        LevelManager.SKILLS.clear();
-        LevelManager.SKILLS.putAll(sortedMap);*/
     }
 }

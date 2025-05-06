@@ -33,7 +33,6 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
 
@@ -51,18 +50,15 @@ public class LevelScreen extends Screen implements Tab {
 
     private LevelManager levelManager;
     private ClientPlayerEntity clientPlayerEntity;
-    //private Quaternionf quaternionf = new Quaternionf().rotateZ((float) Math.PI).rotateLocalY(2.7f);
-    //private boolean turnClientPlayer = false;
 
-    private List<SkillAttribute> attributes = new ArrayList<>();
+    private final List<SkillAttribute> attributes = new ArrayList<>();
     private boolean showAttributes = false;
     private int attributeRow = 0;
 
-    private final WidgetButtonPage[] levelButtons = new WidgetButtonPage[12];
-    private ArrayList<WidgetButtonPage> newLeveButtons = new ArrayList<>();
+    private final ArrayList<WidgetButtonPage> newLeveButtons = new ArrayList<>();
     private int skillRow = 0;
 
-    private List<BookWidget> bookWidgets = new ArrayList<>();
+    private final List<BookWidget> bookWidgets = new ArrayList<>();
 
     public LevelScreen() {
         super(Text.translatable("screen.skillz.skill_screen"));
@@ -77,9 +73,9 @@ public class LevelScreen extends Screen implements Tab {
         this.x = (this.width - this.backgroundWidth) / 2;
         this.y = (this.height - this.backgroundHeight) / 2;
 
-        this.levelManager = ((LevelManagerAccess) this.client.player).getLevelManager();
+        this.levelManager = ((LevelManagerAccess) this.client.player).skillz$getLevelManager();
         this.clientPlayerEntity = this.client.interactionManager.createPlayer(this.client.world, this.client.player.getStatHandler(), this.client.player.getRecipeBook(), false, false);
-        ((ClientPlayerAccess) this.clientPlayerEntity).setShouldRenderClientName(false);
+        ((ClientPlayerAccess) this.clientPlayerEntity).skillz$setShouldRenderClientName(false);
 
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
             if (!this.client.player.getEquippedStack(equipmentSlot).isEmpty()) {
@@ -102,27 +98,9 @@ public class LevelScreen extends Screen implements Tab {
         for (int i = 0; i < attributeCount; i++) {
             this.attributes.add(skillAttributes.get(i));
         }
-        /*int i = 0;
-        for (Skill skill : LevelManager.SKILLS.values()) {
-            if (i < 12) {
-                if (this.levelManager.getPlayerSkills().size() <= i) {
-                    break;
-                }
-                this.levelButtons[i] = this.addDrawableChild(new WidgetButtonPage(skill,this.x + (i % 2 == 0 ? 80 : 169), this.y + 91 + i / 2 * 20, 13, 13, 33, 42, true, true, null, button -> {
-                    ClientPlayNetworking.send(new StatPacket(skill.id(), 1));
-                }));
-                i++;
-            }
-        }*/
-        //updateLevelButtons();
 
         int i = 0;
         for (Skill skill : LevelManager.SKILLS.values()) {
-            /*this.newLeveButtons.add(
-                    this.addDrawableChild(
-                            new WidgetButtonPage(skill,this.x + (i % 2 == 0 ? 80 : 169), this.y + 91 + i / 2 * 20, 13, 13, 33, 42, true, true, null,
-                                    button -> {ClientPlayNetworking.send(new StatPacket(skill.id(), 1));
-            })));*/
             this.newLeveButtons.add(new WidgetButtonPage(skill,this.x + (i % 2 == 0 ? 80 : 169), this.y + 91 + i / 2 * 20, 13, 13, 33, 42, true, true, null, button -> {ClientPlayNetworking.send(new StatPacket(skill.id(), 1));}));
 
             i++;
@@ -162,30 +140,6 @@ public class LevelScreen extends Screen implements Tab {
         this.renderBackground(context);
         context.drawTexture(BACKGROUND_TEXTURE, this.x, this.y, 0, 0, this.backgroundWidth, this.backgroundHeight);
 
-        /*{
-            int i = 0;
-            for (Skill skill : LevelManager.SKILLS.values()) {
-                //if (i < 12) {
-                    int skillId = i + this.skillRow * 2;
-                    if (LevelManager.SKILLS.size() <= skillId) {
-                        break;
-                    }
-                    if (this.levelManager.getPlayerSkills().size() <= skillId) {
-                        break;
-                    }
-                    context.drawTexture(BACKGROUND_TEXTURE, this.x + (i % 2 == 0 ? 8 : 96), this.y + 87 + i / 2 * 20, 0, 215, 88, 20);
-                    context.drawTexture(SkillZMain.identifierOf("textures/gui/sprites/" + skill.id() + ".png"), this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 0, 0, 16, 16, 16, 16);
-
-                    Text skillLevel = Text.translatable("text.skillz.gui.current_level", this.levelManager.getSkillLevel(skill.id()), LevelManager.SKILLS.get(skill.id()).maxLevel());
-                    context.drawText(this.textRenderer, skillLevel, this.x + (i % 2 == 0 ? 53 : 141) - this.textRenderer.getWidth(skillLevel) / 2, this.y + 94 + i / 2 * 20, 0x3F3F3F, false);
-
-                    if (DrawUtil.isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
-                        context.drawTooltip(this.textRenderer, skill.getText(), mouseX, mouseY);
-                    }
-                    i++;
-                //}
-            }
-        }*/
         if (this.levelManager.getPlayerSkills().size() > 12) {
             int scrollLevels = (this.levelManager.getPlayerSkills().size() - 12) / 2;
             if (this.levelManager.getPlayerSkills().size() % 2 != 0) {
@@ -297,38 +251,9 @@ public class LevelScreen extends Screen implements Tab {
             }
         }
 
-
         if (this.clientPlayerEntity != null) {
-            //InventoryScreen.drawEntity(context, this.x + 33, this.y + 43, 30, this.quaternionf, null, this.clientPlayerEntity);
             InventoryScreen.drawEntity(context, this.x + 33, this.y + 70, 30, (float)(this.x + 33) - mouseX, (float)(this.y + 70 - 50) - mouseY, this.clientPlayerEntity);
-
-            /*if (isPointWithinBounds(this.x + 9, this.y + 67, 15, 10, mouseX, mouseY)) {
-                context.drawTexture(ICON_TEXTURE, this.x + 9, this.y + 67, 0, 138, 15, 10);
-            } else {
-                context.drawTexture(ICON_TEXTURE, this.x + 9, this.y + 67, 0, 128, 15, 10);
-            }
-            if (isPointWithinBounds(this.x + 41, this.y + 67, 15, 10, mouseX, mouseY)) {
-                context.drawTexture(ICON_TEXTURE, this.x + 41, this.y + 67, 15, 138, 15, 10);
-            } else {
-                context.drawTexture(ICON_TEXTURE, this.x + 41, this.y + 67, 15, 128, 15, 10);
-            }*/
         }
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        /*if (this.clientPlayerEntity != null && this.turnClientPlayer) {
-            double mouseX = this.client.mouse.getX() * (double) this.client.getWindow().getScaledWidth() / (double) this.client.getWindow().getWidth();
-            double mouseY = this.client.mouse.getY() * (double) this.client.getWindow().getScaledHeight() / (double) this.client.getWindow().getHeight();
-            if (isPointWithinBounds(this.x + 9, this.y + 67, 15, 10, mouseX, mouseY)) {
-                this.quaternionf.rotateLocalY(0.087f);
-            } else if (isPointWithinBounds(this.x + 41, this.y + 67, 15, 10, mouseX, mouseY)) {
-                this.quaternionf.rotateLocalY(-0.087f);
-            } else {
-                this.turnClientPlayer = false;
-            }
-        }*/
     }
 
     @Override
@@ -343,9 +268,6 @@ public class LevelScreen extends Screen implements Tab {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        /*if (this.turnClientPlayer) {
-            this.turnClientPlayer = false;
-        }*/
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
@@ -359,36 +281,6 @@ public class LevelScreen extends Screen implements Tab {
                 return true;
             }
         }
-        /*if (this.clientPlayerEntity != null) {
-            if (isPointWithinBounds(this.x + 9, this.y + 67, 15, 10, mouseX, mouseY)) {
-                this.turnClientPlayer = true;
-                this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                return true;
-            } else if (isPointWithinBounds(this.x + 41, this.y + 67, 15, 10, mouseX, mouseY)) {
-                this.turnClientPlayer = true;
-                this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                return true;
-            }
-        }*/
-
-        /*int i = 0;
-        for (Skill skill : LevelManager.SKILLS.values()) {
-            if (i < 12) {
-                int skillId = i + this.skillRow * 2;
-                if (LevelManager.SKILLS.size() <= skillId) {
-                    break;
-                }
-                if (this.levelManager.getPlayerSkills().size() <= skillId) {
-                    break;
-                }
-                if (DrawUtil.isPointWithinBounds(this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 16, 16, mouseX, mouseY)) {
-                    this.client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                    this.client.setScreen(new SkillInfoScreen(this.levelManager, skill.id()));
-                    return true;
-                }
-                i++;
-            }
-        }*/
 
         {
             int i = 0;
@@ -409,6 +301,7 @@ public class LevelScreen extends Screen implements Tab {
                 }
             }
         }
+
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -426,24 +319,17 @@ public class LevelScreen extends Screen implements Tab {
             }
         }
         if (DrawUtil.isPointWithinBounds(this.x + 7, this.y + 86, 186, 122, mouseX, mouseY)) {
-            //System.out.println(this.newLeveButtons.size());
-            //this.newLeveButtons.get(this.newLeveButtons.size()-1).visible = false;
-            //this.newLeveButtons.get(0).visible = false;
-
+            int i = 0;
+            int x = 0;
             if (verticalAmount < 0) {
-                int i = 0;
-                int x = 0;
                 for (WidgetButtonPage page : this.newLeveButtons) {
                     if (this.newLeveButtons.size() > 12) {
                         int others = this.newLeveButtons.size() - 12;
                         if (x < others) {
-                            //System.out.println(i + " " + x + " " + others);
                             if (!page.chopped) {
                                 x++;
                             }
-                            /*if (i > 11) {
-                                this.newLeveButtons.get(i+x).chopped = true;
-                            }*/
+
                             if (page.chopped) {
                                 if (i < 2 + x) {
                                     this.newLeveButtons.get(i).chopped = false;
@@ -453,28 +339,16 @@ public class LevelScreen extends Screen implements Tab {
                         }
                     }
                 }
-            }else {
-                int i = 0;
-                int x = 0;
-                //System.out.println(this.newLeveButtons.size());
+            } else {
                 for (WidgetButtonPage page : this.newLeveButtons) {
                     if (this.newLeveButtons.size() > 12) {
                         int others = this.newLeveButtons.size() - 12;
-                        //if (x < others) {
-                            //System.out.println(i + " " + x + " " + others);
-                            /*if (!page.chopped) {
-                                x++;
-                            }*/
-                            /*if (i > 11) {
-                                this.newLeveButtons.get(i).chopped = false;
-                            }*/
-                            if (!page.chopped) {
-                                if (i < 2) {
-                                    this.newLeveButtons.get(i).chopped = true;
-                                }
+                        if (!page.chopped) {
+                            if (i < 2) {
+                                this.newLeveButtons.get(i).chopped = true;
                             }
-                            i++;
-                        //}
+                        }
+                        i++;
                     }
                 }
             }
@@ -504,7 +378,6 @@ public class LevelScreen extends Screen implements Tab {
     }
 
     public void updateLevelButtons() {
-        int i = 0;
         for (WidgetButtonPage page : newLeveButtons) {
             String skrillix = page.skill.id();
             if (ConfigInit.MAIN.LEVEL.overallMaxLevel > 0 && this.levelManager.getOverallLevel() >= ConfigInit.MAIN.LEVEL.overallMaxLevel) {
@@ -526,7 +399,6 @@ public class LevelScreen extends Screen implements Tab {
                     page.active = true;
                 }
             }
-            i++;
         }
     }
 
@@ -537,8 +409,7 @@ public class LevelScreen extends Screen implements Tab {
         private final boolean clickable;
         private final int textureX;
         private final int textureY;
-        private List<Text> tooltip = new ArrayList<Text>();
-        private int clickedKey = -1;
+        private final List<Text> tooltip = new ArrayList<>();
         public boolean chopped = true;
 
         public WidgetButtonPage(Skill skill, int x, int y, int sizeX, int sizeY, int textureX, int textureY, boolean hoverOutline, boolean clickable, @Nullable Text tooltip, ButtonWidget.PressAction onPress) {
@@ -571,7 +442,6 @@ public class LevelScreen extends Screen implements Tab {
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            this.clickedKey = button;
             if (!this.clickable) {
                 return false;
             }
@@ -589,18 +459,6 @@ public class LevelScreen extends Screen implements Tab {
                 return false;
             }
             return super.keyPressed(keyCode, scanCode, modifiers);
-        }
-
-        public void addTooltip(Text text) {
-            this.tooltip.add(text);
-        }
-
-        public boolean wasMiddleButtonClicked() {
-            return clickedKey == 2;
-        }
-
-        public boolean wasRightButtonClicked() {
-            return clickedKey == 1;
         }
 
         private int getTextureY() {

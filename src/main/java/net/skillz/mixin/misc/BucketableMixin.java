@@ -25,9 +25,9 @@ public interface BucketableMixin {
         if (player.isCreative()) {
             return;
         }
-        LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+        LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
         if (!levelManager.hasRequiredItemLevel(player.getStackInHand(hand).getItem())) {
-            player.sendMessage(Text.translatable("item.skillz.locked.tooltip").formatted(Formatting.RED), true);
+            player.sendMessage(Text.translatable("restriction.skillz.locked.tooltip").formatted(Formatting.RED), true);
             info.setReturnValue(Optional.empty());
         }
     }

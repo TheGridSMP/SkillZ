@@ -36,7 +36,7 @@ public class CraftingScreenHandlerMixin {
         if (player.isCreative()) {
             return;
         }
-        LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+        LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
         if (!levelManager.hasRequiredCraftingLevel(itemStack.getItem())) {
             resultInventory.setStack(0, ItemStack.EMPTY);
             handler.setPreviousTrackedSlot(0, ItemStack.EMPTY);

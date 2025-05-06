@@ -2,7 +2,7 @@ package net.skillz.access;
 
 public interface ClientPlayerAccess {
 
-    boolean shouldRenderClientName();
+    boolean skillz$shouldRenderClientName();
 
-    void setShouldRenderClientName(boolean shouldRenderClientName);
+    void skillz$setShouldRenderClientName(boolean shouldRenderClientName);
 }

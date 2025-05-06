@@ -23,7 +23,7 @@ public enum LevelJadeProvider implements IBlockComponentProvider {
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        LevelManager levelManager = ((LevelManagerAccess) accessor.getPlayer()).getLevelManager();
+        LevelManager levelManager = ((LevelManagerAccess) accessor.getPlayer()).skillz$getLevelManager();
         if (!levelManager.hasRequiredMiningLevel(accessor.getBlock())) {
             for (Map.Entry<String, Integer> entry : levelManager.getRequiredMiningLevel(accessor.getBlock()).entrySet()) {
                 Formatting formatting =

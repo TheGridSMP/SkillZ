@@ -51,7 +51,7 @@ public abstract class EnchantmentScreenHandlerMixin {
         if (this.playerEntity.isCreative()) {
             return original;
         }
-        LevelManager levelManager = ((LevelManagerAccess) this.playerEntity).getLevelManager();
+        LevelManager levelManager = ((LevelManagerAccess) this.playerEntity).skillz$getLevelManager();
 
         List<EnchantmentLevelEntry> list = new ArrayList<>();
         for (EnchantmentLevelEntry enchantmentLevelEntry : original) {

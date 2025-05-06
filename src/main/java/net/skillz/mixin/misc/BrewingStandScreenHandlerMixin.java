@@ -22,7 +22,7 @@ public class BrewingStandScreenHandlerMixin {
         if (player.isCreative()) {
             return;
         }
-        LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+        LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
         if (!levelManager.hasRequiredCraftingLevel(itemStack2.getItem())) {
             info.setReturnValue(ItemStack.EMPTY);
         }

@@ -31,12 +31,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity implements LevelManagerAccess, PlayerDropAccess {
 
-    private final PlayerEntity playerEntity = (PlayerEntity) (Object) this;
     @Unique
-    private final LevelManager levelManager = new LevelManager(playerEntity);
+    private final LevelManager levelManager = new LevelManager((PlayerEntity) (Object) this);
 
     @Unique
     private int killedMobsInChunk;
+
     @Unique
     @Nullable
     private Chunk killedMobChunk;
@@ -57,98 +57,69 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
 
     @ModifyArg(method = "addExhaustion", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;addExhaustion(F)V"), index = 0)
     private float injected(float original) {
-        original *= BonusHelper.exhaustionReductionBonus(this.playerEntity);
+        original *= BonusHelper.exhaustionReductionBonus((PlayerEntity) (Object) this);
         return original;
     }
 
-    //Updated
     @ModifyVariable(method = "attack", at = @At(value = "STORE", ordinal = 0), ordinal = 1)
     private boolean attackKnockbackChanceMixin(boolean original) {
-        if (!original && BonusHelper.doBooleanBonus("meleeKnockbackAttackChance", this.playerEntity, ConfigInit.MAIN.BONUSES.meleeKnockbackAttackChanceBonus)) {
-            return true;
-        }
-        return original;
+        PlayerEntity player = (PlayerEntity) (Object) this;
+        return original || BonusHelper.meleeKnockbackAttackChanceBonus(player);
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "STORE", ordinal = 1), ordinal = 2)
     private boolean attackCriticalChanceMixin(boolean original) {
-        if (!original && BonusHelper.doBooleanBonus("meleeCriticalAttackChance", this.playerEntity, ConfigInit.MAIN.BONUSES.meleeCriticalAttackChanceBonus)) {
-            return true;
-        }
-        return original;
+        PlayerEntity player = (PlayerEntity) (Object) this;
+        return original || BonusHelper.meleeCriticalAttackChance(player);
     }
-
-    //Sweeping
-    /*@ModifyVariable(method = "attack", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getKnockback(Lnet/minecraft/entity/LivingEntity;)I"), ordinal = 1)
-    private boolean attackSweepingMixin(boolean original) {
-        System.out.println("asd");
-        if (!original && BonusHelper.nonMeleeSweepingAttackChanceBonus(this.playerEntity)) {
-            return true;
-        }
-        return original;
-    }*/
 
     @ModifyVariable(method = "attack", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
     private float attackMixin(float original) {
-        if (this.playerEntity.isCreative()) {
+        PlayerEntity player = (PlayerEntity) (Object) this;
+
+        if (player.isCreative() || levelManager.hasRequiredItemLevel(this.getMainHandStack().getItem()))
             return original;
-        }
-        if (!levelManager.hasRequiredItemLevel(this.getMainHandStack().getItem())) {
-            return 0.0f;
-        }
-        return original;
+
+        return 0;
     }
 
     @ModifyVariable(method = "attack", at = @At(value = "STORE", ordinal = 2), ordinal = 0)
     private float attackCriticalDamageMixin(float original) {
         original /= 1.5F;
-        original += BonusHelper.meleeCriticalDamageBonus(this.playerEntity);
+        original += BonusHelper.meleeCriticalDamageBonus((PlayerEntity) (Object) this);
         original *= 1.5F;
         return original;
     }
 
-    /*@ModifyArg(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"), index = 1)
-    private float injected(float f) {
-        f += BonusHelper.meleeCriticalDamageBonus(this.playerEntity);
-        return f;
-    }
-
-    @ModifyVariable(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getVelocity()Lnet/minecraft/util/math/Vec3d;"), ordinal = 1)
-    private float attackDoubleDamageMixin(float original) {
-        if (BonusHelper.meleeDoubleDamageBonus(this.playerEntity)) {
-            original *= 2f;
-        }
-        return original;
-    }*/
-
     @ModifyArg(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"), index = 1)
     private float attackDoubleDamageMixin(float original) {
-        if (BonusHelper.meleeDoubleDamageBonus(this.playerEntity)) {
+        if (BonusHelper.meleeDoubleDamageBonus((PlayerEntity) (Object) this))
             original *= 2f;
-        }
+
         return original;
     }
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;dropShoulderEntities()V"), cancellable = true)
     private void damageMixin(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
-        BonusHelper.damageReflectionBonus(this.playerEntity, source, amount);
-        if (!source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY) && BonusHelper.evadingDamageBonus(this.playerEntity)) {
+        PlayerEntity player = (PlayerEntity) (Object) this;
+        BonusHelper.damageReflectionBonus(player, source, amount);
+
+        if (!source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY) && BonusHelper.evadingDamageBonus(player))
             info.setReturnValue(false);
-        }
     }
 
     @Inject(method = "eatFood", at = @At(value = "HEAD"))
     private void eatFoodMixin(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> info) {
-        BonusHelper.foodIncreasionBonus(this.playerEntity, stack);
+        BonusHelper.foodIncreasionBonus((PlayerEntity) (Object) this, stack);
     }
 
     @Override
-    public LevelManager getLevelManager() {
+    public LevelManager skillz$getLevelManager() {
         return this.levelManager;
     }
 
     @Override
-    public void increaseKilledMobStat(Chunk chunk) {
+    public void skillz$mobKilled(Chunk chunk) {
         if (killedMobChunk != null && killedMobChunk == chunk) {
             killedMobsInChunk++;
         } else {
@@ -158,27 +129,27 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
     }
 
     @Override
-    public void resetKilledMobStat() {
+    public void skillz$resetMobKills() {
         killedMobsInChunk = 0;
     }
 
     @Override
-    public boolean allowMobDrop() {
+    public boolean skillz$allowMobDrop() {
         return killedMobsInChunk < ConfigInit.MAIN.LEVEL.mobKillCount;
     }
 
     @Override
     protected void dropXp() {
-        if (this.playerEntity.getWorld() instanceof ServerWorld serverWorld && this.shouldDropXp() && this.getWorld().getGameRules().getBoolean(GameRules.DO_MOB_LOOT) && ConfigInit.MAIN.EXPERIENCE.resetCurrentXp) {
+        if (this.getWorld() instanceof ServerWorld serverWorld && this.shouldDropXp() && this.getWorld().getGameRules().getBoolean(GameRules.DO_MOB_LOOT) && ConfigInit.MAIN.EXPERIENCE.resetCurrentXp)
             LevelExperienceOrbEntity.spawn(serverWorld, this.getPos(), (int) (this.levelManager.getLevelProgress() * this.levelManager.getNextLevelExperience()));
-        }
+
         super.dropXp();
     }
 
     @ModifyReturnValue(method = "getEquippedStack", at = @At(value = "RETURN"))
     private ItemStack setHolder(ItemStack original) {
-        ((ItemStackAccess)(Object)(original)).setHoldingPlayer(this.playerEntity);
+        PlayerEntity player = (PlayerEntity) (Object) this;
+        ((ItemStackAccess) (Object) original).skillz$setHoldingPlayer(player);
         return original;
     }
-
 }

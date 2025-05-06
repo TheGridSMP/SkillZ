@@ -44,8 +44,5 @@
 		"tabapi": ">=1.0.0",
 		"fzzy_config": "*",
 		"attribute-backport": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }

@@ -84,7 +84,7 @@ public class PlayerManagerMixin {
     private void onPlayerConnectMixin(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info, GameProfile gameProfile, UserCache userCache, String string, NbtCompound optional, RegistryKey<World> registryKey, ServerWorld serverWorld, ServerWorld serverWorld2) {
        if (optional == null || optional.isEmpty()) {
             if (ConfigInit.MAIN.LEVEL.startPoints > 0) {
-                LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+                LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
                 levelManager.setSkillPoints(ConfigInit.MAIN.LEVEL.startPoints);
                 PacketHelper.updateLevels(player);
             }

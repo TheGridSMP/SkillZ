@@ -16,7 +16,7 @@ public interface VehicleInventoryMixin {
     @Inject(method = "generateInventoryLoot", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/VehicleInventory;setLootTableId(Lnet/minecraft/util/Identifier;)V"))
     default void generateInventoryLootMixin(@Nullable PlayerEntity player, CallbackInfo info) {
         if (player != null) {
-            ((PlayerDropAccess) player).resetKilledMobStat();
+            ((PlayerDropAccess) player).skillz$resetMobKills();
         }
     }
 }

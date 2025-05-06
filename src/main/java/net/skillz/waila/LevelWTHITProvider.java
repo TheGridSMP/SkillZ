@@ -18,7 +18,7 @@ public class LevelWTHITProvider implements IBlockComponentProvider {
     public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
         IBlockComponentProvider.super.appendBody(tooltip, accessor, config);
         if (config.getBoolean(RenderInit.MINEABLE_INFO)) {
-            LevelManager levelManager = ((LevelManagerAccess) accessor.getPlayer()).getLevelManager();
+            LevelManager levelManager = ((LevelManagerAccess) accessor.getPlayer()).skillz$getLevelManager();
             if (!levelManager.hasRequiredMiningLevel(accessor.getBlock())) {
                 for (Map.Entry<String, Integer> entry : levelManager.getRequiredMiningLevel(accessor.getBlock()).entrySet()) {
                     Formatting formatting =

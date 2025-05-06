@@ -18,7 +18,7 @@ public class LevelEntityWTHITProvider implements IEntityComponentProvider {
     public void appendBody(ITooltip tooltip, IEntityAccessor accessor, IPluginConfig config) {
         IEntityComponentProvider.super.appendBody(tooltip, accessor, config);
         if (config.getBoolean(RenderInit.MINEABLE_INFO)) {
-            LevelManager levelManager = ((LevelManagerAccess) accessor.getPlayer()).getLevelManager();
+            LevelManager levelManager = ((LevelManagerAccess) accessor.getPlayer()).skillz$getLevelManager();
             if (!levelManager.hasRequiredEntityLevel(accessor.getEntity().getType())) {
                 for (Map.Entry<String, Integer> entry : levelManager.getRequiredEntityLevel(accessor.getEntity().getType()).entrySet()) {
                     Formatting formatting =

@@ -36,9 +36,8 @@ public class TooltipUtil {
 
     public static void renderItemTooltip(MinecraftClient client, ItemStack stack, List<Text> lines) {
         if (client.player != null) {
-            LevelManager levelManager = ((LevelManagerAccess) client.player).getLevelManager();
+            LevelManager levelManager = ((LevelManagerAccess) client.player).skillz$getLevelManager();
             boolean isCreative = client.player.isCreative() || !ConfigInit.CLIENT.hideReachedLevels; // Add all lines, not only the missing ones
-            Formatting format = Formatting.GRAY;
 
             if (stack.getItem() instanceof BlockItem blockItem) {
                 int blockId = Registries.BLOCK.getRawId(blockItem.getBlock());
@@ -186,7 +185,7 @@ public class TooltipUtil {
 
             HitResult hitResult = client.crosshairTarget;
             if (hitResult.getType() == HitResult.Type.ENTITY) {
-                LevelManager levelManager = ((LevelManagerAccess) client.player).getLevelManager();
+                LevelManager levelManager = ((LevelManagerAccess) client.player).skillz$getLevelManager();
                 EntityType<?> entityType = ((EntityHitResult) hitResult).getEntity().getType();
                 if (!levelManager.hasRequiredEntityLevel(entityType)) {
                     List<Text> textList = new ArrayList<>();
@@ -201,7 +200,7 @@ public class TooltipUtil {
                 }
             } else if (hitResult.getType() == HitResult.Type.BLOCK) {
                 Block block = client.world.getBlockState(((BlockHitResult) hitResult).getBlockPos()).getBlock();
-                LevelManager levelManager = ((LevelManagerAccess) client.player).getLevelManager();
+                LevelManager levelManager = ((LevelManagerAccess) client.player).skillz$getLevelManager();
                 List<Text> textList = new ArrayList<>();
                 if (!levelManager.hasRequiredMiningLevel(block)) {
                     textList.add(Text.of(block.getName().getString()));

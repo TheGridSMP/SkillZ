@@ -22,33 +22,30 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public abstract class ClientPlayerListS2CPacketMixin implements ClientPlayerListAccess {
 
     @Unique
-    private Map<UUID, Integer> levelMap = new HashMap<UUID, Integer>();
+    private Map<UUID, Integer> levelMap = new HashMap<>();
 
-    @Inject(method = "Lnet/minecraft/network/packet/s2c/play/PlayerListS2CPacket;<init>(Ljava/util/EnumSet;Ljava/util/Collection;)V", at = @At("TAIL"))
+    @Inject(method = "<init>(Ljava/util/EnumSet;Ljava/util/Collection;)V", at = @At("TAIL"))
     public void playerListS2CPacketMixin(EnumSet<PlayerListS2CPacket.Action> actions, Collection<ServerPlayerEntity> players, CallbackInfo info) {
-        players.forEach((player) -> {
-            this.levelMap.put(player.getUuid(), ((LevelManagerAccess) player).getLevelManager().getOverallLevel());
-        });
+        players.forEach((player) -> this.levelMap.put(player.getUuid(), ((LevelManagerAccess) player).skillz$getLevelManager().getOverallLevel()));
     }
 
-    @Inject(method = "Lnet/minecraft/network/packet/s2c/play/PlayerListS2CPacket;<init>(Lnet/minecraft/network/packet/s2c/play/PlayerListS2CPacket$Action;Lnet/minecraft/server/network/ServerPlayerEntity;)V", at = @At("TAIL"))
+    @Inject(method = "<init>(Lnet/minecraft/network/packet/s2c/play/PlayerListS2CPacket$Action;Lnet/minecraft/server/network/ServerPlayerEntity;)V", at = @At("TAIL"))
     public void playerListS2CPacketMixin(PlayerListS2CPacket.Action action, ServerPlayerEntity player, CallbackInfo info) {
-        this.levelMap.put(player.getUuid(), ((LevelManagerAccess) player).getLevelManager().getOverallLevel());
+        this.levelMap.put(player.getUuid(), ((LevelManagerAccess) player).skillz$getLevelManager().getOverallLevel());
     }
 
     @Inject(method = "<init>(Lnet/minecraft/network/PacketByteBuf;)V", at = @At("TAIL"))
     public void playerListS2CPacketMixin(PacketByteBuf buf, CallbackInfo info) {
-        this.levelMap = buf.readMap((bufx -> bufx.readUuid()), PacketByteBuf::readInt);
+        this.levelMap = buf.readMap(PacketByteBuf::readUuid, PacketByteBuf::readInt);
     }
 
     @Inject(method = "write", at = @At("TAIL"))
     private void writeMixin(PacketByteBuf buf, CallbackInfo info) {
-        buf.writeMap(this.levelMap, ((bufx, value) -> bufx.writeUuid(value)), PacketByteBuf::writeInt);
+        buf.writeMap(this.levelMap, PacketByteBuf::writeUuid, PacketByteBuf::writeInt);
     }
 
     @Override
-    public Map<UUID, Integer> getLevelMap() {
+    public Map<UUID, Integer> skillz$getLevelMap() {
         return this.levelMap;
     }
-
 }

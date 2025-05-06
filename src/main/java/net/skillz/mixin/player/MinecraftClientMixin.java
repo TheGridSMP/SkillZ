@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -56,74 +57,33 @@ public class MinecraftClientMixin {
         }
     }
 
+    @Unique
     private boolean restrictItemUsage() {
         if (ConfigInit.MAIN.LEVEL.lockedHandUsage && player != null && !player.isCreative()) {
             Item item = player.getMainHandStack().getItem();
             if (item != null && !item.equals(Items.AIR)) {
-                LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+                LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
                 if (!levelManager.hasRequiredItemLevel(item)) {
-                    player.sendMessage(Text.translatable("item.skillz.locked.tooltip").formatted(Formatting.RED), true);
+                    player.sendMessage(Text.translatable("restriction.skillz.locked.tooltip").formatted(Formatting.RED), true);
                     return true;
                 }
             }
         }
+
         return false;
     }
 
+    @Unique
     private boolean restrictBlockBreaking() {
         if (ConfigInit.MAIN.LEVEL.lockedBlockBreaking && player != null && !player.isCreative()) {
             if (this.crosshairTarget != null && this.crosshairTarget.getType() == net.minecraft.util.hit.HitResult.Type.BLOCK) {
                 BlockHitResult blockHitResult = (BlockHitResult) this.crosshairTarget;
                 Block block = world.getBlockState(blockHitResult.getBlockPos()).getBlock();
-                LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
-                if (!levelManager.hasRequiredMiningLevel(block)) {
-                    return true;
-                }
+                LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
+                return !levelManager.hasRequiredMiningLevel(block);
             }
         }
+
         return false;
     }
-
-    /*private boolean restrictHandUsage(boolean blockBreaking) {
-        if (ConfigInit.CONFIG.lockedHandUsage && player != null && !player.isCreative()) {
-            Item item = player.getMainHandStack().getItem();
-            if (item != null && !item.equals(Items.AIR)) {
-                ArrayList<Object> levelList = LevelLists.customItemList;
-                if (!levelList.isEmpty() && levelList.contains(Registries.ITEM.getId(item).toString())) {
-                    String string = Registries.ITEM.getId(item).toString();
-                    if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, string, true)) {
-                        player.sendMessage(
-                                Text.translatable("item.skillz." + levelList.get(levelList.indexOf(string) + 1) + ".tooltip", levelList.get(levelList.indexOf(string) + 2)).formatted(Formatting.RED),
-                                true);
-                        return true;
-                    }
-                } else if (item instanceof ToolItem) {
-                    levelList = null;
-                    if (item instanceof SwordItem) {
-                        levelList = LevelLists.swordList;
-                    } else if (item instanceof AxeItem) {
-                        if (ConfigInit.CONFIG.bindAxeDamageToSwordRestriction && !blockBreaking) {
-                            levelList = LevelLists.swordList;
-                        } else {
-                            levelList = LevelLists.axeList;
-                        }
-                    } else if (item instanceof HoeItem) {
-                        levelList = LevelLists.hoeList;
-                    } else if (item instanceof PickaxeItem || item instanceof ShovelItem) {
-                        levelList = LevelLists.toolList;
-                    }
-                    if (levelList != null && ((ToolItem) item).getMaterial() != null) {
-                        String material = ((ToolItem) item).getMaterial().toString().toLowerCase();
-                        if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, material, true)) {
-                            player.sendMessage(Text
-                                    .translatable("item.skillz." + levelList.get(levelList.indexOf(material) + 1).toString() + ".tooltip", levelList.get(levelList.indexOf(material) + 2).toString())
-                                    .formatted(Formatting.RED), true);
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }*/
 }

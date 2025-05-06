@@ -21,19 +21,20 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerServerPlayerEntityMixin extends PlayerEntity implements ServerPlayerSyncAccess {
+public abstract class ServerPlayerEntityMixin extends PlayerEntity implements ServerPlayerSyncAccess {
 
     @Unique
-    private final LevelManager levelManager = ((LevelManagerAccess) this).getLevelManager();
+    private final LevelManager levelManager = ((LevelManagerAccess) this).skillz$getLevelManager();
+
     @Unique
     private int syncedLevelExperience = -99999999;
 
-    public ServerServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
+    public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile gameProfile) {
         super(world, pos, yaw, gameProfile);
     }
 
     @Override
-    public void addLevelExperience(int experience) {
+    public void skillz$addLevelExperience(int experience) {
         if (!levelManager.isMaxLevel()) {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) (Object) this;
             levelManager.setLevelProgress(levelManager.getLevelProgress() + Math.max((float) experience / levelManager.getNextLevelExperience(), 0));
@@ -45,7 +46,6 @@ public abstract class ServerServerPlayerEntityMixin extends PlayerEntity impleme
                 levelManager.setLevelProgress(levelManager.getLevelProgress() / levelManager.getNextLevelExperience());
 
                 PacketHelper.updateLevels(serverPlayerEntity);
-                //CriteriaInit.LEVEL_UP.trigger(serverPlayerEntity);
                 CriteriaInit.LEVEL_UP.trigger(serverPlayerEntity, levelManager.getOverallLevel());
                 serverPlayerEntity.getServer().getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
                 serverPlayerEntity.getScoreboard().forEachScore(CriteriaInit.SKILLZ, this.getEntityName(), ScoreboardPlayerScore::incrementScore);
@@ -55,6 +55,7 @@ public abstract class ServerServerPlayerEntityMixin extends PlayerEntity impleme
                 }
             }
         }
+
         this.syncedLevelExperience = -1;
     }
 
@@ -64,7 +65,5 @@ public abstract class ServerServerPlayerEntityMixin extends PlayerEntity impleme
             this.syncedLevelExperience = levelManager.getTotalLevelExperience();
             PacketHelper.updateLevels((ServerPlayerEntity) (Object) this);
         }
-
     }
-
 }

@@ -2,6 +2,7 @@ package net.skillz.mixin.entity;
 
 import org.spongepowered.asm.mixin.Mixin;
 
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -13,6 +14,7 @@ import net.minecraft.nbt.NbtCompound;
 @Mixin(MobEntity.class)
 public abstract class MobEntityMixin implements MobEntityAccess {
 
+    @Unique
     private boolean spawnerMob = false;
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
@@ -26,13 +28,12 @@ public abstract class MobEntityMixin implements MobEntityAccess {
     }
 
     @Override
-    public void setSpawnerMob(boolean spawnerMob) {
+    public void skillz$setSpawnerMob(boolean spawnerMob) {
         this.spawnerMob = spawnerMob;
     }
 
     @Override
-    public boolean isSpawnerMob() {
+    public boolean skillz$isSpawnerMob() {
         return this.spawnerMob;
     }
-
 }

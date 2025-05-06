@@ -20,7 +20,7 @@ public class LootableContainerBlockEntityMixin {
     @Inject(method = "checkUnlocked", at = @At("RETURN"))
     private void checkUnlockedMixin(PlayerEntity player, CallbackInfoReturnable<Boolean> info) {
         if (info.getReturnValue()) {
-            ((PlayerDropAccess) player).resetKilledMobStat();
+            ((PlayerDropAccess) player).skillz$resetMobKills();
         }
     }
 }

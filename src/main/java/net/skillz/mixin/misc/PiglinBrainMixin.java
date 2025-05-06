@@ -49,7 +49,7 @@ public class PiglinBrainMixin {
         if (player.isCreative()) {
             return;
         }
-        LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+        LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
         if (!levelManager.hasRequiredEntityLevel(piglin.getType())) {
             player.sendMessage(Text.translatable("restriction.skillz.locked.tooltip").formatted(Formatting.RED), true);
             if (!items.isEmpty()) {

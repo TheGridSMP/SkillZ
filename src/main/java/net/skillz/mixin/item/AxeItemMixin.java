@@ -20,12 +20,14 @@ public class AxeItemMixin {
     @Inject(method = "useOnBlock", at = @At("HEAD"), cancellable = true)
     private void useOnBlockMixin(ItemUsageContext context, CallbackInfoReturnable<ActionResult> info) {
         PlayerEntity player = context.getPlayer();
-        if (!player.isCreative() && !player.isSpectator()) {
-            LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
-            if (!levelManager.hasRequiredItemLevel(player.getStackInHand(context.getHand()).getItem())) {
-                player.sendMessage(Text.translatable("restriction.skillz.locked.tooltip").formatted(Formatting.RED), true);
-                info.setReturnValue(ActionResult.PASS);
-            }
+
+        if (player == null || player.isCreative() || player.isSpectator())
+            return;
+
+        LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
+        if (!levelManager.hasRequiredItemLevel(player.getStackInHand(context.getHand()).getItem())) {
+            player.sendMessage(Text.translatable("restriction.skillz.locked.tooltip").formatted(Formatting.RED), true);
+            info.setReturnValue(ActionResult.PASS);
         }
     }
 }

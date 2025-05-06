@@ -16,12 +16,12 @@ public abstract class ClientPlayerListEntryMixin implements ClientPlayerListAcce
     private int level;
 
     @Override
-    public int getLevel() {
+    public int skillz$getLevel() {
         return this.level;
     }
 
     @Override
-    public void setLevel(int level) {
+    public void skillz$setLevel(int level) {
         this.level = level;
     }
 }

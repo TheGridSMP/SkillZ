@@ -30,7 +30,7 @@ public abstract class ExperienceBottleEntityMixin extends ThrownItemEntity {
             LevelExperienceOrbEntity.spawn((ServerWorld) this.getWorld(), this.getPos().add(0.0D, 0.5D, 0.0D),
                     (int) (i * ConfigInit.MAIN.EXPERIENCE.bottleXPMultiplier
                             * (ConfigInit.MAIN.EXPERIENCE.dropXPbasedOnLvl && this.getOwner() != null && this.getOwner() instanceof ServerPlayerEntity serverPlayerEntity
-                                    ? 1.0F + ConfigInit.MAIN.EXPERIENCE.basedOnMultiplier * ((LevelManagerAccess) serverPlayerEntity).getLevelManager().getOverallLevel()
+                                    ? 1.0F + ConfigInit.MAIN.EXPERIENCE.basedOnMultiplier * ((LevelManagerAccess) serverPlayerEntity).skillz$getLevelManager().getOverallLevel()
                                     : 1.0F)));
     }
 }

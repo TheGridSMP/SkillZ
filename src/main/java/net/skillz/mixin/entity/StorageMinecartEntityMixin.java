@@ -16,6 +16,6 @@ public class StorageMinecartEntityMixin {
 
     @Inject(method = "interact", at = @At("HEAD"))
     private void interactMixin(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
-        ((PlayerDropAccess) player).resetKilledMobStat();
+        ((PlayerDropAccess) player).skillz$resetMobKills();
     }
 }

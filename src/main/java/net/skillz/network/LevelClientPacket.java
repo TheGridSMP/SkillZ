@@ -25,6 +25,8 @@ import java.util.Map;
 public class LevelClientPacket {
 
     public static void init() {
+        ClientPlayNetworking.registerGlobalReceiver(OrbPacket.PACKET_ID, OrbPacket::handle);
+
         ClientPlayNetworking.registerGlobalReceiver(SkillSyncPacket.PACKET_ID, (client, handler, buf, sender) -> {
             SkillSyncPacket payload = new SkillSyncPacket(buf);
             List<String> skillIds = payload.skillIds();
@@ -33,7 +35,7 @@ public class LevelClientPacket {
             SkillSyncPacket.SkillBonusesRecord skillBonuses = payload.skillBonuses();
 
             client.execute(() -> {
-                LevelManager levelManager = ((LevelManagerAccess) client.player).getLevelManager();
+                LevelManager levelManager = ((LevelManagerAccess) client.player).skillz$getLevelManager();
 
                 LevelManager.SKILLS.clear();
                 for (int i = 0; i < skillIds.size(); i++) {
@@ -59,7 +61,7 @@ public class LevelClientPacket {
 
             client.execute(() -> {
                 System.out.printf("%s %s%n", playerSkillIds, playerSkillLevels);
-                LevelManager levelManager = ((LevelManagerAccess) client.player).getLevelManager();
+                LevelManager levelManager = ((LevelManagerAccess) client.player).skillz$getLevelManager();
                 for (int i = 0; i < playerSkillIds.size(); i++) {
                     levelManager.setSkillLevel(playerSkillIds.get(i), playerSkillLevels.get(i));
                 }
@@ -74,7 +76,7 @@ public class LevelClientPacket {
             int totalLevelExperience = payload.totalLevelExperience();
             float levelProgress = payload.levelProgress();
             client.execute(() -> {
-                LevelManager levelManager = ((LevelManagerAccess) client.player).getLevelManager();
+                LevelManager levelManager = ((LevelManagerAccess) client.player).skillz$getLevelManager();
                 levelManager.setOverallLevel(overallLevel);
                 levelManager.setSkillPoints(skillPoints);
                 levelManager.setTotalLevelExperience(totalLevelExperience);
@@ -125,7 +127,7 @@ public class LevelClientPacket {
             String id = payload.id();
             int level = payload.level();
             client.execute(() -> {
-                LevelManager levelManager = ((LevelManagerAccess) client.player).getLevelManager();
+                LevelManager levelManager = ((LevelManagerAccess) client.player).skillz$getLevelManager();
                 levelManager.setSkillLevel(id, level);
                 if (client.currentScreen instanceof LevelScreen levelScreen) {
                     levelScreen.updateLevelButtons();

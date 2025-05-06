@@ -4,8 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public interface ItemStackAccess {
 
-    PlayerEntity getHoldingPlayer();
+    PlayerEntity skillz$getHoldingPlayer();
 
-    void setHoldingPlayer(PlayerEntity player);
-
+    void skillz$setHoldingPlayer(PlayerEntity player);
 }

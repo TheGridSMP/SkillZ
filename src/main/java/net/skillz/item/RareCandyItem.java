@@ -24,9 +24,9 @@ public class RareCandyItem extends Item {
             if (!user.isCreative()) {
                 stack.decrement(1);
             }
-            LevelManager levelManager = ((LevelManagerAccess) user).getLevelManager();
+            LevelManager levelManager = ((LevelManagerAccess) user).skillz$getLevelManager();
             ((ServerPlayerSyncAccess) user)
-                    .addLevelExperience(levelManager.getNextLevelExperience() - ((int) (levelManager.getLevelProgress() * levelManager.getNextLevelExperience())));
+                    .skillz$addLevelExperience(levelManager.getNextLevelExperience() - ((int) (levelManager.getLevelProgress() * levelManager.getNextLevelExperience())));
         }
         return TypedActionResult.success(stack, world.isClient());
     }

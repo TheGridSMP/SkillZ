@@ -2,6 +2,5 @@ package net.skillz.access;
 
 public interface ServerPlayerSyncAccess {
 
-    void addLevelExperience(int experience);
-
+    void skillz$addLevelExperience(int experience);
 }

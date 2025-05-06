@@ -1,7 +1,6 @@
 package net.skillz.mixin.misc;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.skillz.access.EnchantmentAccess;
 import net.skillz.access.ItemStackAccess;
 import net.skillz.access.LevelManagerAccess;
 import net.skillz.level.LevelManager;
@@ -25,35 +24,22 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Debug(export=true)
 @Mixin(EnchantmentHelper.class)
-public abstract class EnchantmentHelperMixin implements EnchantmentAccess {
+public abstract class EnchantmentHelperMixin {
 
     @Inject(method = "forEachEnchantment(Lnet/minecraft/enchantment/EnchantmentHelper$Consumer;Lnet/minecraft/item/ItemStack;)V", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/nbt/NbtList;getCompound(I)Lnet/minecraft/nbt/NbtCompound;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
     private static void inject(EnchantmentHelper.Consumer consumer, ItemStack stack, CallbackInfo ci, NbtList nbtList, int i, NbtCompound nbtCompound) {
-        if (((ItemStackAccess)(Object)(stack)).getHoldingPlayer() != null) {
-            LevelManager levelManager = ((LevelManagerAccess) ((ItemStackAccess)(Object)(stack)).getHoldingPlayer()).getLevelManager();
+        if (((ItemStackAccess)(Object)(stack)).skillz$getHoldingPlayer() != null) {
+            LevelManager levelManager = ((LevelManagerAccess) ((ItemStackAccess)(Object)(stack)).skillz$getHoldingPlayer()).skillz$getLevelManager();
             Enchantment ench = Registries.ENCHANTMENT.get(EnchantmentHelper.getIdFromNbt(nbtCompound));
-            if (!levelManager.hasRequiredEnchantmentLevel(Registries.ENCHANTMENT.getEntry(ench), EnchantmentHelper.getLevelFromNbt(nbtCompound))) {
+            if (!levelManager.hasRequiredEnchantmentLevel(Registries.ENCHANTMENT.getEntry(ench), EnchantmentHelper.getLevelFromNbt(nbtCompound)))
                 ci.cancel();
-            }
         }
     }
 
-    /*@ModifyReturnValue(method = "getLevel", at = @At(value = "RETURN", ordinal = 1))
-    private static int inject2(int original, Enchantment enchantment, ItemStack stack, @Local NbtCompound nbtCompound) {
-        if (((ItemStackAccess)(Object)(stack)).getHoldingPlayer() != null) {
-            LevelManager levelManager = ((LevelManagerAccess) ((ItemStackAccess)(Object)(stack)).getHoldingPlayer()).getLevelManager();
-            Enchantment ench = Registries.ENCHANTMENT.get(EnchantmentHelper.getEnchantmentId(enchantment));
-            if (!levelManager.hasRequiredEnchantmentLevel(Registries.ENCHANTMENT.getEntry(ench), EnchantmentHelper.getLevelFromNbt(nbtCompound))) {
-                return 0;
-            }
-        }
-        return original;
-    }*/
-
     @Inject(method = "getLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getIdFromNbt(Lnet/minecraft/nbt/NbtCompound;)Lnet/minecraft/util/Identifier;"), cancellable = true)
     private static void inject3(Enchantment enchantment, ItemStack stack, CallbackInfoReturnable<Integer> cir, @Local NbtCompound nbtCompound) {
-        if (((ItemStackAccess)(Object)(stack)).getHoldingPlayer() != null) {
-            LevelManager levelManager = ((LevelManagerAccess) ((ItemStackAccess)(Object)(stack)).getHoldingPlayer()).getLevelManager();
+        if (((ItemStackAccess)(Object)(stack)).skillz$getHoldingPlayer() != null) {
+            LevelManager levelManager = ((LevelManagerAccess) ((ItemStackAccess)(Object)(stack)).skillz$getHoldingPlayer()).skillz$getLevelManager();
             Enchantment ench = Registries.ENCHANTMENT.get(EnchantmentHelper.getEnchantmentId(enchantment));
             if (!levelManager.hasRequiredEnchantmentLevel(Registries.ENCHANTMENT.getEntry(ench), EnchantmentHelper.getLevelFromNbt(nbtCompound))) {
                 cir.setReturnValue(0);
@@ -66,7 +52,7 @@ public abstract class EnchantmentHelperMixin implements EnchantmentAccess {
         if (user instanceof PlayerEntity playerEntity) {
             Item weapon = user.getStackInHand(user.getActiveHand()).getItem();
             if (weapon != null) {
-                LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
+                LevelManager levelManager = ((LevelManagerAccess) playerEntity).skillz$getLevelManager();
                 if (!levelManager.hasRequiredItemLevel(weapon)) {
                     info.cancel();
                 }

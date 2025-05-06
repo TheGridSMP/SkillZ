@@ -56,7 +56,7 @@ public abstract class WorldRendererMixin {
     @Inject(method = "drawBlockOutline", at = @At(value = "HEAD"), cancellable = true)
     private void drawBlockOutlineMixin(MatrixStack matrices, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos blockPos, BlockState blockState,
                                        CallbackInfo info) {
-        if ((!((LevelManagerAccess) client.player).getLevelManager().hasRequiredMiningLevel(blockState.getBlock()) || !((LevelManagerAccess) client.player).getLevelManager().hasRequiredBlockLevel(blockState.getBlock()))) {
+        if ((!((LevelManagerAccess) client.player).skillz$getLevelManager().hasRequiredMiningLevel(blockState.getBlock()) || !((LevelManagerAccess) client.player).skillz$getLevelManager().hasRequiredBlockLevel(blockState.getBlock()))) {
             switch (ConfigInit.CLIENT.highlightOption) {
                 case RED:
                     WorldRenderer.drawShapeOutline(matrices, vertexConsumer, blockState.getOutlineShape(this.world, blockPos, ShapeContext.of(entity)), (double) blockPos.getX() - cameraX,

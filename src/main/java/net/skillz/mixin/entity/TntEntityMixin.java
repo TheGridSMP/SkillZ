@@ -28,22 +28,11 @@ public abstract class TntEntityMixin extends Entity {
         super(type, world);
     }
 
-    /*@Inject(method = "explode", at = @At(value = "HEAD"), cancellable = true)
-    private void explodeMixin(CallbackInfo info) {
-        if (causingEntity != null && causingEntity instanceof PlayerEntity player) {
-            if (((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.MINING) >= ConfigInit.CONFIG.maxLevel) {
-                this.getWorld().createExplosion(this, this.getX(), this.getBodyY(0.0625D), this.getZ(), 4.0F * (1F + ConfigInit.CONFIG.miningTntBonus), ExplosionSourceType.TNT);
-                info.cancel();
-            }
-        }
-    }*/
-
-    //TODO tntStrengthBonus
     @WrapOperation(method = "explode", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;createExplosion(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/world/World$ExplosionSourceType;)Lnet/minecraft/world/explosion/Explosion;"))
     private Explosion explosionMixin(World instance, Entity entity, double x, double y, double z, float power, ExplosionSourceType explosionSourceType, Operation<Explosion> original) {
-        if (causingEntity != null && causingEntity instanceof PlayerEntity playerEntity) {
+        if (causingEntity != null && causingEntity instanceof PlayerEntity playerEntity)
             power += BonusHelper.tntStrengthBonus(playerEntity);
-        }
+
         return original.call(instance, entity, x, y, z, power, explosionSourceType);
     }
 }

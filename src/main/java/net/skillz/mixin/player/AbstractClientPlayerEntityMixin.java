@@ -26,20 +26,20 @@ public abstract class AbstractClientPlayerEntityMixin implements ClientPlayerLis
     }
 
     @Override
-    public int getLevel() {
+    public int skillz$getLevel() {
         if (getPlayerListEntry() != null) {
-            return ((ClientPlayerListAccess) getPlayerListEntry()).getLevel();
+            return ((ClientPlayerListAccess) getPlayerListEntry()).skillz$getLevel();
         }
         return 0;
     }
 
     @Override
-    public boolean shouldRenderClientName() {
+    public boolean skillz$shouldRenderClientName() {
         return this.shouldRenderClientName;
     }
 
     @Override
-    public void setShouldRenderClientName(boolean shouldRenderClientName) {
+    public void skillz$setShouldRenderClientName(boolean shouldRenderClientName) {
         this.shouldRenderClientName = shouldRenderClientName;
     }
 }

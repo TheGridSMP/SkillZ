@@ -42,12 +42,12 @@ public class PlayerEntityRendererMixin {
 
     @WrapOperation(method = "renderLabelIfPresent", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/LivingEntityRenderer;renderLabelIfPresent(Lnet/minecraft/entity/Entity;Lnet/minecraft/text/Text;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V"))
     private void renderLabelIfPresentMixin(PlayerEntityRenderer instance, Entity abstractClientPlayerEntity, Text text, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, Operation<Void> original) {
-        if (!((ClientPlayerAccess) abstractClientPlayerEntity).shouldRenderClientName()) {
+        if (!((ClientPlayerAccess) abstractClientPlayerEntity).skillz$shouldRenderClientName()) {
             return;
         }
         if (ConfigInit.CLIENT.showLevel) {
             original.call(instance, abstractClientPlayerEntity, Team.decorateName(abstractClientPlayerEntity.getScoreboardTeam(),
-                    Text.translatable("text.skillz.scoreboard", ((ClientPlayerListAccess) abstractClientPlayerEntity).getLevel(), abstractClientPlayerEntity.getName())), matrixStack, vertexConsumerProvider, i);
+                    Text.translatable("text.skillz.scoreboard", ((ClientPlayerListAccess) abstractClientPlayerEntity).skillz$getLevel(), abstractClientPlayerEntity.getName())), matrixStack, vertexConsumerProvider, i);
         } else {
             original.call(instance, abstractClientPlayerEntity, text, matrixStack, vertexConsumerProvider, i);
         }

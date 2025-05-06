@@ -26,7 +26,7 @@ public class LevelServerPacket {
             int level = payload.level();
 
             server.execute(() -> {
-                LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+                LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
                 if (levelManager.getSkillPoints() - level >= 0) {
 
                     Skill skill = LevelManager.SKILLS.get(id);
@@ -62,14 +62,12 @@ public class LevelServerPacket {
             });
         });
 
-        ServerPlayNetworking.registerGlobalReceiver(AttributeSyncPacket.PACKET_ID, (server, player, handler, buffer, sender) -> {
-            server.execute(() -> {
-                // Following are already synced
-                // Collection<EntityAttributeInstance> collection = context.player().getAttributes().getAttributesToSend();
-                // context.player().networkHandler.sendPacket(new EntityAttributesS2CPacket(context.player().getId(), collection));
-                // Is required lul
-                player.networkHandler.sendPacket(new EntityAttributesS2CPacket(player.getId(), List.of(player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE))));
-            });
-        });
+        ServerPlayNetworking.registerGlobalReceiver(AttributeSyncPacket.PACKET_ID, (server, player, handler, buffer, sender) -> server.execute(() -> {
+            // Following are already synced
+            // Collection<EntityAttributeInstance> collection = context.player().getAttributes().getAttributesToSend();
+            // context.player().networkHandler.sendPacket(new EntityAttributesS2CPacket(context.player().getId(), collection));
+            // Is required lul
+            player.networkHandler.sendPacket(new EntityAttributesS2CPacket(player.getId(), List.of(player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE))));
+        }));
     }
 }

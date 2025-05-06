@@ -17,7 +17,7 @@ public class RestrictionHelper {
 
     public static boolean restrictSlotClick(PlayerEntity playerEntity, SlotActionType actionType, ItemStack cursorStack, Slot slot, ScreenHandler screenHandler) {
         if (!playerEntity.isCreative()) {
-            LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
+            LevelManager levelManager = ((LevelManagerAccess) playerEntity).skillz$getLevelManager();
             if (actionType.equals(SlotActionType.QUICK_MOVE)) {
                 return !slot.getStack().isEmpty() && !levelManager.hasRequiredItemLevel(slot.getStack().getItem());
             } else if (!cursorStack.isEmpty()) {
@@ -33,9 +33,8 @@ public class RestrictionHelper {
                         }
                     }*/
                 }
-                if (!levelManager.hasRequiredCraftingLevel(cursorStack.getItem()) && isNonNormalSlot) {
-                    return true;
-                }
+
+                return !levelManager.hasRequiredCraftingLevel(cursorStack.getItem()) && isNonNormalSlot;
             }
         }
 

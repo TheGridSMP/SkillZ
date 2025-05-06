@@ -5,10 +5,9 @@ import java.util.UUID;
 
 public interface ClientPlayerListAccess {
 
-    public int getLevel();
+    int skillz$getLevel();
 
-    public void setLevel(int level);
+    void skillz$setLevel(int level);
 
-    public Map<UUID, Integer> getLevelMap();
-
+    Map<UUID, Integer> skillz$getLevelMap();
 }

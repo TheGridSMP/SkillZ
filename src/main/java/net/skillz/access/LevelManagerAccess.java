@@ -4,5 +4,5 @@ import net.skillz.level.LevelManager;
 
 public interface LevelManagerAccess {
 
-    LevelManager getLevelManager();
+    LevelManager skillz$getLevelManager();
 }

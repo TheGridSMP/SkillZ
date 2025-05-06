@@ -12,8 +12,7 @@ import net.fabricmc.loader.api.FabricLoader;
 public class SkillZMixinPlugin implements IMixinConfigPlugin {
 
     @Override
-    public void onLoad(String mixinPackage) {
-    }
+    public void onLoad(String mixinPackage) { }
 
     @Override
     public String getRefMapperConfig() {
@@ -56,15 +55,14 @@ public class SkillZMixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.contains("SmithingAnvilScreenHandlerMixin") && !FabricLoader.getInstance().isModLoaded("alloygery"))
             return false;
 
-        if (mixinClassName.contains("TieredCompatMixin") && FabricLoader.getInstance().isModLoaded("tiered"))
+        if (mixinClassName.contains("TieredCompatMixin") && !FabricLoader.getInstance().isModLoaded("tiered"))
             return false;
 
         return true;
     }
 
     @Override
-    public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
-    }
+    public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) { }
 
     @Override
     public List<String> getMixins() {
@@ -72,11 +70,8 @@ public class SkillZMixinPlugin implements IMixinConfigPlugin {
     }
 
     @Override
-    public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-    }
+    public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) { }
 
     @Override
-    public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-    }
-
+    public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) { }
 }

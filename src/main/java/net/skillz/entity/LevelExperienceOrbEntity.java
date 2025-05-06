@@ -14,7 +14,6 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -30,6 +29,8 @@ import java.util.stream.Stream;
 // https://github.com/jaredlll08/Clumps/blob/1.19/Common/src/main/java/com/blamejared/clumps/mixin/MixinExperienceOrb.java
 
 public class LevelExperienceOrbEntity extends Entity {
+
+    static final int[] ORB_SIZES = new int[] { 1, 3, 7, 17, 37, 73, 149, 307, 617, 1237, 2477 };
 
     private int orbAge;
     private int health = 5;
@@ -99,8 +100,8 @@ public class LevelExperienceOrbEntity extends Entity {
         if (this.isOnGround()) {
             this.setVelocity(this.getVelocity().multiply(1.0, -0.9, 1.0));
         }
-        ++this.orbAge;
-        if (this.orbAge >= 6000) {
+
+        if (++this.orbAge >= 6000) {
             this.discard();
         }
     }
@@ -109,11 +110,12 @@ public class LevelExperienceOrbEntity extends Entity {
         if (this.target == null || this.target.squaredDistanceTo(this) > 64.0) {
             this.target = this.getWorld().getClosestPlayer(this, 8.0);
         }
-        if (this.getWorld() instanceof ServerWorld) {
-            List<LevelExperienceOrbEntity> list = this.getWorld().getEntitiesByType(TypeFilter.instanceOf(LevelExperienceOrbEntity.class), this.getBoundingBox().expand(0.5), this::isMergeable);
-            for (LevelExperienceOrbEntity experienceOrbEntity : list) {
-                this.merge(experienceOrbEntity);
-            }
+
+        if (!(this.getWorld() instanceof ServerWorld))
+            return;
+
+        for (LevelExperienceOrbEntity experienceOrbEntity : this.getWorld().getEntitiesByClass(LevelExperienceOrbEntity.class, this.getBoundingBox().expand(0.5), this::isMergeable)) {
+            this.merge(experienceOrbEntity);
         }
     }
 
@@ -130,8 +132,8 @@ public class LevelExperienceOrbEntity extends Entity {
 
     private static boolean wasMergedIntoExistingOrb(ServerWorld world, Vec3d pos, int amount) {
         Box box = Box.of(pos, 1.0, 1.0, 1.0);
-        int i = world.getRandom().nextInt(40);
-        List<LevelExperienceOrbEntity> list = world.getEntitiesByType(TypeFilter.instanceOf(LevelExperienceOrbEntity.class), box, orb -> LevelExperienceOrbEntity.isMergeable(orb, i, amount));
+        List<LevelExperienceOrbEntity> list = world.getEntitiesByClass(LevelExperienceOrbEntity.class, box, Entity::isAlive);
+
         if (!list.isEmpty()) {
             LevelExperienceOrbEntity experienceOrbEntity = list.get(0);
             Map<Integer, Integer> clumpedMap = experienceOrbEntity.getClumpedMap();
@@ -141,15 +143,12 @@ public class LevelExperienceOrbEntity extends Entity {
             experienceOrbEntity.orbAge = 0;
             return true;
         }
+
         return false;
     }
 
     private boolean isMergeable(LevelExperienceOrbEntity other) {
         return other.isAlive() && other != this;
-    }
-
-    private static boolean isMergeable(LevelExperienceOrbEntity orb, int seed, int amount) {
-        return orb.isAlive();
     }
 
     private void merge(LevelExperienceOrbEntity other) {
@@ -162,7 +161,7 @@ public class LevelExperienceOrbEntity extends Entity {
 
     private void applyWaterMovement() {
         Vec3d vec3d = this.getVelocity();
-        this.setVelocity(vec3d.x * (double) 0.99f, Math.min(vec3d.y + (double) 5.0E-4f, (double) 0.06f), vec3d.z * (double) 0.99f);
+        this.setVelocity(vec3d.x * (double) 0.99f, Math.min(vec3d.y + (double) 5.0E-4f, 0.06f), vec3d.z * (double) 0.99f);
     }
 
     @Override
@@ -221,12 +220,9 @@ public class LevelExperienceOrbEntity extends Entity {
         if (!this.getWorld().isClient() && player.experiencePickUpDelay == 0 && this.orbAge > 20) {
             player.experiencePickUpDelay = 2;
             player.sendPickup(this, 1);
-            getClumpedMap().forEach((value, amount) -> {
-                ((ServerPlayerSyncAccess) player).addLevelExperience(value * amount);
-            });
+            getClumpedMap().forEach((value, amount) -> ((ServerPlayerSyncAccess) player).skillz$addLevelExperience(value * amount));
             this.discard();
         }
-
     }
 
     public int getExperienceAmount() {
@@ -234,70 +230,25 @@ public class LevelExperienceOrbEntity extends Entity {
     }
 
     public int getOrbSize() {
-        if (this.amount >= 2477) {
-            return 10;
+        if (this.amount < 3)
+            return 0;
+
+        for (int i = ORB_SIZES.length - 1; i > 1; i--) {
+            int size = ORB_SIZES[i];
+
+            if (this.amount >= size)
+                return i;
         }
-        if (this.amount >= 1237) {
-            return 9;
-        }
-        if (this.amount >= 617) {
-            return 8;
-        }
-        if (this.amount >= 307) {
-            return 7;
-        }
-        if (this.amount >= 149) {
-            return 6;
-        }
-        if (this.amount >= 73) {
-            return 5;
-        }
-        if (this.amount >= 37) {
-            return 4;
-        }
-        if (this.amount >= 17) {
-            return 3;
-        }
-        if (this.amount >= 7) {
-            return 2;
-        }
-        if (this.amount >= 3) {
-            return 1;
-        }
+
         return 0;
     }
 
     public static int roundToOrbSize(int value) {
-        if (value >= 2477) {
-            return 2477;
+        for (int i = ORB_SIZES.length - 1; i > 0; i--) {
+            int threshold = ORB_SIZES[i];
+            if (value >= threshold) return threshold;
         }
-        if (value >= 1237) {
-            return 1237;
-        }
-        if (value >= 617) {
-            return 617;
-        }
-        if (value >= 307) {
-            return 307;
-        }
-        if (value >= 149) {
-            return 149;
-        }
-        if (value >= 73) {
-            return 73;
-        }
-        if (value >= 37) {
-            return 37;
-        }
-        if (value >= 17) {
-            return 17;
-        }
-        if (value >= 7) {
-            return 7;
-        }
-        if (value >= 3) {
-            return 3;
-        }
+
         return 1;
     }
 
@@ -308,7 +259,7 @@ public class LevelExperienceOrbEntity extends Entity {
 
     @Override
     public Packet<ClientPlayPacketListener> createSpawnPacket() {
-        return new OrbPacket(this);
+        return OrbPacket.createS2C(this);
     }
 
     @Override
@@ -321,6 +272,7 @@ public class LevelExperienceOrbEntity extends Entity {
             this.clumpedMap = new HashMap<>();
             this.clumpedMap.put(this.amount, 1);
         }
+
         return this.clumpedMap;
     }
 
@@ -328,5 +280,4 @@ public class LevelExperienceOrbEntity extends Entity {
         this.clumpedMap = map;
         this.amount = getClumpedMap().entrySet().stream().map(entry -> entry.getKey() * entry.getValue()).reduce(Integer::sum).orElse(1);
     }
-
 }

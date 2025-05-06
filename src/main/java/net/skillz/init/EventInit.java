@@ -54,7 +54,7 @@ public class EventInit {
                 PacketHelper.updatePlayerSkills(newPlayer, oldPlayer);
 
                 if (ConfigInit.MAIN.EXPERIENCE.resetCurrentXp) {
-                    LevelManager levelManager = ((LevelManagerAccess) newPlayer).getLevelManager();
+                    LevelManager levelManager = ((LevelManagerAccess) newPlayer).skillz$getLevelManager();
                     levelManager.setLevelProgress(0);
                     levelManager.setTotalLevelExperience(0);
                 }
@@ -68,7 +68,7 @@ public class EventInit {
 
         UseItemCallback.EVENT.register((player, world, hand) -> {
             if (!player.isCreative() && !player.isSpectator()) {
-                LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+                LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
                 if (!levelManager.hasRequiredItemLevel(player.getStackInHand(hand).getItem())) {
                     System.out.println(levelManager.getRequiredItemLevel(player.getStackInHand(hand).getItem()));
                     //player.sendMessage(Text.literal(customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED), true);
@@ -83,7 +83,7 @@ public class EventInit {
             if (!player.isCreative() && !player.isSpectator()) {
                 BlockPos blockPos = result.getBlockPos();
                 if (world.canPlayerModifyAt(player, blockPos)) {
-                    LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+                    LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
                     if (!levelManager.hasRequiredBlockLevel(world.getBlockState(blockPos).getBlock())) {
                         player.sendMessage(Text.translatable("restriction.skillz.locked.tooltip").formatted(Formatting.RED), true);
                         return ActionResult.success(false);
@@ -96,7 +96,7 @@ public class EventInit {
         UseEntityCallback.EVENT.register((player, world, hand, entity, entityHitResult) -> {
             if (!player.isCreative() && !player.isSpectator()) {
                 if (!entity.hasControllingPassenger() || !((EntityAccessor) entity).callCanAddPassenger(player)) {
-                    LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+                    LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
                     if (!levelManager.hasRequiredEntityLevel(entity.getType())) {
                         player.sendMessage(Text.translatable("restriction.skillz.locked.tooltip").formatted(Formatting.RED), true);
                         return ActionResult.success(false);

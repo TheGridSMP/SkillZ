@@ -34,7 +34,7 @@ public class PotionItemMixin {
             }
         }
         return original;*/
-        return BonusHelper.potionEffectChanceBonus(original, stack, world, user);
+        return BonusHelper.potionEffectChanceBonus(original, user);
     }
 
 }

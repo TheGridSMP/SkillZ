@@ -14,7 +14,7 @@ public class CompatInit {
         if (FabricLoader.getInstance().isModLoaded("placeholder-api")) {
             Placeholders.register(SkillZMain.identifierOf("playerlevel"), (ctx, arg) -> {
                 if (ctx.hasPlayer()) {
-                    return PlaceholderResult.value(Integer.toString(((LevelManagerAccess) ctx.player()).getLevelManager().getOverallLevel()));
+                    return PlaceholderResult.value(Integer.toString(((LevelManagerAccess) ctx.player()).skillz$getLevelManager().getOverallLevel()));
                 } else {
                     return PlaceholderResult.invalid("No player!");
                 }
@@ -22,7 +22,7 @@ public class CompatInit {
         }
         if (FabricLoader.getInstance().isModLoaded("treechop")) {
             TreeChopEvents.BEFORE_CHOP.register((world, player, pos, state, chopData) -> {
-                LevelManager levelManager = ((LevelManagerAccess) player).getLevelManager();
+                LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
                 if (!levelManager.hasRequiredItemLevel(player.getMainHandStack().getItem())) {
                     player.getWorld().breakBlock(pos, false);
                     return false;

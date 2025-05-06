@@ -4,10 +4,7 @@ import java.util.List;
 
 import net.skillz.access.LevelManagerAccess;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -32,6 +29,7 @@ import net.minecraft.util.math.Vec3d;
 @Mixin(AbstractFurnaceBlockEntity.class)
 public class AbstractFurnaceBlockEntityMixin {
 
+    @Unique
     @Nullable
     private ServerPlayerEntity serverPlayerEntity = null;
 
@@ -49,17 +47,18 @@ public class AbstractFurnaceBlockEntityMixin {
     private void getRecipesUsedAndDropExperienceMixin(ServerWorld world, Vec3d pos, CallbackInfoReturnable<List<Recipe<?>>> info) {
         if (ConfigInit.MAIN.EXPERIENCE.furnaceXPMultiplier > 0.0F) {
             for (Object2IntMap.Entry<Identifier> entry : this.recipesUsed.object2IntEntrySet()) {
-                world.getRecipeManager().get((Identifier) entry.getKey()).ifPresent(recipe -> {
+                world.getRecipeManager().get(entry.getKey()).ifPresent(recipe -> {
                     if (!recipe.getOutput(world.getRegistryManager()).isIn(TagInit.RESTRICTED_FURNACE_EXPERIENCE_ITEMS)) {
                         int i = MathHelper.floor((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe).getExperience());
                         float f = MathHelper.fractionalPart((float) entry.getIntValue() * ((AbstractCookingRecipe) recipe).getExperience());
-                        if (f != 0.0f && Math.random() < (double) f) {
+
+                        if (f != 0.0f && Math.random() < (double) f)
                             ++i;
-                        }
+
                         LevelExperienceOrbEntity.spawn(world, pos,
                                 (int) (i * ConfigInit.MAIN.EXPERIENCE.furnaceXPMultiplier
                                         * (ConfigInit.MAIN.EXPERIENCE.dropXPbasedOnLvl && serverPlayerEntity != null
-                                                ? 1.0F + ConfigInit.MAIN.EXPERIENCE.basedOnMultiplier * ((LevelManagerAccess) serverPlayerEntity).getLevelManager().getOverallLevel()
+                                                ? 1.0F + ConfigInit.MAIN.EXPERIENCE.basedOnMultiplier * ((LevelManagerAccess) serverPlayerEntity).skillz$getLevelManager().getOverallLevel()
                                                 : 1.0F)));
                     }
                 });

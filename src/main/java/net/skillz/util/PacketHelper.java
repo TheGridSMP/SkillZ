@@ -17,7 +17,7 @@ import java.util.Map;
 public class PacketHelper {
 
     public static void updateLevels(ServerPlayerEntity serverPlayerEntity) {
-        LevelManager levelManager = ((LevelManagerAccess) serverPlayerEntity).getLevelManager();
+        LevelManager levelManager = ((LevelManagerAccess) serverPlayerEntity).skillz$getLevelManager();
         int overallLevel = levelManager.getOverallLevel();
         int skillPoints = levelManager.getSkillPoints();
         int totalLevelExperience = levelManager.getTotalLevelExperience();
@@ -45,9 +45,9 @@ public class PacketHelper {
     }
 
     public static void updatePlayerSkills(ServerPlayerEntity serverPlayerEntity, @Nullable ServerPlayerEntity oldPlayerEntity) {
-        LevelManager levelManager = ((LevelManagerAccess) serverPlayerEntity).getLevelManager();
+        LevelManager levelManager = ((LevelManagerAccess) serverPlayerEntity).skillz$getLevelManager();
         if (oldPlayerEntity != null) {
-            LevelManager oldLevelManager = ((LevelManagerAccess) oldPlayerEntity).getLevelManager();
+            LevelManager oldLevelManager = ((LevelManagerAccess) oldPlayerEntity).skillz$getLevelManager();
             levelManager.setPlayerSkills(oldLevelManager.getPlayerSkills());
             levelManager.setOverallLevel(oldLevelManager.getOverallLevel());
             levelManager.setTotalLevelExperience(oldLevelManager.getTotalLevelExperience());

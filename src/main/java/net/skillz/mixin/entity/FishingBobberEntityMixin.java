@@ -16,22 +16,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 
 @Mixin(FishingBobberEntity.class)
-public class FishingBobberEntityMixin {
+public abstract class FishingBobberEntityMixin {
+
+    @Shadow
+    @Nullable
+    public abstract PlayerEntity getPlayerOwner();
 
     @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z", ordinal = 0))
-    private void useMixin(ItemStack usedItem, CallbackInfoReturnable<Integer> info) {
+    private void use(ItemStack usedItem, CallbackInfoReturnable<Integer> info) {
         if (ConfigInit.MAIN.EXPERIENCE.fishingXPMultiplier > 0.0F) {
             LevelExperienceOrbEntity.spawn((ServerWorld) getPlayerOwner().getWorld(), getPlayerOwner().getPos().add(0.0D, 0.5D, 0.0D),
                     (int) ((getPlayerOwner().getWorld().getRandom().nextInt(6) + 1) * ConfigInit.MAIN.EXPERIENCE.fishingXPMultiplier
                             * (ConfigInit.MAIN.EXPERIENCE.dropXPbasedOnLvl && getPlayerOwner() != null
-                            ? 1.0F + ConfigInit.MAIN.EXPERIENCE.basedOnMultiplier * ((LevelManagerAccess) getPlayerOwner()).getLevelManager().getOverallLevel()
+                            ? 1.0F + ConfigInit.MAIN.EXPERIENCE.basedOnMultiplier * ((LevelManagerAccess) getPlayerOwner()).skillz$getLevelManager().getOverallLevel()
                             : 1.0F)));
         }
-    }
-
-    @Shadow
-    @Nullable
-    public PlayerEntity getPlayerOwner() {
-        return null;
     }
 }

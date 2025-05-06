@@ -4,9 +4,9 @@ import net.minecraft.world.chunk.Chunk;
 
 public interface PlayerDropAccess {
 
-    void increaseKilledMobStat(Chunk chunk);
+    void skillz$mobKilled(Chunk chunk);
 
-    boolean allowMobDrop();
+    boolean skillz$allowMobDrop();
 
-    void resetKilledMobStat();
+    void skillz$resetMobKills();
 }

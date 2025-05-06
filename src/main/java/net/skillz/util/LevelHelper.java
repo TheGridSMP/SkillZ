@@ -13,7 +13,7 @@ import java.util.UUID;
 public class LevelHelper {
 
     public static void updateSkill(ServerPlayerEntity serverPlayerEntity, Skill skill) {
-        LevelManager levelManager = ((LevelManagerAccess) serverPlayerEntity).getLevelManager();
+        LevelManager levelManager = ((LevelManagerAccess) serverPlayerEntity).skillz$getLevelManager();
         for (SkillAttribute skillAttribute : skill.attributes()) {
             EntityAttributeInstance attr = serverPlayerEntity.getAttributeInstance(skillAttribute.getAttribute().value());
             if (attr != null) {

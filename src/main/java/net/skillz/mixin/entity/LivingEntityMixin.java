@@ -1,6 +1,8 @@
 package net.skillz.mixin.entity;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.skillz.access.LevelManagerAccess;
 import net.skillz.level.LevelManager;
 import net.skillz.util.BonusHelper;
@@ -23,7 +25,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
@@ -40,6 +41,11 @@ public abstract class LivingEntityMixin extends Entity {
     @Nullable
     protected PlayerEntity attackingPlayer;
 
+    @Shadow
+    public abstract int getXpToDrop();
+
+    @Shadow public abstract boolean damage(DamageSource source, float amount);
+
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
@@ -51,55 +57,34 @@ public abstract class LivingEntityMixin extends Entity {
 
     @ModifyArg(method = "modifyAppliedDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/DamageUtil;getInflictedDamage(FF)F"), index = 1)
     private float modifyAppliedDamageMixin2(float damageDealt, @Local DamageSource source) {
-        /*if (source == this.getDamageSources().fall() && (Object) this instanceof PlayerEntity player) {
-            return (int) (original + ((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.AGILITY) * ConfigInit.CONFIG.movementFallBonus);
-        } else {
-            return original;
-        }*/
-        //TODO fallDamageReductionBonus
-        if (source.isOf(DamageTypes.FALL) && (Object) this instanceof PlayerEntity playerEntity) {
-            return EnchantmentHelper.getProtectionAmount(this.getArmorItems(), source) + BonusHelper.fallDamageReductionBonus(playerEntity);
-        } else {
-            return EnchantmentHelper.getProtectionAmount(this.getArmorItems(), source);
-        }
+        float damage = EnchantmentHelper.getProtectionAmount(this.getArmorItems(), source);
+
+        if (source.isOf(DamageTypes.FALL) && (Object) this instanceof PlayerEntity playerEntity)
+            damage += BonusHelper.fallDamageReductionBonus(playerEntity);
+
+        return damage;
     }
 
     @ModifyVariable(method = "tryUseTotem", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/LivingEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;", ordinal = 0))
     private ItemStack tryUseTotemMixin(ItemStack original) {
-        /*if ((Object) this instanceof PlayerEntity player) {
-            ArrayList<Object> levelList = LevelLists.totemList;
-            if (!PlayerStatsManager.playerLevelisHighEnough(player, levelList, null, true)) {
-                return ItemStack.EMPTY;
-            }
-        }
-        return original;*/
-        //TODO totem 1
         if ((Object) this instanceof PlayerEntity playerEntity && original.isOf(Items.TOTEM_OF_UNDYING)) {
-            if (playerEntity.isCreative()) {
+            if (playerEntity.isCreative())
                 return original;
-            }
-            LevelManager levelManager = ((LevelManagerAccess) playerEntity).getLevelManager();
-            if (!levelManager.hasRequiredItemLevel(original.getItem())) {
+
+            LevelManager levelManager = ((LevelManagerAccess) playerEntity).skillz$getLevelManager();
+
+            if (!levelManager.hasRequiredItemLevel(original.getItem()))
                 return ItemStack.EMPTY;
-            }
         }
+
         return original;
     }
 
     @Inject(method = "tryUseTotem", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/Hand;values()[Lnet/minecraft/util/Hand;"), cancellable = true)
     private void tryUseTotemMixin(DamageSource source, CallbackInfoReturnable<Boolean> info) {
-        /*if ((Object) this instanceof PlayerEntity player) {
-            if (((PlayerStatsManagerAccess) player).getPlayerStatsManager().getSkillLevel(Skill.LUCK) >= ConfigInit.CONFIG.maxLevel
-                    && player.getWorld().getRandom().nextFloat() < ConfigInit.CONFIG.luckSurviveChance) {
-                player.setHealth(1.0F);
-                player.clearStatusEffects();
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 100, 1));
-                player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 600, 0));
-                info.setReturnValue(true);
-            }
-        }*/
-        //TODO totem 2
-        if ((Object) this instanceof PlayerEntity playerEntity && BonusHelper.deathGraceChanceBonus(playerEntity)) {
+        if ((Object) this instanceof PlayerEntity player && BonusHelper.deathGraceChanceBonus(player)) {
+            player.setHealth(1.0F);
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 100, 1));
             info.setReturnValue(true);
         }
     }
@@ -107,7 +92,7 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "drop", at = @At(value = "HEAD"), cancellable = true)
     protected void dropMixin(DamageSource source, CallbackInfo info) {
         if (!((Object) this instanceof PlayerEntity) && attackingPlayer != null && this.playerHitTimer > 0 && ConfigInit.MAIN.LEVEL.disableMobFarms
-                && !((PlayerDropAccess) attackingPlayer).allowMobDrop()) {
+                && !((PlayerDropAccess) attackingPlayer).skillz$allowMobDrop()) {
             info.cancel();
         }
     }
@@ -115,27 +100,20 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;drop(Lnet/minecraft/entity/damage/DamageSource;)V"))
     private void onDeathMixin(DamageSource source, CallbackInfo info) {
         if (attackingPlayer != null && this.playerHitTimer > 0 && ConfigInit.MAIN.LEVEL.disableMobFarms) {
-            ((PlayerDropAccess) attackingPlayer).increaseKilledMobStat(this.getWorld().getChunk(this.getBlockPos()));
+            ((PlayerDropAccess) attackingPlayer).skillz$mobKilled(this.getWorld().getChunk(this.getBlockPos()));
         }
     }
 
     @Inject(method = "dropXp", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ExperienceOrbEntity;spawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/Vec3d;I)V"))
     protected void dropXpMixin(CallbackInfo info) {
         if (ConfigInit.MAIN.EXPERIENCE.mobXPMultiplier > 0.0F) {
-            if (!ConfigInit.MAIN.EXPERIENCE.spawnerMobXP && (Object) this instanceof MobEntity mobEntity && ((MobEntityAccess) mobEntity).isSpawnerMob()) {
-            } else {
+            if (ConfigInit.MAIN.EXPERIENCE.spawnerMobXP || !((Object) this instanceof MobEntityAccess mobEntity) || !mobEntity.skillz$isSpawnerMob()) {
                 LevelExperienceOrbEntity.spawn((ServerWorld) this.getWorld(), this.getPos(),
                         (int) (this.getXpToDrop() * ConfigInit.MAIN.EXPERIENCE.mobXPMultiplier
                                 * (ConfigInit.MAIN.EXPERIENCE.dropXPbasedOnLvl && this.attackingPlayer != null
-                                        ? 1.0F + ConfigInit.MAIN.EXPERIENCE.basedOnMultiplier * ((LevelManagerAccess) this.attackingPlayer).getLevelManager().getOverallLevel()
+                                        ? 1.0F + ConfigInit.MAIN.EXPERIENCE.basedOnMultiplier * ((LevelManagerAccess) this.attackingPlayer).skillz$getLevelManager().getOverallLevel()
                                         : 1.0F)));
             }
         }
     }
-
-    @Shadow
-    protected int getXpToDrop() {
-        return 0;
-    }
-
 }

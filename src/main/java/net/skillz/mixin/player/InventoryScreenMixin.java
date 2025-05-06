@@ -30,7 +30,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
         assert this.client != null;
         assert this.client.player != null;
         if (ConfigInit.CLIENT.inventorySkillLevel) {
-            LevelManager levelManager = (((LevelManagerAccess) this.client.player).getLevelManager());
+            LevelManager levelManager = (((LevelManagerAccess) this.client.player).skillz$getLevelManager());
             // 0xAARRGGBB Format
             int color = 0xFFFFFF;
             if (levelManager.getSkillPoints() > 0) {

@@ -32,7 +32,7 @@ public abstract class SmithingScreenHandlerMixin extends ForgingScreenHandler {
 
     @Inject(method = "updateResult", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;get(I)Ljava/lang/Object;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
     private void updateResultMixin(CallbackInfo info, List<SmithingRecipe> list) {
-        if (!this.player.isCreative() && !((LevelManagerAccess) this.player).getLevelManager().hasRequiredCraftingLevel(list.get(0).craft(this.input, this.player.getWorld().getRegistryManager()).getItem())) {
+        if (!this.player.isCreative() && !((LevelManagerAccess) this.player).skillz$getLevelManager().hasRequiredCraftingLevel(list.get(0).craft(this.input, this.player.getWorld().getRegistryManager()).getItem())) {
             this.currentRecipe = null;
             this.output.setStack(0, ItemStack.EMPTY);
             info.cancel();
