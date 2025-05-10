@@ -3,7 +3,9 @@ package net.skillz.network;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.entity.Entity;
 import net.skillz.access.LevelManagerAccess;
+import net.skillz.entity.LevelExperienceOrbEntity;
 import net.skillz.level.LevelManager;
 import net.skillz.level.PlayerSkill;
 import net.skillz.level.Skill;
@@ -25,7 +27,18 @@ import java.util.Map;
 public class LevelClientPacket {
 
     public static void init() {
-        ClientPlayNetworking.registerGlobalReceiver(OrbPacket.PACKET_ID, OrbPacket::handle);
+        ClientPlayNetworking.registerGlobalReceiver(OrbPacket.PACKET_ID, (client, handler, buf, responseSender) -> {
+            OrbPacket packet = new OrbPacket(buf);
+            double d = packet.getX();
+            double e = packet.getY();
+            double f = packet.getZ();
+            Entity entity = new LevelExperienceOrbEntity(handler.getWorld(), d, e, f, packet.getExperience());
+            entity.updateTrackedPosition(d, e, f);
+            entity.setYaw(0.0F);
+            entity.setPitch(0.0F);
+            entity.setId(packet.getEntityId());
+            handler.getWorld().addEntity(entity.getId(), entity);
+        });
 
         ClientPlayNetworking.registerGlobalReceiver(SkillSyncPacket.PACKET_ID, (client, handler, buf, sender) -> {
             SkillSyncPacket payload = new SkillSyncPacket(buf);
