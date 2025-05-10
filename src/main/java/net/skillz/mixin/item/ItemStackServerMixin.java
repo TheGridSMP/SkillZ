@@ -21,7 +21,7 @@ public abstract class ItemStackServerMixin implements ItemStackAccess {
 
     @Inject(method = "damage(ILnet/minecraft/util/math/random/Random;Lnet/minecraft/server/network/ServerPlayerEntity;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getLevel(Lnet/minecraft/enchantment/Enchantment;Lnet/minecraft/item/ItemStack;)I"))
     private void damageMixin(int amount, Random random, ServerPlayerEntity player, CallbackInfoReturnable<Boolean> cir) {
-        if (BonusHelper.itemDamageChanceBonus(player))
+        if (player != null && BonusHelper.itemDamageChanceBonus(player))
             cir.cancel();
     }
 
