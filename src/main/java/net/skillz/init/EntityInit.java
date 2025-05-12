@@ -17,7 +17,7 @@ public class EntityInit {
             .dimensions(EntityDimensions.fixed(0.5F, 0.5F)).build();
 
     public static void init() {
-        Registry.register(Registries.ENTITY_TYPE, SkillZMain.identifierOf("level_experience_orb"), LEVEL_EXPERIENCE_ORB);
+        Registry.register(Registries.ENTITY_TYPE, SkillZMain.id("level_experience_orb"), LEVEL_EXPERIENCE_ORB);
     }
 
 }

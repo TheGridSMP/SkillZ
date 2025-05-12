@@ -10,7 +10,7 @@ import net.skillz.SkillZMain;
 public class MainConfig extends Config {
 
     public MainConfig() {
-        super(SkillZMain.identifierOf("main_config"));
+        super(SkillZMain.id("main_config"));
     }
 
     public LevelSection LEVEL = new LevelSection();

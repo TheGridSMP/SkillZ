@@ -1,7 +1,6 @@
 package net.skillz.util;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.skillz.SkillZMain;
 import net.skillz.access.LevelManagerAccess;
 import net.skillz.level.*;
 import net.skillz.network.packet.*;
@@ -78,7 +77,7 @@ public class PacketHelper {
         System.out.println(EnchantmentRegistry.ENCHANTMENTS);
         for (Map.Entry<Integer, EnchantmentZ> entry : EnchantmentRegistry.ENCHANTMENTS.entrySet()) {
             keys.add(entry.getKey());
-            ids.add(SkillZMain.getEnchantmentIdAsString(entry.getValue().getEntry()));
+            ids.add(RegistryHelper.enchantmentToString(entry.getValue().getEntry()));
             levels.add(entry.getValue().getLevel());
         }
         ServerPlayNetworking.send(serverPlayerEntity, new EnchantmentZPacket(EnchantmentRegistry.INDEX_ENCHANTMENTS, keys, ids, levels));

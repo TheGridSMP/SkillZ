@@ -21,11 +21,11 @@ import net.minecraft.util.Identifier;
 @Environment(EnvType.CLIENT)
 public class RenderInit {
 
-    public static final Identifier SKILL_TAB_ICON = SkillZMain.identifierOf("textures/gui/sprites/skill_tab_icon.png");
-    public static final Identifier BAG_TAB_ICON = SkillZMain.identifierOf("textures/gui/sprites/bag_tab_icon.png");
+    public static final Identifier SKILL_TAB_ICON = SkillZMain.id("textures/gui/sprites/skill_tab_icon.png");
+    public static final Identifier BAG_TAB_ICON = SkillZMain.id("textures/gui/sprites/bag_tab_icon.png");
 
-    public static final Identifier MINEABLE_INFO = SkillZMain.identifierOf("mineable_info");
-    public static final Identifier MINEABLE_LEVEL_INFO = SkillZMain.identifierOf("mineable_level_info");
+    public static final Identifier MINEABLE_INFO = SkillZMain.id("mineable_info");
+    public static final Identifier MINEABLE_LEVEL_INFO = SkillZMain.id("mineable_level_info");
 
     public static void init() {
         EntityRendererRegistry.register(EntityInit.LEVEL_EXPERIENCE_ORB, LevelExperienceOrbEntityRenderer::new);

@@ -9,7 +9,7 @@ import net.skillz.SkillZMain;
 public class ClientConfig extends Config {
 
     public ClientConfig() {
-        super(SkillZMain.identifierOf("client_config"));
+        super(SkillZMain.id("client_config"));
     }
 
     @Comment("Hide reached levels in tooltips")

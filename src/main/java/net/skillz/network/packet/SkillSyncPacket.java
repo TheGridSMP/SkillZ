@@ -11,12 +11,13 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
+import net.skillz.util.RegistryHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SkillSyncPacket implements FabricPacket {
-    public static final Identifier PACKET_ID = SkillZMain.identifierOf("skill_sync_packet");
+    public static final Identifier PACKET_ID = SkillZMain.id("skill_sync_packet");
     protected final List<String> skillIds;
     protected final List<Integer> skillMaxLevels;
 
@@ -74,12 +75,11 @@ public class SkillSyncPacket implements FabricPacket {
             for (int i = 0; i < skillAttributes().size(); i++) {
                 SkillAttribute skillAttribute = skillAttributes().get(i);
                 buf.writeInt(skillAttribute.getId());
-                buf.writeString(SkillZMain.getEntityAttributeIdAsString(skillAttribute.getAttribute()));
+                buf.writeString(RegistryHelper.attributeToString(skillAttribute.getAttribute()));
                 buf.writeFloat(skillAttribute.getBaseValue());
                 buf.writeFloat(skillAttribute.getLevelValue());
                 //TODO watch for asString
                 buf.writeString(skillAttribute.getOperation().toString());
-
             }
         }
 

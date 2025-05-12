@@ -1,10 +1,10 @@
 package net.skillz.registry;
 
-import net.skillz.SkillZMain;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.registry.*;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
+import net.skillz.util.RegistryHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +32,7 @@ public class EnchantmentRegistry {
     }
 
     public static int getId(RegistryEntry<Enchantment> enchantment, int level) {
-        return getId(SkillZMain.getEnchantmentIdAsString(enchantment), level);
+        return getId(RegistryHelper.enchantmentToString(enchantment), level);
     }
 
     public static int getId(Identifier identifier, int level) {
@@ -58,27 +58,17 @@ public class EnchantmentRegistry {
     public static void updateEnchantments() {
         ENCHANTMENTS.clear();
         INDEX_ENCHANTMENTS.clear();
-        /*RegistryWrapper.WrapperLookup wrap = BuiltinRegistries.createWrapperLookup();
-        MinecraftClient.getInstance().world.getRegistryManager().getOptionalWrapper(RegistryKeys.ENCHANTMENT);*/
-        //Optional<RegistryWrapper.Impl<Enchantment>> wrapper = BuiltinRegistries.createWrapperLookup().getOptionalWrapper(RegistryKeys.ENCHANTMENT);
-        /*RegistryOps<JsonElement> ops = RegistryOps.of(JsonOps.INSTANCE, new RegistryOps.RegistryInfoGetter() {
-            @Override
-            public <T> Optional<RegistryOps.RegistryInfo<T>> getRegistryInfo(RegistryKey<? extends Registry<? extends T>> registryRef) {
-                return Registries.REGISTRIES.getEntry((RegistryKey)registryRef);
-            }
-        });
-        Optional<RegistryWrapper.Impl<Enchantment>> wrapper = ops.getEntryLookup(RegistryKeys.ENCHANTMENT);*/
+
         Optional<RegistryWrapper.Impl<Enchantment>> wrapper = createWrapperLookup().getOptionalWrapper(RegistryKeys.ENCHANTMENT);
-        //Optional<RegistryWrapper.Impl<Enchantment>> wrapper = MinecraftClient.getInstance().world.getRegistryManager().getOptionalWrapper(RegistryKeys.ENCHANTMENT);
+
         for (RegistryWrapper.Impl<Enchantment> enchantmentImpl : wrapper.stream().toList()) {
             for (RegistryEntry.Reference<Enchantment> enchantment : enchantmentImpl.streamEntries().toList()) {
                 for (int i = 1; i <= enchantment.value().getMaxLevel(); i++) {
-                    INDEX_ENCHANTMENTS.put(SkillZMain.getEnchantmentIdAsString(enchantment) + i, ENCHANTMENTS.size());
+                    INDEX_ENCHANTMENTS.put(RegistryHelper.enchantmentToString(enchantment) + i, ENCHANTMENTS.size());
                     ENCHANTMENTS.put(ENCHANTMENTS.size(), new EnchantmentZ(enchantment, i));
                 }
             }
         }
     }
-
 }
 

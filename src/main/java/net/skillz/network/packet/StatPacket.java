@@ -14,7 +14,7 @@ import net.minecraft.util.Identifier;
  * @param level amount
  */
 public class StatPacket implements FabricPacket {
-    public static final Identifier PACKET_ID = SkillZMain.identifierOf("stat_packet");
+    public static final Identifier PACKET_ID = SkillZMain.id("stat_packet");
 
     protected final String id;
     protected final int level;

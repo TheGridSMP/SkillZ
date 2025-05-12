@@ -30,7 +30,7 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
 
     @Override
     public Identifier getFabricId() {
-        return SkillZMain.identifierOf("skills");
+        return SkillZMain.id("skills");
     }
 
     @Override

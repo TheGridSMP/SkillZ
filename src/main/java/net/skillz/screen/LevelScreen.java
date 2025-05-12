@@ -30,6 +30,7 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.skillz.util.RegistryHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -39,9 +40,9 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class LevelScreen extends Screen implements Tab {
 
-    public static final Identifier BACKGROUND_TEXTURE = SkillZMain.identifierOf("textures/gui/skill_background.png");
-    public static final Identifier ATTRIBUTE_BACKGROUND_TEXTURE = SkillZMain.identifierOf("textures/gui/attribute_background.png");
-    public static final Identifier ICON_TEXTURE = SkillZMain.identifierOf("textures/gui/icons.png");
+    public static final Identifier BACKGROUND_TEXTURE = SkillZMain.id("textures/gui/skill_background.png");
+    public static final Identifier ATTRIBUTE_BACKGROUND_TEXTURE = SkillZMain.id("textures/gui/attribute_background.png");
+    public static final Identifier ICON_TEXTURE = SkillZMain.id("textures/gui/icons.png");
 
     private final int backgroundWidth = 200;
     private final int backgroundHeight = 215;
@@ -157,7 +158,7 @@ public class LevelScreen extends Screen implements Tab {
             for (WidgetButtonPage page : newLeveButtons) {
                 if (page.chopped && (i < 12)) {
                     context.drawTexture(BACKGROUND_TEXTURE, this.x + (i % 2 == 0 ? 8 : 96), this.y + 87 + i / 2 * 20, 0, 215, 88, 20);
-                    context.drawTexture(SkillZMain.identifierOf("textures/gui/sprites/" + page.skill.id() + ".png"), this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 0, 0, 16, 16, 16, 16);
+                    context.drawTexture(SkillZMain.id("textures/gui/sprites/" + page.skill.id() + ".png"), this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 0, 0, 16, 16, 16, 16);
 
                     Text skillLevel = Text.translatable("text.skillz.gui.current_level", this.levelManager.getSkillLevel(page.skill.id()), LevelManager.SKILLS.get(page.skill.id()).maxLevel());
                     context.drawText(this.textRenderer, skillLevel, this.x + (i % 2 == 0 ? 53 : 141) - this.textRenderer.getWidth(skillLevel) / 2, this.y + 94 + i / 2 * 20, 0x3F3F3F, false);
@@ -206,11 +207,11 @@ public class LevelScreen extends Screen implements Tab {
 
                     int k = 27;
                     for (int i = this.attributeRow; i < this.attributeRow + maxAttributes; i++) {
-                        String attributeKey = SkillZMain.getEntityAttributeIdAsString(this.attributes.get(i).getAttribute());
+                        String attributeKey = RegistryHelper.attributeToString(this.attributes.get(i).getAttribute());
                         if (attributeKey.contains(":")) {
                             attributeKey = attributeKey.split(":")[1];
                         }
-                        context.drawTexture(SkillZMain.identifierOf("textures/gui/sprites/" + attributeKey + ".png"), this.x + 214, this.y + k, 0, 0, 9, 9, 9, 9);
+                        context.drawTexture(SkillZMain.id("textures/gui/sprites/" + attributeKey + ".png"), this.x + 214, this.y + k, 0, 0, 9, 9, 9, 9);
                         float attributeValue = (float) Math.round(this.client.player.getAttributeInstance(this.attributes.get(i).getAttribute().value()).getValue() * 100.0D) / 100.0F;
                         context.drawText(this.textRenderer, Text.of(String.valueOf(attributeValue)), this.x + 214 + 15, this.y + k, 0xE0E0E0, false);
 

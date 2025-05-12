@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RestrictionPacket implements FabricPacket {
-    public static final Identifier PACKET_ID = SkillZMain.identifierOf("restriction_packet");
+    public static final Identifier PACKET_ID = SkillZMain.id("restriction_packet");
 
     public RestrictionRecord blockRestrictions() {
         return blockRestrictions;

@@ -63,12 +63,12 @@ public class LineWidget {
                     EntityType<?> entityType = Registries.ENTITY_TYPE.get(id);
                     boolean imageExists = false;
                     try {
-                        client.getResourceManager().getResourceOrThrow(SkillZMain.identifierOf("textures/gui/sprites/entity/" + Registries.ENTITY_TYPE.getId(entityType).getPath() + ".png"));
+                        client.getResourceManager().getResourceOrThrow(SkillZMain.id("textures/gui/sprites/entity/" + Registries.ENTITY_TYPE.getId(entityType).getPath() + ".png"));
                         imageExists = true;
                     } catch (FileNotFoundException ignored) {
                     }
                     if (imageExists) {
-                        this.customImages.put(id, SkillZMain.identifierOf("textures/gui/sprites/entity/" + Registries.ENTITY_TYPE.getId(entityType).getPath() + ".png"));
+                        this.customImages.put(id, SkillZMain.id("textures/gui/sprites/entity/" + Registries.ENTITY_TYPE.getId(entityType).getPath() + ".png"));
                     } else if (SpawnEggItem.forEntity(entityType) != null) {
                         this.customStacks.put(id, new ItemStack(Objects.requireNonNull(SpawnEggItem.forEntity(entityType))));
                     } else if (entityType.create(this.client.world) instanceof AbstractMinecartEntity vehicleEntity) {
@@ -76,7 +76,7 @@ public class LineWidget {
                     } else if (entityType.create(this.client.world) instanceof BoatEntity vehicleEntity) {
                         this.customStacks.put(id, new ItemStack(vehicleEntity.asItem()));
                     } else {
-                        this.customImages.put(id, SkillZMain.identifierOf("textures/gui/sprites/entity/default.png"));
+                        this.customImages.put(id, SkillZMain.id("textures/gui/sprites/entity/default.png"));
                     }
                 }
             } else if (this.code == 3) {

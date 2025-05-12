@@ -20,7 +20,7 @@ public class LevelHelper {
                 if (skillAttribute.getBaseValue() > -9999.0f) {
                     attr.setBaseValue(skillAttribute.getBaseValue());
                 }
-                Identifier identifier = SkillZMain.identifierOf(skill.id());
+                Identifier identifier = SkillZMain.id(skill.id());
                 UUID uid = UUID.nameUUIDFromBytes(identifier.toString().getBytes());
                 if (attr.getModifier(uid) != null && attr.hasModifier(attr.getModifier(uid))) {
                     attr.removeModifier(uid);

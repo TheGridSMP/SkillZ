@@ -12,7 +12,7 @@ public class CompatInit {
 
     public static void init() {
         if (FabricLoader.getInstance().isModLoaded("placeholder-api")) {
-            Placeholders.register(SkillZMain.identifierOf("playerlevel"), (ctx, arg) -> {
+            Placeholders.register(SkillZMain.id("playerlevel"), (ctx, arg) -> {
                 if (ctx.hasPlayer()) {
                     return PlaceholderResult.value(Integer.toString(((LevelManagerAccess) ctx.player()).skillz$getLevelManager().getOverallLevel()));
                 } else {

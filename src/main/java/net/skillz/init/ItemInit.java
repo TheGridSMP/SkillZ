@@ -18,7 +18,7 @@ public class ItemInit {
 
     private static Item register(String id, Item item, RegistryKey<ItemGroup> itemGroup) {
         ItemGroupEvents.modifyEntriesEvent(itemGroup).register(entries -> entries.add(item));
-        return register(SkillZMain.identifierOf(id), item);
+        return register(SkillZMain.id(id), item);
     }
 
     private static Item register(Identifier id, Item item) {

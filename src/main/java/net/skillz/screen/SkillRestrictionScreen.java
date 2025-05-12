@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Environment(EnvType.CLIENT)
 public class SkillRestrictionScreen extends Screen implements Tab {
 
-    public static final Identifier BACKGROUND_TEXTURE = SkillZMain.identifierOf("textures/gui/skill_info_background.png");
+    public static final Identifier BACKGROUND_TEXTURE = SkillZMain.id("textures/gui/skill_info_background.png");
 
     private final int backgroundWidth = 200;
     private final int backgroundHeight = 215;

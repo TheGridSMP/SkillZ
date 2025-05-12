@@ -19,7 +19,7 @@ import java.awt.*;
 @Environment(EnvType.CLIENT)
 public class BookWidget {
 
-    public static final Identifier BOOK_TEXTURE = SkillZMain.identifierOf("textures/gui/book_template.png");
+    public static final Identifier BOOK_TEXTURE = SkillZMain.id("textures/gui/book_template.png");
     public final Text title;
     public Color color;
     public final boolean context;

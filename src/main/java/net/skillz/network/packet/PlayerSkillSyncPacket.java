@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
 import java.util.List;
 
 public class PlayerSkillSyncPacket implements FabricPacket {
-    public static final Identifier PACKET_ID = SkillZMain.identifierOf("player_skill_sync_packet");
+    public static final Identifier PACKET_ID = SkillZMain.id("player_skill_sync_packet");
     protected final List<Integer> playerSkillLevels;
     protected final List<String> playerSkillIds;
 

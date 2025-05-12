@@ -10,7 +10,7 @@ import net.minecraft.network.packet.Packet;
 
 public class OrbPacket {
 
-    public static final Identifier PACKET_ID = SkillZMain.identifierOf("orb");
+    public static final Identifier PACKET_ID = SkillZMain.id("orb");
 
     private final int entityId;
     private final double x;

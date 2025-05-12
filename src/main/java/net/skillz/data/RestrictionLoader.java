@@ -26,7 +26,7 @@ import static net.skillz.SkillZMain.LOGGER;
 
 public class RestrictionLoader implements SimpleSynchronousResourceReloadListener {
 
-    public static final Identifier ID = SkillZMain.identifierOf("restriction");
+    public static final Identifier ID = SkillZMain.id("restriction");
 
     private static final List<Integer> blockList = new ArrayList<>();
     private static final List<Integer> craftingList = new ArrayList<>();

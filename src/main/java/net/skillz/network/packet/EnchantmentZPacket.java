@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class EnchantmentZPacket implements FabricPacket {
-    public static final Identifier PACKET_ID = SkillZMain.identifierOf("enchantmentz_packet");
+    public static final Identifier PACKET_ID = SkillZMain.id("enchantmentz_packet");
 
     public Map<String, Integer> indexed() {
         return indexed;

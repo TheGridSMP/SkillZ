@@ -7,7 +7,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
 public class LevelPacket implements FabricPacket {
-    public static final Identifier PACKET_ID = SkillZMain.identifierOf("level_packet");
+    public static final Identifier PACKET_ID = SkillZMain.id("level_packet");
     protected final int overallLevel;
     protected final int skillPoints;
     protected final int totalLevelExperience;

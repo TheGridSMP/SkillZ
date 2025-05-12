@@ -7,7 +7,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
 public class AttributeSyncPacket implements FabricPacket {
-    public static final Identifier PACKET_ID = SkillZMain.identifierOf("attribute_sync_packet");
+    public static final Identifier PACKET_ID = SkillZMain.id("attribute_sync_packet");
 
     public static final PacketType<AttributeSyncPacket> TYPE = PacketType.create(
             PACKET_ID, AttributeSyncPacket::new
