@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.fabricmc.loader.api.FabricLoader;
 import net.skillz.SkillZMain;
 import net.skillz.init.ConfigInit;
 import net.skillz.level.LevelManager;
@@ -24,7 +23,6 @@ import net.skillz.util.FileUtil;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class SkillLoader implements SimpleSynchronousResourceReloadListener {
 
@@ -39,10 +37,6 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
         LevelManager.SKILLS.clear();
         // clear bonuses
         LevelManager.BONUSES.clear();
-
-        // safety check
-        AtomicInteger skillCount = new AtomicInteger();
-        List<Integer> attributeIds = new ArrayList<>();
 
         manager.findResources("skill", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
             try {
@@ -61,31 +55,22 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
                     JsonObject attributeJsonObject = attributeElement.getAsJsonObject();
 
                     //TODO EntityAttribute registry keys
-                    Identifier iden;
-                    if (attributeJsonObject.get("type").getAsString().contains("attribute-backport:player.block_interaction_range") && FabricLoader.getInstance().isModLoaded("reach-entity-attributes")) {
-                        iden = Identifier.splitOn("reach-entity-attributes:reach", ':');
-                    }else {
-                        iden = Identifier.splitOn(attributeJsonObject.get("type").getAsString(), ':');
-                    }
+                    Identifier iden = new Identifier(attributeJsonObject.get("type").getAsString());
+
                     RegistryKey<EntityAttribute> asd = RegistryKey.of(RegistryKeys.ATTRIBUTE, iden);
                     Optional<RegistryEntry.Reference<EntityAttribute>> entityAttribute = Registries.ATTRIBUTE.getEntry(asd);
 
                     if (entityAttribute.isPresent()) {
-                        int attributeId = -1;
-                        if (attributeJsonObject.has("id")) {
-                            attributeId = attributeJsonObject.get("id").getAsInt();
-                        }
+                        boolean hidden = attributeJsonObject.has("hidden") && attributeJsonObject.get("hidden").getAsBoolean();
                         RegistryEntry<EntityAttribute> attibute = entityAttribute.get();
                         float baseValue = -10000.0f;
+
                         if (attributeJsonObject.has("base")) {
                             baseValue = attributeJsonObject.get("base").getAsFloat();
                         }
                         float levelValue = attributeJsonObject.get("value").getAsFloat();
                         EntityAttributeModifier.Operation operation = EntityAttributeModifier.Operation.valueOf(attributeJsonObject.get("operation").getAsString().toUpperCase());
-                        attributes.add(new SkillAttribute(attributeId, attibute, baseValue, levelValue, operation));
-                        if (attributeId != -1) {
-                            attributeIds.add(attributeId);
-                        }
+                        attributes.add(new SkillAttribute(hidden, attibute, baseValue, levelValue, operation));
                     } else {
                         SkillZMain.LOGGER.warn("Attribute {} is not a usable attribute in skill {}.", attributeJsonObject.get("type").getAsString(), data.get("id").getAsString());
                     }
@@ -106,18 +91,9 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
                     }
                 }
                 LevelManager.SKILLS.put(skillId, new Skill(skillId, maxLevel, attributes));
-
-
-                skillCount.getAndIncrement();
             } catch (Exception e) {
                 SkillZMain.LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
             }
         });
-
-        for (int i = 0; i < attributeIds.size(); i++) {
-            if (!attributeIds.contains(i)) {
-                throw new MissingResourceException("Missing attribute with id " + i + "! Please add an attribute with this id.", this.getClass().getName(), SkillZMain.MOD_ID);
-            }
-        }
     }
 }

@@ -6,22 +6,22 @@ import net.minecraft.registry.entry.RegistryEntry;
 
 public class SkillAttribute {
 
-    private final int id;
+    private final boolean hidden;
     private final RegistryEntry<EntityAttribute> attribute;
     private final float baseValue;
     private final float levelValue;
     private final EntityAttributeModifier.Operation operation;
 
-    public SkillAttribute(int id, RegistryEntry<EntityAttribute> attribute, float baseValue, float levelValue, EntityAttributeModifier.Operation operation) {
-        this.id = id;
+    public SkillAttribute(boolean hidden, RegistryEntry<EntityAttribute> attribute, float baseValue, float levelValue, EntityAttributeModifier.Operation operation) {
+        this.hidden = hidden;
         this.attribute = attribute;
         this.baseValue = baseValue;
         this.levelValue = levelValue;
         this.operation = operation;
     }
 
-    public int getId() {
-        return id;
+    public boolean isHidden() {
+        return hidden;
     }
 
     public RegistryEntry<EntityAttribute> getAttribute() {
@@ -39,5 +39,4 @@ public class SkillAttribute {
     public EntityAttributeModifier.Operation getOperation() {
         return operation;
     }
-
 }

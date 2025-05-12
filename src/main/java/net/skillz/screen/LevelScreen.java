@@ -84,24 +84,15 @@ public class LevelScreen extends Screen implements Tab {
             }
         }
 
-        Map<Integer, SkillAttribute> skillAttributes = new HashMap<>();
-        int attributeCount = 0;
-        for (Skill skill : LevelManager.SKILLS.values()) {
-            for (SkillAttribute skillAttribute : skill.attributes()) {
-                if (skillAttribute.getId() < 0) {
-                    continue;
-                }
-                skillAttributes.put(skillAttribute.getId(), skillAttribute);
-                attributeCount++;
-
-            }
-        }
-        for (int i = 0; i < attributeCount; i++) {
-            this.attributes.add(skillAttributes.get(i));
-        }
-
         int i = 0;
         for (Skill skill : LevelManager.SKILLS.values()) {
+            for (SkillAttribute skillAttribute : skill.attributes()) {
+                if (skillAttribute.isHidden())
+                    continue;
+
+                this.attributes.add(skillAttribute);
+            }
+
             this.newLeveButtons.add(new WidgetButtonPage(skill,this.x + (i % 2 == 0 ? 80 : 169), this.y + 91 + i / 2 * 20, 13, 13, 33, 42, true, true, null, button -> {ClientPlayNetworking.send(new StatPacket(skill.id(), 1));}));
 
             i++;

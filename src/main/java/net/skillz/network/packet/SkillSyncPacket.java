@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SkillSyncPacket implements FabricPacket {
+
     public static final Identifier PACKET_ID = SkillZMain.id("skill_sync_packet");
+
     protected final List<String> skillIds;
     protected final List<Integer> skillMaxLevels;
 
@@ -74,7 +76,7 @@ public class SkillSyncPacket implements FabricPacket {
             buf.writeInt(skillAttributes().size());
             for (int i = 0; i < skillAttributes().size(); i++) {
                 SkillAttribute skillAttribute = skillAttributes().get(i);
-                buf.writeInt(skillAttribute.getId());
+                buf.writeBoolean(skillAttribute.isHidden());
                 buf.writeString(RegistryHelper.attributeToString(skillAttribute.getAttribute()));
                 buf.writeFloat(skillAttribute.getBaseValue());
                 buf.writeFloat(skillAttribute.getLevelValue());
@@ -87,17 +89,17 @@ public class SkillSyncPacket implements FabricPacket {
             List<SkillAttribute> skillAttributes = new ArrayList<>();
             int size = buf.readInt();
             for (int i = 0; i < size; i++) {
-                int id = buf.readInt();
+                boolean hidden = buf.readBoolean();
 
                 RegistryEntry<EntityAttribute> attribute = Registries.ATTRIBUTE.getEntry(Registries.ATTRIBUTE.get(Identifier.splitOn(buf.readString(), ':')));
                 float baseValue = buf.readFloat();
                 float levelValue = buf.readFloat();
                 EntityAttributeModifier.Operation operation = EntityAttributeModifier.Operation.valueOf(buf.readString().toUpperCase());
-                skillAttributes.add(new SkillAttribute(id, attribute, baseValue, levelValue, operation));
+                skillAttributes.add(new SkillAttribute(hidden, attribute, baseValue, levelValue, operation));
             }
+
             return new SkillAttributesRecord(skillAttributes);
         }
-
     }
 
     public record SkillBonusesRecord(List<SkillBonus> skillBonuses) {
@@ -121,9 +123,8 @@ public class SkillSyncPacket implements FabricPacket {
                 int level = buf.readInt();
                 skillBonuses.add(new SkillBonus(key, id, level));
             }
+
             return new SkillBonusesRecord(skillBonuses);
         }
-
     }
-
 }
