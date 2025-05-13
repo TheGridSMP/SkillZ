@@ -1,0 +1,12 @@
+{
+  "values": [
+    "#minecraft:bypasses_invulnerability",
+    "#minecraft:is_fire",
+    "#minecraft:is_drowning",
+    "#minecraft:is_freezing",
+    "#minecraft:bypasses_effects",
+    "minecraft:wither",
+    "minecraft:cramming",
+    "minecraft:outside_border"
+  ]
+}

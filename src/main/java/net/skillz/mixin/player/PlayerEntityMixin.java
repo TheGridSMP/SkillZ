@@ -6,6 +6,7 @@ import net.skillz.access.LevelManagerAccess;
 import net.skillz.access.PlayerDropAccess;
 import net.skillz.entity.LevelExperienceOrbEntity;
 import net.skillz.init.ConfigInit;
+import net.skillz.init.TagInit;
 import net.skillz.level.LevelManager;
 import net.skillz.util.BonusHelper;
 import net.minecraft.entity.EntityType;
@@ -14,7 +15,6 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -104,7 +104,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements LevelMan
         PlayerEntity player = (PlayerEntity) (Object) this;
         BonusHelper.damageReflectionBonus(player, source, amount);
 
-        if (!source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY) && BonusHelper.evadingDamageBonus(player))
+        if (!source.isIn(TagInit.BYPASSES_DAMAGE_EVASION) && BonusHelper.evadingDamageBonus(player))
             info.setReturnValue(false);
     }
 
