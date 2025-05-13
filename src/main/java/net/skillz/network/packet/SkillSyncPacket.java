@@ -91,7 +91,7 @@ public class SkillSyncPacket implements FabricPacket {
             for (int i = 0; i < size; i++) {
                 boolean hidden = buf.readBoolean();
 
-                RegistryEntry<EntityAttribute> attribute = Registries.ATTRIBUTE.getEntry(Registries.ATTRIBUTE.get(Identifier.splitOn(buf.readString(), ':')));
+                RegistryEntry<EntityAttribute> attribute = Registries.ATTRIBUTE.getEntry(Registries.ATTRIBUTE.get(new Identifier(buf.readString())));
                 float baseValue = buf.readFloat();
                 float levelValue = buf.readFloat();
                 EntityAttributeModifier.Operation operation = EntityAttributeModifier.Operation.valueOf(buf.readString().toUpperCase());

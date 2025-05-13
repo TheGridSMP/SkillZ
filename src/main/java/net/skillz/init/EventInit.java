@@ -70,8 +70,6 @@ public class EventInit {
             if (!player.isCreative() && !player.isSpectator()) {
                 LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
                 if (!levelManager.hasRequiredItemLevel(player.getStackInHand(hand).getItem())) {
-                    System.out.println(levelManager.getRequiredItemLevel(player.getStackInHand(hand).getItem()));
-                    //player.sendMessage(Text.literal(customList.get(customList.indexOf(string) + 2)).formatted(Formatting.RED), true);
                     player.sendMessage(Text.translatable("restriction.skillz.locked.tooltip").formatted(Formatting.RED), true);
                     return TypedActionResult.fail(player.getStackInHand(hand));
                 }

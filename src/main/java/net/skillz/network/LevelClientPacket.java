@@ -73,7 +73,6 @@ public class LevelClientPacket {
             List<Integer> playerSkillLevels = buf.readList(PacketByteBuf::readInt);
 
             client.execute(() -> {
-                System.out.printf("%s %s%n", playerSkillIds, playerSkillLevels);
                 LevelManager levelManager = ((LevelManagerAccess) client.player).skillz$getLevelManager();
                 for (int i = 0; i < playerSkillIds.size(); i++) {
                     levelManager.setSkillLevel(playerSkillIds.get(i), playerSkillLevels.get(i));
@@ -82,7 +81,6 @@ public class LevelClientPacket {
         });
 
         ClientPlayNetworking.registerGlobalReceiver(LevelPacket.PACKET_ID, (client, handler, buf, sender) -> {
-            //LevelPacket packet = new LevelPacket(buf);
             LevelPacket payload = new LevelPacket(buf);
             int overallLevel = payload.overallLevel();
             int skillPoints = payload.skillPoints();
@@ -159,16 +157,17 @@ public class LevelClientPacket {
                 EnchantmentRegistry.INDEX_ENCHANTMENTS.clear();
 
                 Registry<Enchantment> registry = client.world.getRegistryManager().get(RegistryKeys.ENCHANTMENT);
+
                 for (int i = 0; i < keys.size(); i++) {
                     int key = keys.get(i);
 
-                    //Identifier id = new Identifier(ids.get(i));
-                    Identifier id = Identifier.splitOn(ids.get(i), ':');
+                    Identifier id = new Identifier(ids.get(i));
                     RegistryEntry<Enchantment> entry = registry.getEntry(registry.get(id));
-                    //System.out.printf("%s %s %s%n%n", ids.get(i), id, entry);
+
                     int level = levels.get(i);
                     EnchantmentRegistry.ENCHANTMENTS.put(key, new EnchantmentZ(entry, level));
                 }
+
                 EnchantmentRegistry.INDEX_ENCHANTMENTS.putAll(indexed);
             });
         });

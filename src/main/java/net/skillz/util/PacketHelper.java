@@ -74,12 +74,13 @@ public class PacketHelper {
         List<Integer> keys = new ArrayList<>();
         List<String> ids = new ArrayList<>();
         List<Integer> levels = new ArrayList<>();
-        System.out.println(EnchantmentRegistry.ENCHANTMENTS);
+
         for (Map.Entry<Integer, EnchantmentZ> entry : EnchantmentRegistry.ENCHANTMENTS.entrySet()) {
             keys.add(entry.getKey());
             ids.add(RegistryHelper.enchantmentToString(entry.getValue().getEntry()));
             levels.add(entry.getValue().getLevel());
         }
+
         ServerPlayNetworking.send(serverPlayerEntity, new EnchantmentZPacket(EnchantmentRegistry.INDEX_ENCHANTMENTS, keys, ids, levels));
     }
 }

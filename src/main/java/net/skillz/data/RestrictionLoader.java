@@ -35,8 +35,6 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
     private static final List<Integer> miningList = new ArrayList<>();
     private static final List<Integer> enchantmentList = new ArrayList<>();
 
-//    private ItemStringReader itemStringReader = new ItemStringReader(BuiltinRegistries.createWrapperLookup());
-
     @Override
     public Identifier getFabricId() {
         return ID;
@@ -44,7 +42,6 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
 
     @Override
     public void reload(ResourceManager manager) {
-
         LevelManager.BLOCK_RESTRICTIONS.clear();
         LevelManager.CRAFTING_RESTRICTIONS.clear();
         LevelManager.ENTITY_RESTRICTIONS.clear();
@@ -52,14 +49,10 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
         LevelManager.MINING_RESTRICTIONS.clear();
         LevelManager.ENCHANTMENT_RESTRICTIONS.clear();
 
-        if (!ConfigInit.MAIN.PROGRESSION.restrictions) {
-            return;
-        }
+        if (!ConfigInit.MAIN.PROGRESSION.restrictions) return;
         EnchantmentRegistry.updateEnchantments();
 
         manager.findResources("restriction", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
-            System.out.println(id);
-            System.out.println(id.getNamespace());
             try {
                 if (!ConfigInit.MAIN.PROGRESSION.defaultRestrictions && id.getNamespace().equals("skillz")) {
                     return;
@@ -68,11 +61,6 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                 JsonArray data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonArray();
 
                 String restrictionFile = FileUtil.getBaseName(id.getPath());
-
-                /*Map<String, Integer> skillKeyIdMap = new HashMap<>();
-                for (Skill skill : LevelManager.SKILLS.values()) {
-                    skillKeyIdMap.put(skill.key(), skill.id());
-                }*/
 
                 for (JsonElement element : data) {
                     JsonObject restrictionJsonObject = element.getAsJsonObject();
@@ -92,16 +80,16 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                         // blocks
                         if (restrictionJsonObject.has("blocks")) {
                             for (JsonElement blockElement : restrictionJsonObject.getAsJsonArray("blocks")) {
-                                Identifier blockIdentifier = Identifier.splitOn(blockElement.getAsString(), ':');
+                                Identifier blockIdentifier = new Identifier(blockElement.getAsString());
                                 if (Registries.BLOCK.containsId(blockIdentifier)) {
                                     int blockRawId = Registries.BLOCK.getRawId(Registries.BLOCK.get(blockIdentifier));
 
-                                    if (blockList.contains(blockRawId)) {
+                                    if (blockList.contains(blockRawId))
                                         continue;
-                                    }
-                                    if (replace) {
+
+                                    if (replace)
                                         blockList.add(blockRawId);
-                                    }
+
                                     LevelManager.BLOCK_RESTRICTIONS.put(blockRawId, new PlayerRestriction(blockRawId, skillLevelRestrictions));
                                 } else {
                                     LOGGER.warn("Restriction {} contains an unrecognized block id called {}.", restrictionFile, blockIdentifier);
@@ -111,16 +99,16 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                         // crafting
                         if (restrictionJsonObject.has("crafting")) {
                             for (JsonElement craftingElement : restrictionJsonObject.getAsJsonArray("crafting")) {
-                                Identifier craftingIdentifier = Identifier.splitOn(craftingElement.getAsString(), ':');
+                                Identifier craftingIdentifier = new Identifier(craftingElement.getAsString());
                                 if (Registries.ITEM.containsId(craftingIdentifier)) {
                                     int craftingRawId = Registries.ITEM.getRawId(Registries.ITEM.get(craftingIdentifier));
 
-                                    if (craftingList.contains(craftingRawId)) {
+                                    if (craftingList.contains(craftingRawId))
                                         continue;
-                                    }
-                                    if (replace) {
+
+                                    if (replace)
                                         craftingList.add(craftingRawId);
-                                    }
+
                                     LevelManager.CRAFTING_RESTRICTIONS.put(craftingRawId, new PlayerRestriction(craftingRawId, skillLevelRestrictions));
                                 } else {
                                     LOGGER.warn("Restriction {} contains an unrecognized crafting id called {}.", restrictionFile, craftingIdentifier);
@@ -130,16 +118,16 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                         // entities
                         if (restrictionJsonObject.has("entities")) {
                             for (JsonElement entityElement : restrictionJsonObject.getAsJsonArray("entities")) {
-                                Identifier entityIdentifier = Identifier.splitOn(entityElement.getAsString(), ':');
+                                Identifier entityIdentifier = new Identifier(entityElement.getAsString());
                                 if (Registries.ENTITY_TYPE.containsId(entityIdentifier)) {
                                     int entityRawId = Registries.ENTITY_TYPE.getRawId(Registries.ENTITY_TYPE.get(entityIdentifier));
 
-                                    if (entityList.contains(entityRawId)) {
+                                    if (entityList.contains(entityRawId))
                                         continue;
-                                    }
-                                    if (replace) {
+
+                                    if (replace)
                                         entityList.add(entityRawId);
-                                    }
+
                                     LevelManager.ENTITY_RESTRICTIONS.put(entityRawId, new PlayerRestriction(entityRawId, skillLevelRestrictions));
                                 } else {
                                     LOGGER.warn("Restriction {} contains an unrecognized entity id called {}.", restrictionFile, entityIdentifier);
@@ -149,16 +137,16 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                         // items
                         if (restrictionJsonObject.has("items")) {
                             for (JsonElement itemElement : restrictionJsonObject.getAsJsonArray("items")) {
-                                Identifier itemIdentifier = Identifier.splitOn(itemElement.getAsString(), ':');
+                                Identifier itemIdentifier = new Identifier(itemElement.getAsString());
                                 if (Registries.ITEM.containsId(itemIdentifier)) {
                                     int itemRawId = Registries.ITEM.getRawId(Registries.ITEM.get(itemIdentifier));
 
-                                    if (itemList.contains(itemRawId)) {
+                                    if (itemList.contains(itemRawId))
                                         continue;
-                                    }
-                                    if (replace) {
+
+                                    if (replace)
                                         itemList.add(itemRawId);
-                                    }
+
                                     LevelManager.ITEM_RESTRICTIONS.put(itemRawId, new PlayerRestriction(itemRawId, skillLevelRestrictions));
                                 } else {
                                     LOGGER.warn("Restriction {} contains an unrecognized item id called {}.", restrictionFile, itemIdentifier);
@@ -168,16 +156,16 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                         // mining
                         if (restrictionJsonObject.has("mining")) {
                             for (JsonElement miningElement : restrictionJsonObject.getAsJsonArray("mining")) {
-                                Identifier miningIdentifier = Identifier.splitOn(miningElement.getAsString(), ':');
+                                Identifier miningIdentifier = new Identifier(miningElement.getAsString());
                                 if (Registries.BLOCK.containsId(miningIdentifier)) {
                                     int miningRawId = Registries.BLOCK.getRawId(Registries.BLOCK.get(miningIdentifier));
 
-                                    if (miningList.contains(miningRawId)) {
+                                    if (miningList.contains(miningRawId))
                                         continue;
-                                    }
-                                    if (replace) {
+
+                                    if (replace)
                                         miningList.add(miningRawId);
-                                    }
+
                                     LevelManager.MINING_RESTRICTIONS.put(miningRawId, new PlayerRestriction(miningRawId, skillLevelRestrictions));
                                 } else {
                                     LOGGER.warn("Restriction {} contains an unrecognized mining id called {}.", restrictionFile, miningIdentifier);
@@ -188,43 +176,23 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
                         if (restrictionJsonObject.has("enchantments")) {
                             JsonObject enchantmentObject = restrictionJsonObject.getAsJsonObject("enchantments");
                             for (String enchantment : enchantmentObject.keySet()) {
-                                Identifier enchantmentIdentifier = Identifier.splitOn(enchantment, ':');
+                                Identifier enchantmentIdentifier = new Identifier(enchantment);
                                 int level = enchantmentObject.get(enchantment).getAsInt();
                                 if (EnchantmentRegistry.containsId(enchantmentIdentifier, level)) {
                                     int enchantmentRawId = EnchantmentRegistry.getId(enchantmentIdentifier, level);
-                                    if (enchantmentList.contains(enchantmentRawId)) {
+
+                                    if (enchantmentList.contains(enchantmentRawId))
                                         continue;
-                                    }
-                                    if (replace) {
+
+                                    if (replace)
                                         enchantmentList.add(enchantmentRawId);
-                                    }
+
                                     LevelManager.ENCHANTMENT_RESTRICTIONS.put(enchantmentRawId, new PlayerRestriction(enchantmentRawId, skillLevelRestrictions));
                                 } else {
                                     LOGGER.warn("Restriction {} contains an unrecognized enchantment id called {}.", restrictionFile, enchantmentIdentifier);
                                 }
                             }
                         }
-                        // Todo: Test
-                        /*if (restrictionJsonObject.has("components")) {
-//                            System.out.println(this.itemStringReader.consume(new StringReader("potion[potion_contents={potion:\"fire_resistance\"}]")));
-//                            System.out.println(this.itemStringReader.consume(new StringReader("potion[potion_contents={potion:\"fire_resistance\"}]")).components());
-//                            System.out.println(this.itemStringReader.consume(new StringReader("potion[potion_contents={potion:\"fire_resistance\"}]")).item().value());
-//                            Registries.ENCHANTMENT.
-
-                            JsonObject componentObject = restrictionJsonObject.getAsJsonObject("components");
-                            for (String component : componentObject.keySet()) {
-                                Identifier itemIdentifier = Identifier.of(component);
-                                if (Registries.ITEM.containsId(itemIdentifier)) {
-                                    if (Registries.DATA_COMPONENT_TYPE.containsId(Identifier.of(componentObject.get(component).getAsString()))) {
-                                        int itemRawId = Registries.ITEM.getRawId(Registries.ITEM.get(itemIdentifier));
-                                    } else {
-                                        LOGGER.warn("Restriction {} contains an unrecognized component called {}.", mapKey, componentObject.get(component).getAsString());
-                                    }
-                                } else {
-                                    LOGGER.warn("Restriction {} contains an unrecognized item id at component called {}.", mapKey, itemIdentifier);
-                                }
-                            }
-                        }*/
                     } else {
                         LOGGER.warn("Restriction {} does not contain any valid skills.", restrictionFile);
                     }
