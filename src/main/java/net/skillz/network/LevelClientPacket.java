@@ -40,8 +40,13 @@ public class LevelClientPacket {
 
         ClientPlayNetworking.registerGlobalReceiver(SkillSyncPacket.TYPE, (packet, player, responseSender) -> {
             LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
-            LevelManager.SKILLS.clear();
 
+            LevelManager.POINTS.clear();
+            for (SkillPoints points : packet.skillPoints()) {
+                LevelManager.POINTS.put(points.id(), points);
+            }
+
+            LevelManager.SKILLS.clear();
             for (Skill skill : packet.skills()) {
                 LevelManager.SKILLS.put(skill.id(), skill);
 

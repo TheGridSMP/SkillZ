@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.text.MutableText;
 import net.skillz.SkillZMain;
 import net.skillz.access.ClientPlayerAccess;
@@ -151,12 +153,11 @@ public class LevelScreen extends Screen implements Tab {
             for (WidgetButtonPage page : newLeveButtons) {
                 if (page.chopped && (i < 12)) {
                     context.drawTexture(BACKGROUND_TEXTURE, this.x + (i % 2 == 0 ? 8 : 96), this.y + 87 + i / 2 * 20, 0, 215, 88, 20);
-                    context.drawTexture(SkillZMain.id("textures/gui/sprites/" + page.skill.id() + ".png"), this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 0, 0, 16, 16, 16, 16);
+                    context.drawTexture(page.skill.id().withPath(s -> "textures/gui/sprites/" + s + ".png"), this.x + (i % 2 == 0 ? 11 : 99), this.y + 89 + i / 2 * 20, 0, 0, 16, 16, 16, 16);
 
                     Text skillLevel = Text.translatable("text.skillz.gui.current_level", this.levelManager.getSkillLevel(page.skill.id()), LevelManager.SKILLS.get(page.skill.id()).maxLevel());
                     context.drawText(this.textRenderer, skillLevel, this.x + (i % 2 == 0 ? 53 : 141) - this.textRenderer.getWidth(skillLevel) / 2, this.y + 94 + i / 2 * 20, 0x3F3F3F, false);
 
-                    //page.renderButton(context, mouseX, mouseX, delta);
                     MinecraftClient minecraftClient = MinecraftClient.getInstance();
                     context.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                     RenderSystem.enableBlend();
@@ -200,12 +201,12 @@ public class LevelScreen extends Screen implements Tab {
 
                     int k = 27;
                     for (int i = this.attributeRow; i < this.attributeRow + maxAttributes; i++) {
-                        String attributeKey = RegistryHelper.attributeToString(this.attributes.get(i).attribute());
-                        if (attributeKey.contains(":")) {
-                            attributeKey = attributeKey.split(":")[1];
-                        }
-                        context.drawTexture(SkillZMain.id("textures/gui/sprites/" + attributeKey + ".png"), this.x + 214, this.y + k, 0, 0, 9, 9, 9, 9);
-                        float attributeValue = (float) Math.round(this.client.player.getAttributeInstance(this.attributes.get(i).attribute().value()).getValue() * 100.0D) / 100.0F;
+                        Identifier attributeSprite = this.attributes.get(i).attribute().getKey().map(key -> key.getValue().withPath(path -> "textures/gui/sprites/attribute/" + path + ".png")).orElse(TextureManager.MISSING_IDENTIFIER);
+
+                        context.drawTexture(attributeSprite, this.x + 214, this.y + k, 0, 0, 9, 9, 9, 9);
+                        EntityAttributeInstance instance = this.client.player.getAttributeInstance(this.attributes.get(i).attribute().value());
+
+                        float attributeValue = (float) Math.round(instance == null ? 0 : instance.getValue() * 100.0D) / 100.0F;
                         context.drawText(this.textRenderer, Text.of(String.valueOf(attributeValue)), this.x + 214 + 15, this.y + k, 0xE0E0E0, false);
 
                         k += 12;

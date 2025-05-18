@@ -64,7 +64,7 @@ public class PacketHelper {
     }
 
     public static void updateSkills(ServerPlayerEntity player) {
-        ServerPlayNetworking.send(player, new SkillSyncPacket(LevelManager.SKILLS.values(), LevelManager.BONUSES.values()));
+        ServerPlayNetworking.send(player, new SkillSyncPacket(LevelManager.SKILLS.values(), LevelManager.BONUSES.values(), LevelManager.POINTS.values()));
     }
 
     public static void updatePlayerSkills(ServerPlayerEntity player, @Nullable ServerPlayerEntity oldPlayerEntity) {

@@ -24,6 +24,7 @@ import java.util.*;
 
 public class LevelManager {
 
+    // TODO: replace with SimpleRegistry's
     public static final Map<Identifier, Skill> SKILLS = new HashMap<>();
     public static final Int2ObjectMap<PlayerRestriction> BLOCK_RESTRICTIONS = new Int2ObjectOpenHashMap<>();
     public static final Int2ObjectMap<PlayerRestriction> CRAFTING_RESTRICTIONS = new Int2ObjectOpenHashMap<>();
@@ -132,7 +133,14 @@ public class LevelManager {
     }
 
     public PlayerPoints getSkillPoints(Identifier id) {
-        return skillPoints.get(id);
+        return skillPoints.computeIfAbsent(id, identifier -> {
+            SkillPoints sp = POINTS.get(id);
+
+            if (sp != null)
+                return new PlayerPoints(identifier, sp.start());
+
+            return null;
+        });
     }
 
     public Map<Identifier, PlayerPoints> getSkillPoints() {
