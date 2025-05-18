@@ -19,46 +19,38 @@ import java.util.List;
 public class LevelServerPacket {
 
     public static void init() {
-        ServerPlayNetworking.registerGlobalReceiver(StatPacket.PACKET_ID, (server, player, handler, buffer, sender)  -> {
-            StatPacket payload = new StatPacket(buffer);
-            Identifier skillId = payload.skillId();
-            int level = payload.level();
+        ServerPlayNetworking.registerGlobalReceiver(StatPacket.TYPE, (packet, player, responseSender) -> {
+            Identifier skillId = packet.skillId();
+            int level = packet.level();
 
-            server.execute(() -> {
-                LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
+            LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
 
-                if (ConfigInit.MAIN.LEVEL.overallMaxLevel > 0 && ConfigInit.MAIN.LEVEL.overallMaxLevel <= levelManager.getOverallLevel())
-                    return;
+            if (ConfigInit.MAIN.LEVEL.overallMaxLevel > 0 && ConfigInit.MAIN.LEVEL.overallMaxLevel <= levelManager.getOverallLevel())
+                return;
 
-                Skill skill = LevelManager.SKILLS.get(skillId);
+            Skill skill = LevelManager.SKILLS.get(skillId);
 
-                Identifier pointId = skill.pointsId();
-                int points = levelManager.getSkillPoints(pointId).getLevel();
+            Identifier pointId = skill.pointsId();
+            int points = levelManager.getSkillPoints(pointId).getLevel();
 
-                if (points - level >= 0) {
-                    PlayerSkill playerSkill = levelManager.getPlayerSkills().get(skillId);
+            if (points - level < 0)
+                return;
 
-                    if (!ConfigInit.MAIN.LEVEL.allowHigherSkillLevel && playerSkill.getLevel() >= skill.maxLevel())
-                        return;
+            PlayerSkill playerSkill = levelManager.getPlayerSkills().get(skillId);
 
-                    for (Skill skillCheck : LevelManager.SKILLS.values()) {
-                        if (skillCheck.maxLevel() > levelManager.getSkillLevel(skillCheck.id())) {
-                            return;
-                        }
-                    }
+            if (!ConfigInit.MAIN.LEVEL.allowHigherSkillLevel && playerSkill.getLevel() >= skill.maxLevel())
+                return;
 
-                    for (int i = 1; i <= level; i++) {
-                        CriteriaInit.SKILL_UP.trigger(player, skill.id(), playerSkill.getLevel() + level);
-                    }
+            for (int i = 1; i <= level; i++) {
+                CriteriaInit.SKILL_UP.trigger(player, skill.id(), playerSkill.getLevel() + level);
+            }
 
-                    levelManager.setSkillLevel(skillId, playerSkill.getLevel() + level);
-                    levelManager.setSkillPoints(pointId, points - level);
-                    LevelHelper.updateSkill(player, skill);
-                    PacketHelper.updateLevels(player);
+            levelManager.setSkillLevel(skillId, playerSkill.getLevel() + level);
+            levelManager.setSkillPoints(pointId, points - level);
+            LevelHelper.updateSkill(player, skill);
+            PacketHelper.updateLevels(player);
 
-                    ServerPlayNetworking.send(player, new StatPacket(skillId, levelManager.getSkillLevel(skillId)));
-                }
-            });
+            ServerPlayNetworking.send(player, new StatPacket(skillId, levelManager.getSkillLevel(skillId)));
         });
 
         ServerPlayNetworking.registerGlobalReceiver(AttributeSyncPacket.PACKET_ID, (server, player, handler, buffer, sender) -> server.execute(() -> {

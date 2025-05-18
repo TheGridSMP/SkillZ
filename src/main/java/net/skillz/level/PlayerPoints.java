@@ -2,6 +2,7 @@ package net.skillz.level;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.skillz.util.Lazy;
 
@@ -56,5 +57,9 @@ public class PlayerPoints {
 
     public Lazy<Skill> skill() {
         return skill;
+    }
+
+    public Text getText(int level) {
+        return Text.translatable(id.toTranslationKey("points"), level);
     }
 }

@@ -221,7 +221,7 @@ public class LevelScreen extends Screen implements Tab {
             MutableText skillPointText = Text.empty();
 
             for (PlayerPoints points : this.levelManager.getSkillPoints().values()) {
-                skillPointText.append(Text.translatable(points.getId().toTranslationKey("points"), points.getLevel())).append(" ");
+                skillPointText.append(points.getText(points.getLevel())).append(" ");
             }
 
             context.drawText(this.textRenderer, skillPointText, this.x + 62, this.y + 54, 0x3F3F3F, false);

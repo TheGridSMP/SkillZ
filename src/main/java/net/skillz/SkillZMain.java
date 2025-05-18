@@ -3,6 +3,7 @@ package net.skillz;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.MinecraftServer;
 import net.skillz.init.*;
 import net.skillz.network.LevelServerPacket;
 import net.minecraft.util.Identifier;
@@ -13,6 +14,8 @@ public class SkillZMain implements ModInitializer {
 
     public static final String MOD_ID = "skillz";
     public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+
+    public static MinecraftServer SERVER;
 
     @Override
     public void onInitialize() {
