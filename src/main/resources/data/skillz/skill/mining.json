@@ -1,5 +1,6 @@
 {
   "maxlevel": 20,
+  "points": "skillz:points",
   "attributes": [
     {
       "type": "attribute-backport:player.block_break_speed",

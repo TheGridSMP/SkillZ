@@ -1,8 +1,11 @@
 package net.skillz.level;
 
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
+
 import java.util.List;
 
-public class SkillBonus {
+public record SkillBonus(String id, Identifier skillId, int level) {
 
     public static final List<String> BONUS_KEYS =
             List.of("bowDamage", "bowDoubleDamageChance", "crossbowDamage", "crossbowDoubleDamageChance", "itemDamageChance", "potionEffectChance", "breedTwinChance",
@@ -40,26 +43,17 @@ public class SkillBonus {
     // damageReflectionChance: Each level grants %chance to reflect damage
     // evadingDamageChance: Chance to evade incoming damage
 
-    private final String key;
-    private final String id;
-    private final int level;
-
-    public SkillBonus(String key, String id, int level) {
-        this.id = id;
-        this.level = level;
-        this.key = key;
+    public void writeBuf(PacketByteBuf buf) {
+        buf.writeString(id);
+        buf.writeIdentifier(skillId);
+        buf.writeInt(level);
     }
 
-    public String getKey() {
-        return key;
-    }
+    public static SkillBonus fromBuf(PacketByteBuf buf) {
+        String key = buf.readString();
+        Identifier id = buf.readIdentifier();
+        int level = buf.readInt();
 
-    public String getId() {
-        return id;
+        return new SkillBonus(key, id, level);
     }
-
-    public int getLevel() {
-        return level;
-    }
-
 }

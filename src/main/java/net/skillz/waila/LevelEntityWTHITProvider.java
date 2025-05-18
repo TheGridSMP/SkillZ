@@ -4,6 +4,7 @@ import mcp.mobius.waila.api.IEntityAccessor;
 import mcp.mobius.waila.api.IEntityComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.ITooltip;
+import net.minecraft.util.Identifier;
 import net.skillz.access.LevelManagerAccess;
 import net.skillz.init.RenderInit;
 import net.skillz.level.LevelManager;
@@ -20,10 +21,10 @@ public class LevelEntityWTHITProvider implements IEntityComponentProvider {
         if (config.getBoolean(RenderInit.MINEABLE_INFO)) {
             LevelManager levelManager = ((LevelManagerAccess) accessor.getPlayer()).skillz$getLevelManager();
             if (!levelManager.hasRequiredEntityLevel(accessor.getEntity().getType())) {
-                for (Map.Entry<String, Integer> entry : levelManager.getRequiredEntityLevel(accessor.getEntity().getType()).entrySet()) {
+                for (Map.Entry<Identifier, Integer> entry : levelManager.getRequiredEntityLevel(accessor.getEntity().getType()).entrySet()) {
                     Formatting formatting =
                             levelManager.getSkillLevel(entry.getKey()) < entry.getValue() ? Formatting.RED : Formatting.GREEN;
-                    tooltip.addLine(Text.translatable("restriction.skillz." + LevelManager.SKILLS.get(entry.getKey()).id() + ".tooltip", entry.getValue()).formatted(formatting));
+                    tooltip.addLine(Text.translatable(LevelManager.SKILLS.get(entry.getKey()).id().toTranslationKey("restriction", "tooltip"), entry.getValue()).formatted(formatting));
                 }
             }
         }

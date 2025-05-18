@@ -41,7 +41,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         clearEveryList();
         // Mining
         if (ConfigInit.CONFIG.miningProgression) {
-            manager.findResources("mining", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
+            manager.findResources("mining", skillId -> skillId.getPath().endsWith(".json")).forEach((skillId, resourceRef) -> {
                 try {
                     InputStream stream = resourceRef.getInputStream();
                     JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
@@ -60,7 +60,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     }
 
                 } catch (Exception e) {
-                    LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+                    LOGGER.error("Error occurred while loading resource {}. {}", skillId.toString(), e.toString());
                 }
             });
             // Fill mining list
@@ -69,7 +69,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
 
         // Item
         if (ConfigInit.CONFIG.itemProgression) {
-            manager.findResources("item", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
+            manager.findResources("item", skillId -> skillId.getPath().endsWith(".json")).forEach((skillId, resourceRef) -> {
                 try {
                     InputStream stream = resourceRef.getInputStream();
                     JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
@@ -85,7 +85,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 }
                             } else {
                                 if (!(boolean) list.get(list.indexOf(data.get("material").getAsString()) + 4)) {
-                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", skillId.toString());
                                 }
                                 return;
                             }
@@ -105,13 +105,13 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 }
                             } else {
                                 if (!(boolean) list.get(list.indexOf(data.get("object").getAsString()) + 4)) {
-                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", skillId.toString());
                                 }
                                 return;
                             }
                         }
                         if (Registries.ITEM.get(new Identifier(data.get("object").getAsString())).toString().equals("air") && JsonHelper.getBoolean(data, "required", true)) {
-                            LOGGER.info("Resource {} was not loaded cause {} is not a valid item identifier", id.toString(), data.get("object").getAsString());
+                            LOGGER.info("Resource {} was not loaded cause {} is not a valid item identifier", skillId.toString(), data.get("object").getAsString());
                             return;
                         }
                         customList.add(data.get("object").getAsString());
@@ -125,13 +125,13 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 list.clear();
                             } else {
                                 if (!(boolean) list.get(3)) {
-                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", skillId.toString());
                                 }
                                 return;
                             }
                         }
                         if (Registries.ITEM.get(new Identifier(data.get("item").getAsString())).toString().equals("air") && JsonHelper.getBoolean(data, "required", true)) {
-                            LOGGER.info("Resource {} was not loaded cause {} is not a valid item identifier", id.toString(), data.get("item").getAsString());
+                            LOGGER.info("Resource {} was not loaded cause {} is not a valid item identifier", skillId.toString(), data.get("item").getAsString());
                             return;
                         }
                         list.add(data.get("skill").getAsString());
@@ -140,14 +140,14 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                         list.add(JsonHelper.getBoolean(data, "replace", false));
                     }
                 } catch (Exception e) {
-                    LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+                    LOGGER.error("Error occurred while loading resource {}. {}", skillId.toString(), e.toString());
                 }
             });
         }
 
         // Block
         if (ConfigInit.CONFIG.blockProgression) {
-            manager.findResources("block", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
+            manager.findResources("block", skillId -> skillId.getPath().endsWith(".json")).forEach((skillId, resourceRef) -> {
                 try {
                     InputStream stream = resourceRef.getInputStream();
                     JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
@@ -163,13 +163,13 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 }
                             } else {
                                 if (!(boolean) list.get(list.indexOf(data.get("object").getAsString()) + 4)) {
-                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", skillId.toString());
                                 }
                                 return;
                             }
                         }
                         if (Registries.BLOCK.get(new Identifier(data.get("object").getAsString())).toString().equals("Block{minecraft:air}")) {
-                            LOGGER.info("Resource {} was not loaded cause {} is not a valid block identifier", id.toString(), data.get("object").getAsString());
+                            LOGGER.info("Resource {} was not loaded cause {} is not a valid block identifier", skillId.toString(), data.get("object").getAsString());
                             return;
                         }
                         customList.add(data.get("object").getAsString());
@@ -183,13 +183,13 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 list.clear();
                             } else {
                                 if (!(boolean) list.get(3)) {
-                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", skillId.toString());
                                 }
                                 return;
                             }
                         }
                         if (Registries.BLOCK.get(new Identifier(data.get("block").getAsString())).toString().equals("Block{minecraft:air}")) {
-                            LOGGER.info("Resource {} was not loaded cause {} is not a valid block identifier", id.toString(), data.get("block").getAsString());
+                            LOGGER.info("Resource {} was not loaded cause {} is not a valid block identifier", skillId.toString(), data.get("block").getAsString());
                             return;
                         }
                         list.add(data.get("skill").getAsString());
@@ -204,14 +204,14 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                         }
                     }
                 } catch (Exception e) {
-                    LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+                    LOGGER.error("Error occurred while loading resource {}. {}", skillId.toString(), e.toString());
                 }
             });
         }
 
         // Entity
         if (ConfigInit.CONFIG.entityProgression) {
-            manager.findResources("entity", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
+            manager.findResources("entity", skillId -> skillId.getPath().endsWith(".json")).forEach((skillId, resourceRef) -> {
                 try {
                     InputStream stream = resourceRef.getInputStream();
                     JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
@@ -227,13 +227,13 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 }
                             } else {
                                 if (!(boolean) list.get(list.indexOf(data.get("object").getAsString()) + 4)) {
-                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", skillId.toString());
                                 }
                                 return;
                             }
                         }
                         if (Registries.ENTITY_TYPE.get(new Identifier(data.get("object").getAsString())).toString().equals("entity.minecraft.pig")) {
-                            LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), data.get("object").getAsString());
+                            LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", skillId.toString(), data.get("object").getAsString());
                             return;
                         }
                         customList.add(data.get("object").getAsString());
@@ -247,14 +247,14 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                                 list.clear();
                             } else {
                                 if (!(boolean) list.get(3)) {
-                                    LOGGER.info("Resource {} was not loaded cause it already existed", id.toString());
+                                    LOGGER.info("Resource {} was not loaded cause it already existed", skillId.toString());
                                 }
                                 return;
                             }
                         }
                         if (!data.get("entity").getAsString().equals("minecraft:breeding")
                                 && Registries.ENTITY_TYPE.get(new Identifier(data.get("entity").getAsString())).toString().equals("entity.minecraft.pig")) {
-                            LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", id.toString(), data.get("entity").getAsString());
+                            LOGGER.info("Resource {} was not loaded cause {} is not a valid entity identifier", skillId.toString(), data.get("entity").getAsString());
                             return;
                         }
                         list.add(data.get("skill").getAsString());
@@ -263,14 +263,14 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                         list.add(JsonHelper.getBoolean(data, "replace", false));
                     }
                 } catch (Exception e) {
-                    LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+                    LOGGER.error("Error occurred while loading resource {}. {}", skillId.toString(), e.toString());
                 }
             });
         }
 
         // Brewing
         if (ConfigInit.CONFIG.brewingProgression) {
-            manager.findResources("brewing", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
+            manager.findResources("brewing", skillId -> skillId.getPath().endsWith(".json")).forEach((skillId, resourceRef) -> {
                 try {
                     InputStream stream = resourceRef.getInputStream();
                     JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
@@ -289,7 +289,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                         fillLists(data, false, 2, -1);
                     }
                 } catch (Exception e) {
-                    LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+                    LOGGER.error("Error occurred while loading resource {}. {}", skillId.toString(), e.toString());
                 }
             });
             // Fill brewing list
@@ -298,7 +298,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
 
         // Smithing
         if (ConfigInit.CONFIG.smithingProgression) {
-            manager.findResources("smithing", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
+            manager.findResources("smithing", skillId -> skillId.getPath().endsWith(".json")).forEach((skillId, resourceRef) -> {
                 try {
                     InputStream stream = resourceRef.getInputStream();
                     JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
@@ -318,7 +318,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     }
 
                 } catch (Exception e) {
-                    LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+                    LOGGER.error("Error occurred while loading resource {}. {}", skillId.toString(), e.toString());
                 }
             });
             // Fill smithing list
@@ -326,7 +326,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
         }
 
         // Crafting
-        manager.findResources("crafting", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
+        manager.findResources("crafting", skillId -> skillId.getPath().endsWith(".json")).forEach((skillId, resourceRef) -> {
             try {
                 InputStream stream = resourceRef.getInputStream();
                 JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
@@ -353,7 +353,7 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     fillLists(data, false, 3, index);
                 }
             } catch (Exception e) {
-                LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+                LOGGER.error("Error occurred while loading resource {}. {}", skillId.toString(), e.toString());
             }
         });
         // Fill crafting list
@@ -376,14 +376,14 @@ public class LevelLoader implements SimpleSynchronousResourceReloadListener {
                     // System.out.println(data.getAsJsonArray("block").get(i).getAsString() + " : " + data.getAsJsonArray("block").get(i).getAsString().replace("#", "") + " : "
                     // + Registry.BLOCK.containsTag(TagKey.of(Registry.BLOCK_KEY, new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", "")))) + " : "
                     // + TagKey.of(Registry.BLOCK_KEY, new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", ""))) + " : "
-                    // + new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", "")) + " : " + BlockTags.ACACIA_LOGS.id());
+                    // + new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", "")) + " : " + BlockTags.ACACIA_LOGS.skillId());
                     // this.tagId = TagKey.of(Registry.BLOCK_KEY, Identifier.fromCommandInput(this.reader));
                     // System.out.println(BlockTags.ACACIA_LOGS;
                     // PlayerStatsClientPacket.writeC2STagPacket(new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", "")));
                     // System.out.println(Blocks.ACACIA_LOG.getRegistryEntry().isIn(BlockTags.ACACIA_LOGS));
                     // System.out.println(Registry.BLOCK.getOrCreateEntryList(BlockTags.ACACIA_LOGS));
                     // // System.out.println(Registry.BLOCK_KEY.(BlockTags.ACACIA_LOGS));
-                    // System.out.println(Registry.BLOCK.containsTag(TagKey.of(Registry.BLOCK_KEY, BlockTags.ACACIA_LOGS.id())) + " : "
+                    // System.out.println(Registry.BLOCK.containsTag(TagKey.of(Registry.BLOCK_KEY, BlockTags.ACACIA_LOGS.skillId())) + " : "
                     // + TagKey.of(Registry.BLOCK_KEY, new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", ""))) + " : "
                     // + new Identifier(data.getAsJsonArray("block").get(i).getAsString().replace("#", "")) + " : " + BlockTags.ACACIA_LOGS.toString());
                     LOGGER.info("{} might be a block tag but tags are not supported (yet?)", data.getAsJsonArray("block").get(i).getAsString());

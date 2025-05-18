@@ -5,11 +5,15 @@ import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.skillz.SkillZMain;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
+import net.skillz.level.PlayerPoints;
+import net.skillz.util.PacketHelper;
+
+import java.util.Map;
 
 public class LevelPacket implements FabricPacket {
     public static final Identifier PACKET_ID = SkillZMain.id("level_packet");
     protected final int overallLevel;
-    protected final int skillPoints;
+    protected final Map<Identifier, PlayerPoints> skillPoints;
     protected final int totalLevelExperience;
     protected final float levelProgress;
 
@@ -18,12 +22,12 @@ public class LevelPacket implements FabricPacket {
     );
 
     public LevelPacket(PacketByteBuf buf) {
-        this(buf.readInt(), buf.readInt(), buf.readInt(), buf.readFloat());
+        this(buf.readInt(), buf.readMap(PacketByteBuf::readIdentifier, PlayerPoints::fromBuf), buf.readInt(), buf.readFloat());
     }
 
-    public LevelPacket(int overallLevel, int skillPoints, int totalLevelExperience, float levelProgress) {
+    public LevelPacket(int overallLevel, Map<Identifier, PlayerPoints> points, int totalLevelExperience, float levelProgress) {
         this.overallLevel = overallLevel;
-        this.skillPoints = skillPoints;
+        this.skillPoints = points;
         this.totalLevelExperience = totalLevelExperience;
         this.levelProgress = levelProgress;
     }
@@ -31,7 +35,7 @@ public class LevelPacket implements FabricPacket {
     @Override
     public void write(PacketByteBuf buf) {
         buf.writeInt(this.overallLevel);
-        buf.writeInt(this.skillPoints);
+        PacketHelper.writeMap(buf, this.skillPoints, PacketByteBuf::writeIdentifier, PlayerPoints::writeBuf);
         buf.writeInt(this.totalLevelExperience);
         buf.writeFloat(this.levelProgress);
     }
@@ -45,7 +49,7 @@ public class LevelPacket implements FabricPacket {
         return overallLevel;
     }
 
-    public int skillPoints() {
+    public Map<Identifier, PlayerPoints> skillPoints() {
         return skillPoints;
     }
 

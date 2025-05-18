@@ -1,9 +1,8 @@
 package net.skillz.item;
 
+import net.minecraft.util.Identifier;
 import net.skillz.access.LevelManagerAccess;
-import net.skillz.init.ConfigInit;
 import net.skillz.level.LevelManager;
-import net.skillz.util.LevelHelper;
 import net.skillz.util.PacketHelper;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.LivingEntity;
@@ -19,10 +18,6 @@ import net.minecraft.util.UseAction;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class StrangePotionItem extends Item {
 
     public StrangePotionItem(Settings settings) {
@@ -35,15 +30,11 @@ public class StrangePotionItem extends Item {
             Criteria.CONSUME_ITEM.trigger(playerEntity, stack);
 
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).skillz$getLevelManager();
-            List<String> list = new ArrayList<>(levelManager.getPlayerSkills().keySet());
-            Collections.shuffle(list);
 
-            for (String skillId : list) {
-                if (levelManager.resetSkill(skillId) && !ConfigInit.MAIN.LEVEL.opStrangePotion) {
-                    LevelHelper.updateSkill(playerEntity, LevelManager.SKILLS.get(skillId));
-                    break;
-                }
+            for (Identifier skillId : levelManager.getPlayerSkills().keySet()) {
+                levelManager.resetSkill(skillId);
             }
+
             PacketHelper.updatePlayerSkills(playerEntity, null);
 
             if (!playerEntity.isCreative()) {
@@ -73,5 +64,4 @@ public class StrangePotionItem extends Item {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         return ItemUsage.consumeHeldItem(world, user, hand);
     }
-
 }

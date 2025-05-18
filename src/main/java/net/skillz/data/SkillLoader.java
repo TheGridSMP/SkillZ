@@ -6,10 +6,7 @@ import com.google.gson.JsonParser;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.skillz.SkillZMain;
 import net.skillz.init.ConfigInit;
-import net.skillz.level.LevelManager;
-import net.skillz.level.Skill;
-import net.skillz.level.SkillAttribute;
-import net.skillz.level.SkillBonus;
+import net.skillz.level.*;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.registry.Registries;
@@ -33,10 +30,28 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
 
     @Override
     public void reload(ResourceManager manager) {
-        // clear skills
         LevelManager.SKILLS.clear();
-        // clear bonuses
         LevelManager.BONUSES.clear();
+        LevelManager.POINTS.clear();
+
+        manager.findResources("skill_points", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
+            try {
+                if (!ConfigInit.MAIN.PROGRESSION.defaultSkills && id.getNamespace().equals("skillz"))
+                    return;
+
+                InputStream stream = resourceRef.getInputStream();
+                JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
+
+                Identifier pointId = FileUtil.pathToId(id);
+
+                int start = data.get("start").getAsInt();
+                int perLevel = data.get("perLevel").getAsInt();
+
+                LevelManager.POINTS.put(pointId, new SkillPoints(pointId, start, perLevel));
+            } catch (Exception e) {
+                SkillZMain.LOGGER.error("Error occurred while loading skill point {}. {}", id.toString(), e.toString());
+            }
+        });
 
         manager.findResources("skill", id -> id.getPath().endsWith(".json")).forEach((id, resourceRef) -> {
             try {
@@ -46,7 +61,9 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
                 InputStream stream = resourceRef.getInputStream();
                 JsonObject data = JsonParser.parseReader(new InputStreamReader(stream)).getAsJsonObject();
 
-                String skillId = FileUtil.getBaseName(id.getPath());
+                Identifier skillId = FileUtil.pathToId(id);
+
+                Identifier pointsId = new Identifier(data.get("points").getAsString());
 
                 int maxLevel = data.get("maxlevel").getAsInt();
                 List<SkillAttribute> attributes = new ArrayList<>();
@@ -62,7 +79,7 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
 
                     if (entityAttribute.isPresent()) {
                         boolean hidden = attributeJsonObject.has("hidden") && attributeJsonObject.get("hidden").getAsBoolean();
-                        RegistryEntry<EntityAttribute> attibute = entityAttribute.get();
+                        RegistryEntry.Reference<EntityAttribute> attibute = entityAttribute.get();
                         float baseValue = -10000.0f;
 
                         if (attributeJsonObject.has("base")) {
@@ -79,7 +96,7 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
                 if (data.has("bonus")) {
                     for (JsonElement attributeElement : data.getAsJsonArray("bonus")) {
                         JsonObject bonusJsonObject = attributeElement.getAsJsonObject();
-                        String bonusKey = bonusJsonObject.get("key").getAsString();
+                        String bonusKey = bonusJsonObject.get("id").getAsString();
                         int bonusLevel = bonusJsonObject.get("level").getAsInt();
 
                         if (!SkillBonus.BONUS_KEYS.contains(bonusKey)) {
@@ -90,9 +107,10 @@ public class SkillLoader implements SimpleSynchronousResourceReloadListener {
                         LevelManager.BONUSES.put(bonusKey, new SkillBonus(bonusKey, skillId, bonusLevel));
                     }
                 }
-                LevelManager.SKILLS.put(skillId, new Skill(skillId, maxLevel, attributes));
+                LevelManager.SKILLS.put(skillId, new Skill(skillId, pointsId, maxLevel, attributes));
             } catch (Exception e) {
-                SkillZMain.LOGGER.error("Error occurred while loading resource {}. {}", id.toString(), e.toString());
+                SkillZMain.LOGGER.error("Error occurred while loading skill {}. {}", id.toString(), e.toString());
+                SkillZMain.LOGGER.throwing(e);
             }
         });
     }

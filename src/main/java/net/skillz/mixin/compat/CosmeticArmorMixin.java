@@ -21,7 +21,7 @@ public class CosmeticArmorMixin {
     private void onInitializeMixin(CallbackInfo info) {
         for (int i = 0; i < 4; i++) {
             EquipmentSlot slot = EquipmentSlot.fromTypeIndex(EquipmentSlot.Type.ARMOR, i);
-            TrinketsApi.registerTrinketPredicate(id(slot.getName()), (stack, slotReference, entity) -> {
+            TrinketsApi.registerTrinketPredicate(skillId(slot.getName()), (stack, slotReference, entity) -> {
                 if (stack.isIn(BLACKLIST)) {
                     return TriState.FALSE;
                 }

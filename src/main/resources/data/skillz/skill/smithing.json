@@ -1,5 +1,6 @@
 {
   "maxlevel": 20,
+  "points": "skillz:points",
   "attributes": [
     {
       "type": "attribute-backport:generic.burning_time",

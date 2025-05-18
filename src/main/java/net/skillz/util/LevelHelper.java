@@ -1,6 +1,5 @@
 package net.skillz.util;
 
-import net.skillz.SkillZMain;
 import net.skillz.access.LevelManagerAccess;
 import net.skillz.level.*;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
@@ -15,17 +14,17 @@ public class LevelHelper {
     public static void updateSkill(ServerPlayerEntity serverPlayerEntity, Skill skill) {
         LevelManager levelManager = ((LevelManagerAccess) serverPlayerEntity).skillz$getLevelManager();
         for (SkillAttribute skillAttribute : skill.attributes()) {
-            EntityAttributeInstance attr = serverPlayerEntity.getAttributeInstance(skillAttribute.getAttribute().value());
+            EntityAttributeInstance attr = serverPlayerEntity.getAttributeInstance(skillAttribute.attribute().value());
             if (attr != null) {
-                if (skillAttribute.getBaseValue() > -9999.0f) {
-                    attr.setBaseValue(skillAttribute.getBaseValue());
+                if (skillAttribute.baseValue() > -9999.0f) {
+                    attr.setBaseValue(skillAttribute.baseValue());
                 }
-                Identifier identifier = SkillZMain.id(skill.id());
+                Identifier identifier = skill.id();
                 UUID uid = UUID.nameUUIDFromBytes(identifier.toString().getBytes());
                 if (attr.getModifier(uid) != null && attr.hasModifier(attr.getModifier(uid))) {
                     attr.removeModifier(uid);
                 }
-                attr.addTemporaryModifier(new EntityAttributeModifier(uid, identifier.toString(), skillAttribute.getLevelValue() * levelManager.getSkillLevel(skill.id()), skillAttribute.getOperation()));
+                attr.addTemporaryModifier(new EntityAttributeModifier(uid, identifier.toString(), skillAttribute.levelValue() * levelManager.getSkillLevel(skill.id()), skillAttribute.operation()));
             }
         }
     }

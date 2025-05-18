@@ -54,8 +54,6 @@
     "misc.WorldRendererMixin",
     "player.AbstractClientPlayerEntityMixin",
     "player.ClientPlayerListEntryMixin",
-    "player.InGameHudMixin",
-    "player.InventoryScreenMixin",
     "player.MinecraftClientMixin",
     "player.PlayerEntityRendererMixin",
     "player.PlayerListHudMixin"

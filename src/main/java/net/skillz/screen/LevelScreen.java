@@ -4,12 +4,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.text.MutableText;
 import net.skillz.SkillZMain;
 import net.skillz.access.ClientPlayerAccess;
 import net.skillz.access.LevelManagerAccess;
 import net.skillz.init.ConfigInit;
 import net.skillz.init.KeyInit;
 import net.skillz.level.LevelManager;
+import net.skillz.level.PlayerPoints;
 import net.skillz.level.Skill;
 import net.skillz.level.SkillAttribute;
 import net.skillz.network.packet.AttributeSyncPacket;
@@ -87,13 +89,13 @@ public class LevelScreen extends Screen implements Tab {
         int i = 0;
         for (Skill skill : LevelManager.SKILLS.values()) {
             for (SkillAttribute skillAttribute : skill.attributes()) {
-                if (skillAttribute.isHidden())
+                if (skillAttribute.hidden())
                     continue;
 
                 this.attributes.add(skillAttribute);
             }
 
-            this.newLeveButtons.add(new WidgetButtonPage(skill,this.x + (i % 2 == 0 ? 80 : 169), this.y + 91 + i / 2 * 20, 13, 13, 33, 42, true, true, null, button -> {ClientPlayNetworking.send(new StatPacket(skill.id(), 1));}));
+            this.newLeveButtons.add(new WidgetButtonPage(skill,this.x + (i % 2 == 0 ? 80 : 169), this.y + 91 + i / 2 * 20, 13, 13, 33, 42, true, true, null, button -> ClientPlayNetworking.send(new StatPacket(skill.id(), 1))));
 
             i++;
         }
@@ -198,12 +200,12 @@ public class LevelScreen extends Screen implements Tab {
 
                     int k = 27;
                     for (int i = this.attributeRow; i < this.attributeRow + maxAttributes; i++) {
-                        String attributeKey = RegistryHelper.attributeToString(this.attributes.get(i).getAttribute());
+                        String attributeKey = RegistryHelper.attributeToString(this.attributes.get(i).attribute());
                         if (attributeKey.contains(":")) {
                             attributeKey = attributeKey.split(":")[1];
                         }
                         context.drawTexture(SkillZMain.id("textures/gui/sprites/" + attributeKey + ".png"), this.x + 214, this.y + k, 0, 0, 9, 9, 9, 9);
-                        float attributeValue = (float) Math.round(this.client.player.getAttributeInstance(this.attributes.get(i).getAttribute().value()).getValue() * 100.0D) / 100.0F;
+                        float attributeValue = (float) Math.round(this.client.player.getAttributeInstance(this.attributes.get(i).attribute().value()).getValue() * 100.0D) / 100.0F;
                         context.drawText(this.textRenderer, Text.of(String.valueOf(attributeValue)), this.x + 214 + 15, this.y + k, 0xE0E0E0, false);
 
                         k += 12;
@@ -215,7 +217,12 @@ public class LevelScreen extends Screen implements Tab {
             Text skillLevelText = Text.translatable("text.skillz.gui.level", this.levelManager.getOverallLevel());
             context.drawText(this.textRenderer, skillLevelText, this.x + 62, this.y + 42, 0x3F3F3F, false);
             // Point label
-            Text skillPointText = Text.translatable("text.skillz.gui.points", this.levelManager.getSkillPoints());
+            MutableText skillPointText = Text.empty();
+
+            for (PlayerPoints points : this.levelManager.getSkillPoints().values()) {
+                skillPointText.append(Text.translatable(points.getId().toTranslationKey("points"), points.getLevel())).append(" ");
+            }
+
             context.drawText(this.textRenderer, skillPointText, this.x + 62, this.y + 54, 0x3F3F3F, false);
 
             // Experience bar
@@ -371,15 +378,15 @@ public class LevelScreen extends Screen implements Tab {
 
     public void updateLevelButtons() {
         for (WidgetButtonPage page : newLeveButtons) {
-            String skrillix = page.skill.id();
+            Identifier skrillix = page.skill.id();
             if (ConfigInit.MAIN.LEVEL.overallMaxLevel > 0 && this.levelManager.getOverallLevel() >= ConfigInit.MAIN.LEVEL.overallMaxLevel) {
                 page.active = false;
             } else if (LevelManager.SKILLS.get(skrillix).maxLevel() <= this.levelManager.getPlayerSkills().get(skrillix).getLevel()) {
                 page.active = false;
             } else {
-                page.active = this.levelManager.getSkillPoints() > 0;
+                page.active = this.levelManager.getSkillPoints(page.skill.pointsId()).getLevel() > 0;
             }
-            if (ConfigInit.MAIN.LEVEL.allowHigherSkillLevel && this.levelManager.getSkillPoints() > 0) {
+            if (ConfigInit.MAIN.LEVEL.allowHigherSkillLevel && this.levelManager.getSkillPoints(page.skill.pointsId()).getLevel() > 0) {
                 boolean maxedAllSkills = true;
                 for (Skill skillCheck : LevelManager.SKILLS.values()) {
                     if (skillCheck.maxLevel() > this.levelManager.getSkillLevel(skillCheck.id())) {

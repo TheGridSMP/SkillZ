@@ -1,153 +1,308 @@
 package net.skillz.init;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.command.argument.IdentifierArgumentType;
+import net.minecraft.util.Identifier;
+import net.skillz.SkillZMain;
 import net.skillz.access.LevelManagerAccess;
 import net.skillz.access.ServerPlayerSyncAccess;
 import net.skillz.level.LevelManager;
 import net.skillz.level.Skill;
+import net.skillz.level.SkillPoints;
 import net.skillz.util.LevelHelper;
 import net.skillz.util.PacketHelper;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
+
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class CommandInit {
 
     private static final SuggestionProvider<ServerCommandSource> SKILLS_SUGGESTION_PROVIDER = (context, builder) -> CommandSource.suggestMatching(
-            LevelManager.SKILLS.values().stream().map(Skill::id), builder);
+            LevelManager.SKILLS.values().stream().map(Skill::id).map(Identifier::toString), builder);
+
+    private static final SuggestionProvider<ServerCommandSource> POINTS_SUGGESTION_PROVIDER = (context, builder) -> CommandSource.suggestMatching(
+            LevelManager.POINTS.values().stream().map(SkillPoints::id).map(Identifier::toString), builder);
 
     public static void init() {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated, environment) ->
-                dispatcher.register((CommandManager.literal("level").requires((source) -> source.hasPermissionLevel(2))).then(CommandManager.argument("targets", EntityArgumentType.players())
+                dispatcher.register(literal(SkillZMain.MOD_ID).requires((source) -> source.hasPermissionLevel(2))
+                        .then(argument("targets", EntityArgumentType.players())
                 // Add values
-                .then(CommandManager.literal("add").then(CommandManager.literal("level").then(CommandManager.argument("level", IntegerArgumentType.integer())
-                        .executes(ctx -> executeSkillCommand(ctx.getSource(), EntityArgumentType.getPlayers(ctx, "targets"), "level",
-                        IntegerArgumentType.getInteger(ctx, "level"), 0)))).then(CommandManager.literal("points").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "points",
-                                IntegerArgumentType.getInteger(commandContext, "level"), 0)))).then(CommandManager.argument("skillKey", StringArgumentType.string()).suggests(SKILLS_SUGGESTION_PROVIDER).then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), StringArgumentType.getString(commandContext, "skillKey"),
-                                        IntegerArgumentType.getInteger(commandContext, "level"), 0)))).then(CommandManager.literal("experience").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "experience",
-                                                IntegerArgumentType.getInteger(commandContext, "level"), 0)))))
+                .then(literal("add")
+                        .then(literal("level").then(argument("level", IntegerArgumentType.integer())
+                                .executes(CommandInit::addLevel)))
+
+                        .then(literal("pointsId").then(argument("skillKey", IdentifierArgumentType.identifier())
+                                .then(argument("level", IntegerArgumentType.integer())
+                                        .executes(CommandInit::addPoints))))
+
+                        .then(literal("skill").then(argument("skillKey", IdentifierArgumentType.identifier())
+                                .suggests(SKILLS_SUGGESTION_PROVIDER).then(argument("level", IntegerArgumentType.integer())
+                                        .executes(CommandInit::addSkill))))
+
+                        .then(literal("experience").then(argument("level", IntegerArgumentType.integer())
+                                .executes(CommandInit::addXp))))
+
                 // Remove values
-                .then(CommandManager.literal("remove").then(CommandManager.literal("level").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "level",
-                        IntegerArgumentType.getInteger(commandContext, "level"), 1)))).then(CommandManager.literal("points").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "points",
-                                IntegerArgumentType.getInteger(commandContext, "level"), 1)))).then(CommandManager.argument("skillKey", StringArgumentType.string()).suggests(SKILLS_SUGGESTION_PROVIDER).then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), StringArgumentType.getString(commandContext, "skillKey"),
-                        IntegerArgumentType.getInteger(commandContext, "level"), 1)))).then(CommandManager.literal("experience").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "experience",
-                                IntegerArgumentType.getInteger(commandContext, "level"), 1)))))
+                .then(literal("remove")
+                        .then(literal("level").then(argument("level", IntegerArgumentType.integer())
+                                .executes(CommandInit::removeLevel)))
+
+                        .then(literal("pointsId").then(argument("skillKey", IdentifierArgumentType.identifier())
+                                .then(argument("level", IntegerArgumentType.integer())
+                                        .executes(CommandInit::removePoints))))
+
+                        .then(literal("skill").then(argument("skillKey", IdentifierArgumentType.identifier())
+                                .suggests(SKILLS_SUGGESTION_PROVIDER).then(argument("level", IntegerArgumentType.integer())
+                                        .executes(CommandInit::removeSkill))))
+
+                        .then(literal("experience").then(argument("level", IntegerArgumentType.integer())
+                                .executes(CommandInit::removeXp))))
+
                 // Set values
-                .then(CommandManager.literal("set").then(CommandManager.literal("level").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "level",
-                        IntegerArgumentType.getInteger(commandContext, "level"), 2)))).then(CommandManager.literal("points").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "points",
-                        IntegerArgumentType.getInteger(commandContext, "level"), 2)))).then(CommandManager.argument("skillKey", StringArgumentType.string()).suggests(SKILLS_SUGGESTION_PROVIDER).then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), StringArgumentType.getString(commandContext, "skillKey"),
-                                IntegerArgumentType.getInteger(commandContext, "level"), 2)))).then(CommandManager.literal("experience").then(CommandManager.argument("level", IntegerArgumentType.integer()).executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "experience",
-                        IntegerArgumentType.getInteger(commandContext, "level"), 2)))))
-                // Print values
-                .then(CommandManager.literal("get").then(CommandManager.literal("level")
-                        .executes(ctx -> executeSkillCommand(ctx.getSource(), EntityArgumentType.getPlayers(ctx, "targets"), "level", 0, 3)))
-                        .then(CommandManager.literal("all").executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "all", 0, 3)))
-                        .then(CommandManager.literal("points").executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "points", 0, 3)))
-                        .then(CommandManager.argument("skillKey", StringArgumentType.string()).suggests(SKILLS_SUGGESTION_PROVIDER).executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), StringArgumentType.getString(commandContext, "skillKey"), 0, 3)))
-                        .then(CommandManager.literal("experience").executes((commandContext) -> executeSkillCommand(commandContext.getSource(), EntityArgumentType.getPlayers(commandContext, "targets"), "experience", 0, 3)))))));
+                .then(literal("set")
+                        .then(literal("level").then(argument("level", IntegerArgumentType.integer())
+                                .executes(CommandInit::setLevel)))
+
+                        .then(literal("pointsId").then(argument("skillKey", IdentifierArgumentType.identifier())
+                                .then(argument("level", IntegerArgumentType.integer())
+                                        .executes(CommandInit::setPoints))))
+
+                        .then(literal("skill").then(argument("skillKey", IdentifierArgumentType.identifier())
+                                .suggests(SKILLS_SUGGESTION_PROVIDER).then(argument("level", IntegerArgumentType.integer())
+                                        .executes(CommandInit::setSkill))))
+
+                        .then(literal("experience").then(argument("level", IntegerArgumentType.integer())
+                                .executes(CommandInit::setXp))))
+
+        )));
     }
 
-    // Reference 0:Add, 1:Remove, 2:Set, 3:Print
-    private static int executeSkillCommand(ServerCommandSource source, Collection<ServerPlayerEntity> targets, String skillKey, int i, int reference) {
+    private static int addSkill(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
+        Identifier skillId = IdentifierArgumentType.getIdentifier(ctx, "skillKey");
+        int amount = IntegerArgumentType.getInteger(ctx, "level");
 
-        // loop over players
+        return changeSkill(ctx, targets, skillId, Operation.ADD, amount);
+    }
+
+    private static int removeSkill(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
+        Identifier skillId = IdentifierArgumentType.getIdentifier(ctx, "skillKey");
+        int amount = IntegerArgumentType.getInteger(ctx, "level");
+
+        return changeSkill(ctx, targets, skillId, Operation.REMOVE, amount);
+    }
+
+    private static int setSkill(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
+        Identifier skillId = IdentifierArgumentType.getIdentifier(ctx, "skillKey");
+        int amount = IntegerArgumentType.getInteger(ctx, "level");
+
+        return changeSkill(ctx, targets, skillId, Operation.SET, amount);
+    }
+
+    private static int changeSkill(CommandContext<ServerCommandSource> ctx, Collection<ServerPlayerEntity> targets, Identifier skillId, Operation op, int amount) {
         for (ServerPlayerEntity serverPlayerEntity : targets) {
-            LevelManager levelManager = ((LevelManagerAccess) serverPlayerEntity).skillz$getLevelManager();
-            if (skillKey.equals("experience")) {
-                if (reference == 0) {
-                    ((ServerPlayerSyncAccess) serverPlayerEntity).skillz$addLevelExperience(i);
-                } else if (reference == 1) {
-                    int currentXP = (int) (levelManager.getLevelProgress() * levelManager.getNextLevelExperience());
-                    float oldProgress = levelManager.getLevelProgress();
-                    levelManager.setLevelProgress(currentXP - i > 0 ? (float) (currentXP - 1) / (float) levelManager.getNextLevelExperience() : 0.0F);
-                    levelManager.setTotalLevelExperience(currentXP - i > 0 ? levelManager.getTotalLevelExperience() - i
-                            : levelManager.getTotalLevelExperience() - (int) (oldProgress * levelManager.getNextLevelExperience()));
-                } else if (reference == 2) {
-                    float oldProgress = levelManager.getLevelProgress();
-                    levelManager.setLevelProgress(i >= levelManager.getNextLevelExperience() ? 1.0F : (float) i / levelManager.getNextLevelExperience());
-                    levelManager.setTotalLevelExperience((int) (levelManager.getTotalLevelExperience() - oldProgress * levelManager.getNextLevelExperience()
-                            + levelManager.getLevelProgress() * levelManager.getNextLevelExperience()));
-                } else if (reference == 3) {
-                    source.sendFeedback(() -> Text.translatable("commands.level.printProgress", serverPlayerEntity.getDisplayName(),
-                            (int) (levelManager.getLevelProgress() * levelManager.getNextLevelExperience()), levelManager.getNextLevelExperience()), true);
-                }
-            } else {
-                Skill skill = null;
-                int playerSkillLevel = 0;
-                if (skillKey.equals("points")) {
-                    playerSkillLevel = levelManager.getSkillPoints();
-                } else if (skillKey.equals("level")) {
-                    playerSkillLevel = levelManager.getOverallLevel();
-                } else {
-                    for (Skill overallSkill : LevelManager.SKILLS.values()) {
-                        if (overallSkill.id().equals(skillKey)) {
-                            playerSkillLevel = levelManager.getSkillLevel(overallSkill.id());
-                            skill = overallSkill;
-                            break;
-                        }
-                    }
-                    if (skill == null) {
-                        source.sendFeedback(() -> Text.translatable("commands.level.failed"), false);
-                        return 0;
-                    }
-                }
-                if (reference == 0) {
-                    playerSkillLevel += i;
-                } else if (reference == 1) {
-                    playerSkillLevel = Math.max(playerSkillLevel - i, 0);
-                } else if (reference == 2) {
-                    playerSkillLevel = i;
-                } else if (reference == 3) {
-                    if (skillKey.equals("all")) {
-                        for (Skill overallSkill : LevelManager.SKILLS.values()) {
-                            final String finalSkill = overallSkill.id();
-                            source.sendFeedback(() -> Text.translatable("commands.level.printLevel", serverPlayerEntity.getDisplayName(),
-                                            StringUtils.capitalize(finalSkill) + (finalSkill.equals("level") || finalSkill.equals("points") ? ":" : " Level:"),
-                                            finalSkill.equals("level") ? levelManager.getOverallLevel()
-                                                    : finalSkill.equals("points") ? levelManager.getSkillPoints() : levelManager.getSkillLevel(overallSkill.id())),
-                                    true);
-                        }
-                    } else {
-                        final String finalSkill = skillKey;
-                        final int finalPlayerSkillLevel = playerSkillLevel;
-                        source.sendFeedback(() -> Text.translatable("commands.level.printLevel", serverPlayerEntity.getDisplayName(),
-                                StringUtils.capitalize(finalSkill) + (finalSkill.equals("level") || finalSkill.equals("points") ? ":" : " Level:"), finalPlayerSkillLevel), true);
-                    }
-                    continue;
-                }
-                if (skillKey.equals("points")) {
-                    levelManager.setSkillPoints(playerSkillLevel);
-                } else if (skillKey.equals("level")) {
-                    levelManager.setOverallLevel(playerSkillLevel);
-                    final int level = playerSkillLevel;
-                    serverPlayerEntity.getScoreboard().forEachScore(CriteriaInit.SKILLZ, serverPlayerEntity.getEntityName(), score -> score.setScore(level));
-                    serverPlayerEntity.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
-                } else {
-                    levelManager.setSkillLevel(skill.id(), playerSkillLevel);
-                    if (!skill.attributes().isEmpty()) {
-                        LevelHelper.updateSkill(serverPlayerEntity, skill);
-                    }
-                }
-            }
-            PacketHelper.updateLevels(serverPlayerEntity);
-            PacketHelper.updatePlayerSkills(serverPlayerEntity, null);
-
-            if (reference != 3) {
-                source.sendFeedback(() -> Text.translatable("commands.level.changed", serverPlayerEntity.getDisplayName()), true);
-            }
+            changeSkill(ctx.getSource(), serverPlayerEntity, skillId, op, amount);
         }
 
         return targets.size();
     }
 
+    private static void changeSkill(ServerCommandSource source, ServerPlayerEntity player, Identifier skillId, Operation op, int amount) {
+        LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
+        Skill skill = LevelManager.SKILLS.get(skillId);
+
+        if (skill == null) {
+            source.sendFeedback(() -> Text.translatable("commands.level.failed"), false);
+            return;
+        }
+
+        int level = op.compute(levelManager.getSkillLevel(skillId), amount);
+        levelManager.setSkillLevel(skill.id(), level);
+
+        if (!skill.attributes().isEmpty()) LevelHelper.updateSkill(player, skill);
+
+        PacketHelper.updateLevels(player);
+        PacketHelper.updatePlayerSkills(player, null);
+
+        source.sendFeedback(() -> Text.translatable("commands.level.changed", player.getDisplayName()), true);
+    }
+
+    enum Operation {
+        ADD,
+        GET,
+        SET,
+        REMOVE;
+
+        public int compute(int level, int amount) {
+            return switch (this) {
+                case ADD -> level + amount;
+                case REMOVE -> Math.max(level - amount, 0);
+                case SET -> amount;
+                default -> throw new IllegalStateException("Unreachable.");
+            };
+        }
+    }
+
+    private static int addXp(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
+        int amount = IntegerArgumentType.getInteger(ctx, "level");
+
+        return changeXp(ctx, targets, Operation.ADD, amount);
+    }
+
+    private static int removeXp(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
+        int amount = IntegerArgumentType.getInteger(ctx, "level");
+
+        return changeXp(ctx, targets, Operation.REMOVE, amount);
+    }
+
+    private static int setXp(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
+        int amount = IntegerArgumentType.getInteger(ctx, "level");
+
+        return changeXp(ctx, targets, Operation.SET, amount);
+    }
+
+    private static int changeXp(CommandContext<ServerCommandSource> ctx, Collection<ServerPlayerEntity> targets, Operation op, int amount) {
+        for (ServerPlayerEntity serverPlayerEntity : targets) {
+            changeXp(ctx.getSource(), serverPlayerEntity, op, amount);
+        }
+
+        return targets.size();
+    }
+
+    private static void changeXp(ServerCommandSource source, ServerPlayerEntity player, Operation op, int amount) {
+        LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
+
+        switch (op) {
+            case ADD -> ((ServerPlayerSyncAccess) player).skillz$addLevelExperience(amount);
+
+            case SET -> {
+                float oldProgress = levelManager.getLevelProgress();
+                levelManager.setLevelProgress(amount >= levelManager.getNextLevelExperience() ? 1.0F : (float) amount / levelManager.getNextLevelExperience());
+                levelManager.setTotalLevelExperience((int) (levelManager.getTotalLevelExperience() - oldProgress * levelManager.getNextLevelExperience()
+                        + levelManager.getLevelProgress() * levelManager.getNextLevelExperience()));
+            }
+
+            case REMOVE -> {
+                int currentXP = (int) (levelManager.getLevelProgress() * levelManager.getNextLevelExperience());
+                float oldProgress = levelManager.getLevelProgress();
+                levelManager.setLevelProgress(currentXP - amount > 0 ? (float) (currentXP - 1) / (float) levelManager.getNextLevelExperience() : 0.0F);
+                levelManager.setTotalLevelExperience(currentXP - amount > 0 ? levelManager.getTotalLevelExperience() - amount
+                        : levelManager.getTotalLevelExperience() - (int) (oldProgress * levelManager.getNextLevelExperience()));
+            }
+        }
+
+        PacketHelper.updateLevels(player);
+        PacketHelper.updatePlayerSkills(player, null);
+
+        source.sendFeedback(() -> Text.translatable("commands.level.changed", player.getDisplayName()), true);
+    }
+
+    // LEVELS
+
+    private static int addLevel(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
+        int amount = IntegerArgumentType.getInteger(ctx, "level");
+
+        return changeLevel(ctx, targets, Operation.ADD, amount);
+    }
+
+    private static int removeLevel(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
+        int amount = IntegerArgumentType.getInteger(ctx, "level");
+
+        return changeLevel(ctx, targets, Operation.REMOVE, amount);
+    }
+
+    private static int setLevel(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
+        int amount = IntegerArgumentType.getInteger(ctx, "level");
+
+        return changeLevel(ctx, targets, Operation.SET, amount);
+    }
+
+    private static int changeLevel(CommandContext<ServerCommandSource> ctx, Collection<ServerPlayerEntity> targets, Operation op, int amount) {
+        for (ServerPlayerEntity serverPlayerEntity : targets) {
+            changeLevel(ctx.getSource(), serverPlayerEntity, op, amount);
+        }
+
+        return targets.size();
+    }
+
+    private static void changeLevel(ServerCommandSource source, ServerPlayerEntity serverPlayerEntity, Operation op, int amount) {
+        LevelManager levelManager = ((LevelManagerAccess) serverPlayerEntity).skillz$getLevelManager();
+        int level = op.compute(levelManager.getOverallLevel(), amount);
+
+        levelManager.setOverallLevel(level);
+        serverPlayerEntity.getScoreboard().forEachScore(CriteriaInit.SKILLZ, serverPlayerEntity.getEntityName(), score -> score.setScore(level));
+        serverPlayerEntity.server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.UPDATE_GAME_MODE, serverPlayerEntity));
+
+        PacketHelper.updateLevels(serverPlayerEntity);
+        PacketHelper.updatePlayerSkills(serverPlayerEntity, null);
+
+        source.sendFeedback(() -> Text.translatable("commands.level.changed", serverPlayerEntity.getDisplayName()), true);
+    }
+
+    // Points
+
+    private static int addPoints(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
+        Identifier pointId = IdentifierArgumentType.getIdentifier(ctx, "skillKey");
+        int amount = IntegerArgumentType.getInteger(ctx, "level");
+
+        return changePoints(ctx, targets, pointId, Operation.ADD, amount);
+    }
+
+    private static int removePoints(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
+        Identifier pointId = IdentifierArgumentType.getIdentifier(ctx, "skillKey");
+        int amount = IntegerArgumentType.getInteger(ctx, "level");
+
+        return changePoints(ctx, targets, pointId, Operation.REMOVE, amount);
+    }
+
+    private static int setPoints(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        Collection<ServerPlayerEntity> targets = EntityArgumentType.getPlayers(ctx, "targets");
+        Identifier pointId = IdentifierArgumentType.getIdentifier(ctx, "skillKey");
+        int amount = IntegerArgumentType.getInteger(ctx, "level");
+
+        return changePoints(ctx, targets, pointId, Operation.SET, amount);
+    }
+
+    private static int changePoints(CommandContext<ServerCommandSource> ctx, Collection<ServerPlayerEntity> targets, Identifier skillId, Operation op, int amount) {
+        for (ServerPlayerEntity serverPlayerEntity : targets) {
+            changePoints(ctx.getSource(), serverPlayerEntity, skillId, op, amount);
+        }
+
+        return targets.size();
+    }
+
+    private static void changePoints(ServerCommandSource source, ServerPlayerEntity serverPlayerEntity, Identifier pointId, Operation op, int amount) {
+        LevelManager levelManager = ((LevelManagerAccess) serverPlayerEntity).skillz$getLevelManager();
+        int playerSkillLevel = op.compute(levelManager.getSkillPoints(pointId).getLevel(), amount);
+
+        levelManager.setSkillPoints(pointId, playerSkillLevel);
+
+        PacketHelper.updateLevels(serverPlayerEntity);
+        PacketHelper.updatePlayerSkills(serverPlayerEntity, null);
+
+        source.sendFeedback(() -> Text.translatable("commands.level.changed", serverPlayerEntity.getDisplayName()), true);
+    }
 }

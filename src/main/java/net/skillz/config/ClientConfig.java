@@ -18,8 +18,6 @@ public class ClientConfig extends Config {
     @Comment("How locked blocks should appear highlighted")
     public BlockHighlightOption highlightOption = BlockHighlightOption.NORMAL;
 
-    public boolean inventorySkillLevel = true;
-
     public int inventorySkillLevelPosX = 0;
 
     public int inventorySkillLevelPosY = 0;
@@ -29,7 +27,7 @@ public class ClientConfig extends Config {
 
     public boolean showLevel = true;
 
-    @Comment("Inventory key goes back to main screen rather than closing the inventory")
+    @Comment("Inventory id goes back to main screen rather than closing the inventory")
     public boolean switchScreen = false;
 
     public boolean showLockedBlockInfo = false;

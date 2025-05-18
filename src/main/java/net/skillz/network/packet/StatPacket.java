@@ -10,31 +10,23 @@ import net.minecraft.util.Identifier;
  * Increase skill packet
  * Used in the skill screen by using a button
  *
- * @param id    skill id
+ * @param skillId    skill Id
  * @param level amount
  */
-public class StatPacket implements FabricPacket {
+public record StatPacket(Identifier skillId, int level) implements FabricPacket {
     public static final Identifier PACKET_ID = SkillZMain.id("stat_packet");
-
-    protected final String id;
-    protected final int level;
 
     public static final PacketType<StatPacket> TYPE = PacketType.create(
             PACKET_ID, StatPacket::new
     );
 
     public StatPacket(PacketByteBuf buf) {
-        this(buf.readString(), buf.readInt());
-    }
-
-    public StatPacket(String id, int level) {
-        this.id = id;
-        this.level = level;
+        this(buf.readIdentifier(), buf.readInt());
     }
 
     @Override
     public void write(PacketByteBuf buf) {
-        buf.writeString(this.id);
+        buf.writeIdentifier(this.skillId);
         buf.writeInt(this.level);
     }
 
@@ -42,14 +34,4 @@ public class StatPacket implements FabricPacket {
     public PacketType<?> getType() {
         return TYPE;
     }
-
-    public int level() {
-        return level;
-    }
-
-    public String id() {
-        return id;
-    }
-
 }
-

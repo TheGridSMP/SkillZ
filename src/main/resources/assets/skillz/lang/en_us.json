@@ -162,7 +162,7 @@
   "text.skillz.gui.title": "%s Skills",
   "text.skillz.gui.attributes": "Attributes",
   "text.skillz.gui.level": "Level %d",
-  "text.skillz.gui.points": "Points %d",
+  "points.skillz.points": "Points %d",
   "text.skillz.gui.short_level": "Lv. %d",
   "text.skillz.gui.short_lower_level": "lv. %d",
   "text.skillz.gui.level_up": "Level Up",

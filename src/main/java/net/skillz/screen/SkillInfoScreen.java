@@ -40,7 +40,7 @@ public class SkillInfoScreen extends Screen implements Tab {
 
     private int lineIndex = 0;
 
-    public SkillInfoScreen(LevelManager levelManager, String skillId) {
+    public SkillInfoScreen(LevelManager levelManager, Identifier skillId) {
         super(LevelManager.SKILLS.get(skillId).getText());
         this.skill = LevelManager.SKILLS.get(skillId);
         this.levelManager = levelManager;
@@ -70,10 +70,10 @@ public class SkillInfoScreen extends Screen implements Tab {
         for (String bonusKey : SkillBonus.BONUS_KEYS) {
             if (LevelManager.BONUSES.containsKey(bonusKey)) {
                 SkillBonus bonus = LevelManager.BONUSES.get(bonusKey);
-                if (bonus.getId().equals(this.skill.id())) {
+                if (bonus.skillId().equals(this.skill.id())) {
                     for (int i = 0; i < 50; i++) {
-                        String bonusInfo = "bonus.skillz." + bonus.getKey() + "." + i;
-                        Text bonusInfoText = Text.translatable(bonusInfo, Text.translatable("text.skillz.gui.short_lower_level", bonus.getLevel()));
+                        String bonusInfo = "bonus.skillz." + bonus.id() + "." + i;
+                        Text bonusInfoText = Text.translatable(bonusInfo, Text.translatable("text.skillz.gui.short_lower_level", bonus.level()));
 
                         if (bonusInfoText.getString().equals(bonusInfo)) {
                             break;
@@ -103,7 +103,7 @@ public class SkillInfoScreen extends Screen implements Tab {
         // Id (ex. Item), PlayerRestriction
         for (Map.Entry<Integer, PlayerRestriction> itemRestriction : levelRestrictions.entrySet()) {
             // SkillId, Lvl
-            for (Map.Entry<String, Integer> specificRestriction : itemRestriction.getValue().getSkillLevelRestrictions().entrySet()) {
+            for (Map.Entry<Identifier, Integer> specificRestriction : itemRestriction.getValue().skillLevelRestrictions().entrySet()) {
                 if (specificRestriction.getKey().equals(this.skill.id())) {
                     if (map.containsKey(specificRestriction.getValue())) {
                         map.get(specificRestriction.getValue()).put(itemRestriction.getKey(), itemRestriction.getValue());

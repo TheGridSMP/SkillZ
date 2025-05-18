@@ -1,5 +1,6 @@
 {
   "maxlevel": 20,
+  "points": "skillz:points",
   "attributes": [
     {
       "id": 0,

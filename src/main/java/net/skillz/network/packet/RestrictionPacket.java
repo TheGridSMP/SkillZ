@@ -1,18 +1,19 @@
 package net.skillz.network.packet;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntObjectPair;
 import net.fabricmc.fabric.api.networking.v1.FabricPacket;
 import net.fabricmc.fabric.api.networking.v1.PacketType;
 import net.skillz.SkillZMain;
 import net.skillz.level.restriction.PlayerRestriction;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
+import net.skillz.util.IntObjectBiConsumer;
 /*import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;*/
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RestrictionPacket implements FabricPacket {
@@ -82,48 +83,45 @@ public class RestrictionPacket implements FabricPacket {
         return TYPE;
     }
 
-    public record RestrictionRecord(List<Integer> ids, List<PlayerRestriction> restrictions) {
+    public static class RestrictionRecord extends ArrayList<IntObjectPair<PlayerRestriction>> {
+
+        public RestrictionRecord(int size) {
+            super(size);
+        }
+
+        public static RestrictionRecord fromMap(Int2ObjectMap<PlayerRestriction> map) {
+            RestrictionRecord record = new RestrictionRecord(map.size());
+
+            map.forEach((integer, restriction) -> {
+                record.add(IntObjectPair.of(integer, restriction));
+            });
+
+            return record;
+        }
 
         public void write(PacketByteBuf buf) {
-            buf.writeInt(ids().size());
-            for (Integer id : ids) {
-                buf.writeInt(id);
-            }
-            buf.writeInt(restrictions().size());
-            for (int i = 0; i < restrictions().size(); i++) {
-                PlayerRestriction playerRestriction = restrictions().get(i);
-                buf.writeInt(playerRestriction.getId());
-                buf.writeInt(playerRestriction.getSkillLevelRestrictions().size());
-                for (Map.Entry<String, Integer> entry : playerRestriction.getSkillLevelRestrictions().entrySet()) {
-                    buf.writeString(entry.getKey());
-                    buf.writeInt(entry.getValue());
-                }
-            }
+            buf.writeCollection(this, (b, pair) -> {
+                b.writeVarInt(pair.leftInt());
+
+                PlayerRestriction playerRestriction = pair.right();
+                buf.writeInt(playerRestriction.id());
+                buf.writeMap(playerRestriction.skillLevelRestrictions(), PacketByteBuf::writeIdentifier, PacketByteBuf::writeVarInt);
+            });
         }
 
         public static RestrictionRecord read(PacketByteBuf buf) {
-            List<Integer> ids = new ArrayList<>();
-            int idSize = buf.readInt();
-            for (int i = 0; i < idSize; i++) {
-                ids.add(buf.readInt());
-            }
-            List<PlayerRestriction> playerRestrictions = new ArrayList<>();
-            int size = buf.readInt();
-            for (int i = 0; i < size; i++) {
+            return buf.readCollection(RestrictionRecord::new, b -> {
+                int itemId = b.readInt();
+
                 int id = buf.readInt();
-                int skillLevelSize = buf.readInt();
-                Map<String, Integer> skillLevelRestrictions = new HashMap<>();
-                for (int u = 0; u < skillLevelSize; u++) {
-                    String skillId = buf.readString();
-                    int skillLevel = buf.readInt();
-                    skillLevelRestrictions.put(skillId, skillLevel);
-                }
-                playerRestrictions.add(new PlayerRestriction(id, skillLevelRestrictions));
-            }
-            return new RestrictionRecord(ids, playerRestrictions);
+                Map<Identifier, Integer> skillLevelRestrictions = b.readMap(PacketByteBuf::readIdentifier, PacketByteBuf::readVarInt);
+                return IntObjectPair.of(itemId, new PlayerRestriction(id, skillLevelRestrictions));
+            });
         }
 
+        public void forEach(IntObjectBiConsumer<PlayerRestriction> f) {
+            this.forEach(pair -> f.accept(pair.leftInt(), pair.right()));
+        }
     }
-
 }
 

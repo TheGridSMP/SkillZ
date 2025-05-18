@@ -189,8 +189,8 @@ public class SkillRestrictionScreen extends Screen implements Tab {
         }else {
             this.restrictions = this.restrictions.entrySet().stream()
                     .sorted((entry1, entry2) -> {
-                        int itemVar1 = entry1.getValue().getSkillLevelRestrictions().values().stream().findFirst().get();
-                        int itemVar2 = entry2.getValue().getSkillLevelRestrictions().values().stream().findFirst().get();
+                        int itemVar1 = entry1.getValue().skillLevelRestrictions().values().stream().findFirst().get();
+                        int itemVar2 = entry2.getValue().skillLevelRestrictions().values().stream().findFirst().get();
                         return Integer.compare(itemVar1, itemVar2);
                     }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         }

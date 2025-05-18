@@ -1,6 +1,7 @@
 package net.skillz.network;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.util.Identifier;
 import net.skillz.access.LevelManagerAccess;
 import net.skillz.init.ConfigInit;
 import net.skillz.init.CriteriaInit;
@@ -17,34 +18,32 @@ import java.util.List;
 
 public class LevelServerPacket {
 
-
     public static void init() {
-
         ServerPlayNetworking.registerGlobalReceiver(StatPacket.PACKET_ID, (server, player, handler, buffer, sender)  -> {
             StatPacket payload = new StatPacket(buffer);
-            String id = payload.id();
+            Identifier skillId = payload.skillId();
             int level = payload.level();
 
             server.execute(() -> {
                 LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
-                if (levelManager.getSkillPoints() - level >= 0) {
 
-                    Skill skill = LevelManager.SKILLS.get(id);
-                    PlayerSkill playerSkill = levelManager.getPlayerSkills().get(id);
+                if (ConfigInit.MAIN.LEVEL.overallMaxLevel > 0 && ConfigInit.MAIN.LEVEL.overallMaxLevel <= levelManager.getOverallLevel())
+                    return;
 
-                    if (ConfigInit.MAIN.LEVEL.overallMaxLevel > 0 && ConfigInit.MAIN.LEVEL.overallMaxLevel <= levelManager.getOverallLevel()) {
+                Skill skill = LevelManager.SKILLS.get(skillId);
+
+                Identifier pointId = skill.pointsId();
+                int points = levelManager.getSkillPoints(pointId).getLevel();
+
+                if (points - level >= 0) {
+                    PlayerSkill playerSkill = levelManager.getPlayerSkills().get(skillId);
+
+                    if (!ConfigInit.MAIN.LEVEL.allowHigherSkillLevel && playerSkill.getLevel() >= skill.maxLevel())
                         return;
-                    }
-                    if (!ConfigInit.MAIN.LEVEL.allowHigherSkillLevel && playerSkill.getLevel() >= skill.maxLevel()) {
-                        return;
-                    }
-                    if (ConfigInit.MAIN.LEVEL.allowHigherSkillLevel) {
-                        if (playerSkill.getLevel() >= skill.maxLevel()) {
-                            for (Skill skillCheck : LevelManager.SKILLS.values()) {
-                                if (skillCheck.maxLevel() > levelManager.getSkillLevel(skillCheck.id())) {
-                                    return;
-                                }
-                            }
+
+                    for (Skill skillCheck : LevelManager.SKILLS.values()) {
+                        if (skillCheck.maxLevel() > levelManager.getSkillLevel(skillCheck.id())) {
+                            return;
                         }
                     }
 
@@ -52,12 +51,12 @@ public class LevelServerPacket {
                         CriteriaInit.SKILL_UP.trigger(player, skill.id(), playerSkill.getLevel() + level);
                     }
 
-                    levelManager.setSkillLevel(id, playerSkill.getLevel() + level);
-                    levelManager.setSkillPoints(levelManager.getSkillPoints() - level);
+                    levelManager.setSkillLevel(skillId, playerSkill.getLevel() + level);
+                    levelManager.setSkillPoints(pointId, points - level);
                     LevelHelper.updateSkill(player, skill);
                     PacketHelper.updateLevels(player);
 
-                    ServerPlayNetworking.send(player, new StatPacket(id, levelManager.getSkillLevel(id)));
+                    ServerPlayNetworking.send(player, new StatPacket(skillId, levelManager.getSkillLevel(skillId)));
                 }
             });
         });

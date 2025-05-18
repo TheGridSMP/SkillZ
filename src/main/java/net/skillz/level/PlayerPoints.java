@@ -5,21 +5,21 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.skillz.util.Lazy;
 
-public class PlayerSkill {
+public class PlayerPoints {
 
     private final Identifier id;
     private int level;
 
     private final Lazy<Skill> skill;
 
-    public PlayerSkill(Identifier id, int level) {
+    public PlayerPoints(Identifier id, int level) {
         this.id = id;
         this.level = level;
 
         this.skill = new Lazy<>(() -> LevelManager.SKILLS.get(id));
     }
 
-    public PlayerSkill(NbtCompound nbt) {
+    public PlayerPoints(NbtCompound nbt) {
         this(new Identifier(nbt.getString("Id")), nbt.getInt("Level"));
     }
 
@@ -47,11 +47,11 @@ public class PlayerSkill {
         buf.writeVarInt(level);
     }
 
-    public static PlayerSkill fromBuf(PacketByteBuf buf) {
+    public static PlayerPoints fromBuf(PacketByteBuf buf) {
         Identifier id = buf.readIdentifier();
         int level = buf.readVarInt();
 
-        return new PlayerSkill(id, level);
+        return new PlayerPoints(id, level);
     }
 
     public Lazy<Skill> skill() {

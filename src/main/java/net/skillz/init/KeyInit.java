@@ -15,8 +15,8 @@ import net.minecraft.client.util.InputUtil;
 
 @Environment(EnvType.CLIENT)
 public class KeyInit {
-    public static KeyBinding screenKey = new KeyBinding("key.skillz.openskillscreen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "category.skillz.keybind");
-    public static KeyBinding devKey = new KeyBinding("key.skillz.dev", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F8, "category.skillz.keybind");
+    public static KeyBinding screenKey = new KeyBinding("id.skillz.openskillscreen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "category.skillz.keybind");
+    public static KeyBinding devKey = new KeyBinding("id.skillz.dev", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_F8, "category.skillz.keybind");
 
     public static void init() {
         // Registering

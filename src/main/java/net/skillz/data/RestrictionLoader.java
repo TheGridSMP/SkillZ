@@ -64,13 +64,14 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
 
                 for (JsonElement element : data) {
                     JsonObject restrictionJsonObject = element.getAsJsonObject();
-                    Map<String, Integer> skillLevelRestrictions = new HashMap<>();
+                    Map<Identifier, Integer> skillLevelRestrictions = new HashMap<>();
                     boolean replace = restrictionJsonObject.has("replace") && restrictionJsonObject.get("replace").getAsBoolean();
 
                     JsonObject skillRestrictions = restrictionJsonObject.getAsJsonObject("skills");
                     for (String skillKey : skillRestrictions.keySet()) {
-                        if (LevelManager.SKILLS.containsKey(skillKey)) {
-                            skillLevelRestrictions.put(skillKey, skillRestrictions.get(skillKey).getAsInt());
+                        Identifier skillId = new Identifier(skillKey);
+                        if (LevelManager.SKILLS.containsKey(skillId)) {
+                            skillLevelRestrictions.put(skillId, skillRestrictions.get(skillKey).getAsInt());
                         } else {
                             LOGGER.warn("Restriction {} contains an unrecognized skill called {}.", restrictionFile, skillKey);
                         }
@@ -92,7 +93,7 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
 
                                     LevelManager.BLOCK_RESTRICTIONS.put(blockRawId, new PlayerRestriction(blockRawId, skillLevelRestrictions));
                                 } else {
-                                    LOGGER.warn("Restriction {} contains an unrecognized block id called {}.", restrictionFile, blockIdentifier);
+                                    LOGGER.warn("Restriction {} contains an unrecognized block skillId called {}.", restrictionFile, blockIdentifier);
                                 }
                             }
                         }
@@ -111,7 +112,7 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
 
                                     LevelManager.CRAFTING_RESTRICTIONS.put(craftingRawId, new PlayerRestriction(craftingRawId, skillLevelRestrictions));
                                 } else {
-                                    LOGGER.warn("Restriction {} contains an unrecognized crafting id called {}.", restrictionFile, craftingIdentifier);
+                                    LOGGER.warn("Restriction {} contains an unrecognized crafting skillId called {}.", restrictionFile, craftingIdentifier);
                                 }
                             }
                         }
@@ -130,7 +131,7 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
 
                                     LevelManager.ENTITY_RESTRICTIONS.put(entityRawId, new PlayerRestriction(entityRawId, skillLevelRestrictions));
                                 } else {
-                                    LOGGER.warn("Restriction {} contains an unrecognized entity id called {}.", restrictionFile, entityIdentifier);
+                                    LOGGER.warn("Restriction {} contains an unrecognized entity skillId called {}.", restrictionFile, entityIdentifier);
                                 }
                             }
                         }
@@ -149,7 +150,7 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
 
                                     LevelManager.ITEM_RESTRICTIONS.put(itemRawId, new PlayerRestriction(itemRawId, skillLevelRestrictions));
                                 } else {
-                                    LOGGER.warn("Restriction {} contains an unrecognized item id called {}.", restrictionFile, itemIdentifier);
+                                    LOGGER.warn("Restriction {} contains an unrecognized item skillId called {}.", restrictionFile, itemIdentifier);
                                 }
                             }
                         }
@@ -168,7 +169,7 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
 
                                     LevelManager.MINING_RESTRICTIONS.put(miningRawId, new PlayerRestriction(miningRawId, skillLevelRestrictions));
                                 } else {
-                                    LOGGER.warn("Restriction {} contains an unrecognized mining id called {}.", restrictionFile, miningIdentifier);
+                                    LOGGER.warn("Restriction {} contains an unrecognized mining skillId called {}.", restrictionFile, miningIdentifier);
                                 }
                             }
                         }
@@ -189,7 +190,7 @@ public class RestrictionLoader implements SimpleSynchronousResourceReloadListene
 
                                     LevelManager.ENCHANTMENT_RESTRICTIONS.put(enchantmentRawId, new PlayerRestriction(enchantmentRawId, skillLevelRestrictions));
                                 } else {
-                                    LOGGER.warn("Restriction {} contains an unrecognized enchantment id called {}.", restrictionFile, enchantmentIdentifier);
+                                    LOGGER.warn("Restriction {} contains an unrecognized enchantment skillId called {}.", restrictionFile, enchantmentIdentifier);
                                 }
                             }
                         }

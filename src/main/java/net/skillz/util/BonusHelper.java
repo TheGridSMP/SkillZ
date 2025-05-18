@@ -53,9 +53,9 @@ public class BonusHelper {
         if (LevelManager.BONUSES.containsKey(bonusKey)) {
             LevelManager levelManager = ((LevelManagerAccess) player).skillz$getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get(bonusKey);
-            int level = levelManager.getPlayerSkills().get(skillBonus.getId()).getLevel();
+            int level = levelManager.getPlayerSkills().get(skillBonus.skillId()).getLevel();
 
-            if (level >= skillBonus.getLevel())
+            if (level >= skillBonus.level())
                 return f.apply(level);
         }
 
@@ -145,8 +145,8 @@ public class BonusHelper {
                 if (LevelManager.BONUSES.containsKey("tradeXp")) {
                     LevelManager levelManager = ((LevelManagerAccess) playerEntity).skillz$getLevelManager();
                     SkillBonus skillBonus = LevelManager.BONUSES.get("tradeXp");
-                    int level = levelManager.getPlayerSkills().get(skillBonus.getId()).getLevel();
-                    if (level >= skillBonus.getLevel()) {
+                    int level = levelManager.getPlayerSkills().get(skillBonus.skillId()).getLevel();
+                    if (level >= skillBonus.level()) {
                         amount = (int) (amount * level * ConfigInit.MAIN.BONUSES.tradeXpBonus);
                     }
                 }
@@ -166,8 +166,8 @@ public class BonusHelper {
             if (LevelManager.BONUSES.containsKey("miningDropChance")) {
                 LevelManager levelManager = ((LevelManagerAccess) playerEntity).skillz$getLevelManager();
                 SkillBonus skillBonus = LevelManager.BONUSES.get("miningDropChance");
-                int level = levelManager.getPlayerSkills().get(skillBonus.getId()).getLevel();
-                if (level >= skillBonus.getLevel() && playerEntity.getRandom().nextFloat() <= level * ConfigInit.MAIN.BONUSES.miningDropChanceBonus) {
+                int level = levelManager.getPlayerSkills().get(skillBonus.skillId()).getLevel();
+                if (level >= skillBonus.level() && playerEntity.getRandom().nextFloat() <= level * ConfigInit.MAIN.BONUSES.miningDropChanceBonus) {
                     List<ItemStack> list = state.getDroppedStacks(builder);
                     if (!list.isEmpty()) {
                         Block.dropStack(playerEntity.getWorld(), pos, state.getDroppedStacks(builder).get(0).split(1));
@@ -182,8 +182,8 @@ public class BonusHelper {
             if (LevelManager.BONUSES.containsKey("plantDropChance")) {
                 LevelManager levelManager = ((LevelManagerAccess) playerEntity).skillz$getLevelManager();
                 SkillBonus skillBonus = LevelManager.BONUSES.get("plantDropChance");
-                int level = levelManager.getPlayerSkills().get(skillBonus.getId()).getLevel();
-                if (level >= skillBonus.getLevel() && playerEntity.getRandom().nextFloat() <= level * ConfigInit.MAIN.BONUSES.plantDropChanceBonus) {
+                int level = levelManager.getPlayerSkills().get(skillBonus.skillId()).getLevel();
+                if (level >= skillBonus.level() && playerEntity.getRandom().nextFloat() <= level * ConfigInit.MAIN.BONUSES.plantDropChanceBonus) {
                     List<ItemStack> list = Block.getDroppedStacks(state, (ServerWorld) playerEntity.getWorld(), pos, null);
                     for (ItemStack itemStack : list) {
                         if (itemStack.isIn(TagInit.FARM_ITEMS)) {
@@ -248,8 +248,8 @@ public class BonusHelper {
         if (LevelManager.BONUSES.containsKey("foodIncreasion") && itemStack.getItem().isFood()) {
             LevelManager levelManager = ((LevelManagerAccess) playerEntity).skillz$getLevelManager();
             SkillBonus skillBonus = LevelManager.BONUSES.get("foodIncreasion");
-            int level = levelManager.getPlayerSkills().get(skillBonus.getId()).getLevel();
-            if (level >= skillBonus.getLevel()) {
+            int level = levelManager.getPlayerSkills().get(skillBonus.skillId()).getLevel();
+            if (level >= skillBonus.level()) {
                 net.minecraft.item.FoodComponent foodComponent = itemStack.getItem().getFoodComponent();
                 float multiplier = level * ConfigInit.MAIN.BONUSES.foodIncreasionBonus;
                 playerEntity.getHungerManager().add((int) (foodComponent.getHunger() * multiplier), foodComponent.getSaturationModifier() * multiplier);

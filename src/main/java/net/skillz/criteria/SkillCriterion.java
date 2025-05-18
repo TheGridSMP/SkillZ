@@ -25,11 +25,11 @@ public class SkillCriterion extends AbstractCriterion<SkillCriterion.Conditions>
         return new Conditions(lootContextPredicate, skillPredicate, skillLevelPredicate);
     }
 
-    public void trigger(ServerPlayerEntity player, String skillName, int skillLevel) {
-        this.trigger(player, conditions -> conditions.matches(player, skillName, skillLevel));
+    public void trigger(ServerPlayerEntity player, Identifier skillName, int skillLevel) {
+        this.trigger(player, conditions -> conditions.matches(skillName, skillLevel));
     }
 
-    class Conditions extends AbstractCriterionConditions {
+    public static class Conditions extends AbstractCriterionConditions {
         private final SkillPredicate skillPredicate;
         private final NumberPredicate skillLevelPredicate;
 
@@ -39,7 +39,7 @@ public class SkillCriterion extends AbstractCriterion<SkillCriterion.Conditions>
             this.skillLevelPredicate = skillLevelPredicate;
         }
 
-        public boolean matches(ServerPlayerEntity player, String skillName, int skillLevel) {
+        public boolean matches(Identifier skillName, int skillLevel) {
             return this.skillPredicate.test(skillName) && skillLevelPredicate.test(skillLevel);
         }
 
@@ -51,5 +51,4 @@ public class SkillCriterion extends AbstractCriterion<SkillCriterion.Conditions>
             return jsonObject;
         }
     }
-
 }
