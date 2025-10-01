@@ -7,16 +7,8 @@ import net.skillz.config.MainConfig;
 
 public class ConfigInit {
 
-    /*public static final boolean isOriginsLoaded = FabricLoader.getInstance().isModLoaded("origins");
+    public static final MainConfig MAIN = ConfigApiJava.registerAndLoadConfig(MainConfig::new);
+    public static final ClientConfig CLIENT = ConfigApiJava.registerAndLoadConfig(ClientConfig::new, RegisterType.CLIENT);
 
-    public static LevelzConfig CONFIG = new LevelzConfig();*/
-
-    public static MainConfig MAIN = ConfigApiJava.registerAndLoadConfig(MainConfig::new);
-    public static ClientConfig CLIENT = ConfigApiJava.registerAndLoadConfig(ClientConfig::new, RegisterType.CLIENT);
-
-    public static void init() {
-        /*AutoConfig.register(LevelzConfig.class, JanksonConfigSerializer::new);
-        CONFIG = AutoConfig.getConfigHolder(LevelzConfig.class).getConfig();*/
-    }
-
+    public static void init() { }
 }
